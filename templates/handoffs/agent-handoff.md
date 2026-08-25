@@ -1,0 +1,22 @@
+# Agent Handoff
+
+- From:
+- To:
+- Stage:
+- Gate / checkpoint:
+- Mode:
+- Resultado upstream:
+- Problema / objetivo:
+- Inputs canónicos válidos:
+- Decisiones bloqueadas:
+- Preferencias delegadas y límites que permanecen:
+- Relevant findings, decided use and remaining constraint/uncertainty:
+- Artefactos esperados:
+- Evidencia disponible:
+- Medio de evidencia requerido / suficiente:
+- Herramientas / proveedores disponibles o restringidos:
+- Criterio de aceptación:
+- Reviewers requeridos:
+- Riesgos / limitaciones:
+- Owner si falla:
+- Qué NO puede cambiar este agente:

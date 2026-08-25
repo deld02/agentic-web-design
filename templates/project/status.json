@@ -1,0 +1,29 @@
+{
+  "project": "replace-me",
+  "system_version": "6.2.2",
+  "active_stage": "definition",
+  "active_gate": "G0",
+  "active_agent": "00",
+  "active_mode": "definition",
+  "status": "ACTIVE",
+  "gates": {
+    "G0":{"status":"ACTIVE","owner":"00","reviewers":[],"evidence":[],"blockers":[],"last_decision":null},
+    "G1":{"status":"PENDING","owner":"02","reviewers":["01"],"evidence":[],"blockers":[],"last_decision":null},
+    "G2":{"status":"PENDING","owner":"03","reviewers":["07"],"evidence":[],"blockers":[],"last_decision":null},
+    "G3":{"status":"PENDING","owner":"04","reviewers":["07"],"evidence":[],"blockers":[],"last_decision":null},
+    "G4":{"status":"PENDING","owner":"06","reviewers":["07"],"evidence":[],"blockers":[],"last_decision":null},
+    "G5":{"status":"PENDING","owner":"00","reviewers":[],"evidence":[],"blockers":[],"last_decision":null}
+  },
+  "checkpoints": {
+    "research-strategy":{"status":"PENDING","agent":"01","mode":"research-strategy","evidence":[],"blockers":[],"last_decision":null},
+    "direction-divergence":{"status":"PENDING","agent":"03","mode":"direction-divergence","evidence":[],"blockers":[],"last_decision":null},
+    "direction-review":{"status":"PENDING","agent":"07","mode":"direction-review","review_context":"PENDING","evidence":[],"blockers":[],"last_decision":null},
+    "design-review":{"status":"PENDING","agent":"07","mode":"design-review","review_context":"PENDING","evidence":[],"blockers":[],"last_decision":null},
+    "production-plan":{"status":"PENDING","agent":"05","mode":"production-plan","evidence":[],"blockers":[],"last_decision":null},
+    "technology-selection":{"status":"PENDING","agent":"06","mode":"technology-selection","evidence":[],"blockers":[],"last_decision":null},
+    "build-review":{"status":"PENDING","agent":"07","mode":"build-review","review_context":"PENDING","evidence":[],"blockers":[],"last_decision":null}
+  },
+  "release":{"eligible":false,"reason":"G0 active"}
+}
+
+

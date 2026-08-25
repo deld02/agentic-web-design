@@ -1,0 +1,22 @@
+{
+  "version": "6.2.2",
+  "audit_owner": "Design OS Auditor / System Steward",
+  "operational_agent": false,
+  "cadence_days": 90,
+  "last_audit": "2026-08-24",
+  "next_review": "2026-11-22",
+  "latest_report": "docs/audit/system-audit-v6.2.2.md",
+  "verdict": "PASS",
+  "scope": "landing-creation-only",
+  "out_of_scope": ["seo-strategy","analytics","privacy-legal","application-security","commerce","cms","localization","post-launch-operations"],
+  "scenarios": [
+    {"id":"landing-no-assets","support":"CORE"},
+    {"id":"landing-existing-identity","support":"CORE"},
+    {"id":"landing-conversion","support":"CORE"},
+    {"id":"landing-editorial-visual","support":"CORE"},
+    {"id":"landing-immersive","support":"CORE_WITH_RISK_TRIAGE"},
+    {"id":"landing-redesign","support":"CORE"}
+  ]
+}
+
+

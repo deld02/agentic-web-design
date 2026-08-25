@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Web Design OS Project Status v4",
+  "type": "object",
+  "required": ["project","system_version","active_stage","active_gate","active_agent","active_mode","status","gates","checkpoints","release"],
+  "properties": {
+    "project": {"type":"string","minLength":1},
+    "system_version": {"const":"6.2.2"},
+    "active_stage": {"type":"string","minLength":1},
+    "active_gate": {"type":["string","null"],"pattern":"^G[0-9]+$"},
+    "active_agent": {"type":"string","minLength":1},
+    "active_mode": {"type":"string","minLength":1},
+    "status": {"enum":["PENDING","ACTIVE","REVIEW","APPROVED","BLOCKED","SUPERSEDED"]},
+    "gates": {"type":"object","additionalProperties":{"$ref":"#/$defs/gate"}},
+    "checkpoints": {"type":"object","additionalProperties":{"$ref":"#/$defs/checkpoint"}},
+    "release": {"type":"object","required":["eligible","reason"],"properties":{"eligible":{"type":"boolean"},"reason":{"type":["string","null"]}},"additionalProperties":false}
+  },
+  "$defs": {
+    "item": {"type":"object","required":["status","evidence","blockers","last_decision"],"properties":{"status":{"enum":["PENDING","ACTIVE","REVIEW","APPROVED","BLOCKED","SUPERSEDED"]},"evidence":{"type":"array","items":{"type":"string"}},"blockers":{"type":"array","items":{"type":"string"}},"last_decision":{"type":["string","null"]}}},
+    "gate": {"allOf":[{"$ref":"#/$defs/item"},{"type":"object","required":["owner","reviewers"],"properties":{"owner":{"type":"string"},"reviewers":{"type":"array","items":{"type":"string"}}}}],"unevaluatedProperties":false},
+    "checkpoint": {"allOf":[{"$ref":"#/$defs/item"},{"type":"object","required":["agent","mode"],"properties":{"agent":{"type":"string"},"mode":{"type":"string"},"review_context":{"enum":["PENDING","ISOLATED","EXCEPTION_RECORDED"]}}}],"unevaluatedProperties":false}
+  },
+  "additionalProperties": false
+}
+
+

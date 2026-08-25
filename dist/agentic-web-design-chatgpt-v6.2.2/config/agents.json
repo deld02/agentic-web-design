@@ -1,0 +1,15 @@
+{
+  "version": "6.2.2",
+  "agents": [
+    {"id":"00","name":"Design Director","file":"agents/00-design-director.md","modes":["definition","gate-control","release"]},
+    {"id":"01","name":"Strategy & Research","file":"agents/01-strategy-research.md","modes":["research-strategy"]},
+    {"id":"02","name":"UX & Content","file":"agents/02-ux-content.md","modes":["content-architecture"]},
+    {"id":"03","name":"Art Direction","file":"agents/03-art-direction.md","modes":["direction-divergence","creative-master"]},
+    {"id":"04","name":"Visual & UI Design","file":"agents/04-visual-ui-design.md","modes":["visual-experience"]},
+    {"id":"05","name":"Motion & Media","file":"agents/05-motion-media.md","modes":["production-plan"]},
+    {"id":"06","name":"Frontend","file":"agents/06-frontend.md","modes":["technology-selection","implementation"]},
+    {"id":"07","name":"Critic & QA","file":"agents/07-critic-qa.md","modes":["direction-review","design-review","build-review"]}
+  ]
+}
+
+

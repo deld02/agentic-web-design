@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "system_version": "6.2.2",
+  "limits": {
+    "max_total_minutes": 75,
+    "max_stage_minutes": 25,
+    "max_corrections_per_stage": 1,
+    "max_repeated_progress": 3
+  },
+  "visual_review_axes": [
+    "quality_bar",
+    "artistic_master",
+    "master_fidelity",
+    "global_aesthetic",
+    "scene_transitions",
+    "scroll_rhythm",
+    "typography",
+    "color",
+    "media_integration",
+    "interaction_detail",
+    "medium_integrity",
+    "responsive",
+    "non_interchangeability"
+  ],
+  "scenarios": [
+    {
+      "id": "local-service-no-assets",
+      "title": "Local service without supplied media",
+      "brief": "Create a high-design landing for a trusted local craft/service business with no supplied photography. Use honest conceptual or representative generation without inventing the owner, premises, clients or completed work.",
+      "assets": "none",
+      "identity": "establish",
+      "risk_focus": ["image_generation", "documentary_truth", "generic_local_template"]
+    },
+    {
+      "id": "existing-identity-redesign",
+      "title": "Redesign with existing identity",
+      "brief": "Redesign a weak landing whose logo, colors, typography and current CSS are available. Treat them as evidence, decide what to preserve or evolve, and do not confuse existing usage with correct direction.",
+      "assets": "brand-and-existing-site",
+      "identity": "evolve",
+      "risk_focus": ["identity_authority", "css_copying", "master_drift"]
+    },
+    {
+      "id": "institutional-event",
+      "title": "Institutional event without bureaucratic styling",
+      "brief": "Create an employment and entrepreneurship event landing for a public institution. It must feel trustworthy and accessible while exceeding the conventional institutional microsite through specific art direction.",
+      "assets": "logo-and-factual-event-data",
+      "identity": "evolve",
+      "risk_focus": ["institutional_template", "stock_networking_photo", "flat_body"]
+    },
+    {
+      "id": "technology-product",
+      "title": "Technology product with demonstrable mechanism",
+      "brief": "Create a product landing for a technical tool whose value is a transformation process. The defining visual mechanism must explain the product rather than decorate a generic SaaS hero.",
+      "assets": "product-facts-no-ui-captures",
+      "identity": "establish",
+      "risk_focus": ["generic_saas", "decorative_3d", "unsupported_product_ui"]
+    },
+    {
+      "id": "editorial-cultural",
+      "title": "Editorial and cultural landing",
+      "brief": "Create a culturally authoritative landing where typography, image sequencing and reading rhythm carry the experience without sacrificing mobile comprehension.",
+      "assets": "licensed-editorial-media",
+      "identity": "establish",
+      "risk_focus": ["typographic_clipping", "hero_body_disconnect", "fashionable_editorial_clone"]
+    },
+    {
+      "id": "immersive-material",
+      "title": "Immersive material transformation",
+      "brief": "Create a landing about physical material transformation. Compare static layers, motion and 3D honestly; keep the least complex implementation that preserves the explanatory and perceptual gain.",
+      "assets": "process-facts-no-final-visuals",
+      "identity": "establish",
+      "risk_focus": ["effect_for_effect", "missing_fallback", "performance", "mobile_recomposition"]
+    }
+  ]
+}
+
+

@@ -1,0 +1,14 @@
+{
+  "version": "6.2.2",
+  "release_gate": "G5",
+  "gates": [
+    {"id":"G0","name":"Definition","owner":"00","reviewers":[],"required_artifacts":["PROJECT.md","project.config.json","brief.md"],"approval_requires_stages":[]},
+    {"id":"G1","name":"Strategy, Architecture & Content","owner":"02","reviewers":["01"],"required_artifacts":["research-strategy.md","content-architecture.md"],"approval_requires_stages":["research-strategy"]},
+    {"id":"G2","name":"Creative Direction","owner":"03","reviewers":["07"],"required_artifacts":["creative-direction.md"],"approval_requires_stages":["direction-review"]},
+    {"id":"G3","name":"Visual Experience","owner":"04","reviewers":["07"],"required_artifacts":["visual-system.md"],"approval_requires_stages":["design-review"]},
+    {"id":"G4","name":"Production","owner":"06","reviewers":["07"],"required_artifacts":["production-plan.md","technology-decision.md","qa-release.md"],"approval_requires_stages":["production-plan","technology-selection","build-review"]},
+    {"id":"G5","name":"Release","owner":"00","reviewers":[],"required_artifacts":["decision-log.md","qa-release.md"],"approval_requires_stages":[]}
+  ]
+}
+
+

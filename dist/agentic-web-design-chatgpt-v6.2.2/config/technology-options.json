@@ -1,0 +1,16 @@
+{
+  "version": "6.2.2",
+  "last_revalidated": "2026-08-21",
+  "review_by_days": 90,
+  "rule": "Compare at least two viable options, including the simplest option that can satisfy the approved experience. Revalidate current versions, support, pricing and deployment constraints when deciding.",
+  "option_families": [
+    {"id":"html","label":"HTML + CSS + minimal JavaScript","strong_fit":["small stable landing","no CMS","minimal runtime","maximum portability"],"weak_fit":["frequent structured publishing","application state","large component surface"]},
+    {"id":"astro","label":"Astro","strong_fit":["content and marketing sites","static-first delivery","component reuse","selective interactivity"],"weak_fit":["application-like client state as the dominant experience"]},
+    {"id":"interactive-framework","label":"Component framework or Vite-style application","strong_fit":["interaction-heavy landing","complex client-side scenes","team ecosystem fit"],"weak_fit":["small static landing","framework chosen by habit"]},
+    {"id":"site-platform","label":"Visual site platform or CMS-backed landing","strong_fit":["editor autonomy","existing platform equity","campaign iteration","visual authoring fit"],"weak_fit":["platform constraints fight the approved design"]},
+    {"id":"custom","label":"Custom architecture","strong_fit":["unusual creative runtime","specialized rendering or media constraints"],"weak_fit":["landing requirements already solved by a simpler maintained option"]}
+  ],
+  "decision_criteria": ["landing objective","content model","editorial ownership","rendering","interaction and runtime","forms/external integrations","motion/3D/media","performance and accessibility","team skills","maintenance","hosting and cost","exit path"]
+}
+
+

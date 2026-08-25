@@ -28,8 +28,8 @@ Technology checkpoint aprobado, master creativo, build estructural y renders des
 
 1. Sigue `docs/methods/image-decisions.md` y, para efectos materiales, `effect-selection.md`.
 2. Antes de contar imágenes, crea el `Page visual narrative map`: curva de scroll, anchor/climax, proof/support/atmosphere, transiciones y descansos. Cada escena recibe un trabajo visual y una intensidad. Deriva el conjunto mínimo de assets; no usa cuotas.
-3. Para cada escena selecciona formato y comportamiento por separado. El formato puede ser fondo, lateral, full bleed, objeto transparente, textura, secuencia, vídeo, 3D real o ninguno. El comportamiento puede ser estático, hover, sticky, parallax, pinned scroll, playback o 3D interactivo.
-4. Sticky/pinned exige progresión entre estados; parallax exige capas reales; hover exige un objetivo interactivo; vídeo/3D exige que tiempo, materia o punto de vista aporten algo que la versión estática no conserva. Registra siempre mobile, reduced-motion y fallback.
+3. Para cada escena selecciona formato y comportamiento por separado siguiendo el inventario de `image-decisions.md`.
+4. Aplica sin reinterpretar la elegibilidad de `effect-selection.md`, autoridad única para mecanismos no estáticos. Registra siempre mobile, reduced-motion y fallback.
 5. Decide `IMAGE | NO_IMAGE` y define representación, verdad, proporción, encuadre, responsive e integración. Elimina assets que repiten el mismo trabajo visual.
 6. Emite briefs `IH-*` para el loop externo sin invocar generación. Al recibir resultados, valida continuidad, verdad, safe zones y formato; una corrección vuelve al loop externo.
 7. Cuando una referencia temporal aprobada sea material, consume su especificación MengTo; no copia el efecto ni su superprompt.

@@ -7,7 +7,6 @@ It is not a ninth agent and never grants design or state authority of its own.
 
 from __future__ import annotations
 
-import argparse
 import hashlib
 import json
 import os
@@ -31,7 +30,7 @@ from project_validation import (
 )
 from validate_gate import validate_gate
 from ui_quality_scan import scan_implementation
-from validate_delivery import valid_signature
+from validation_common import valid_signature
 
 
 CONFIG_PATH = ROOT / "harness" / "scenarios.json"
@@ -924,100 +923,9 @@ def execute(run_dir: Path, command: list[str]) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    sub = parser.add_subparsers(dest="command", required=True)
-    init = sub.add_parser("init")
-    init.add_argument("--scenario", required=True)
-    init.add_argument("--runs-root", type=Path)
-    init.add_argument("--run-id")
-    record = sub.add_parser("record")
-    record.add_argument("--run-dir", required=True, type=Path)
-    record.add_argument("--event", required=True, choices=sorted(EVENT_TYPES))
-    record.add_argument("--stage", required=True)
-    record.add_argument("--agent", required=True)
-    record.add_argument("--tool")
-    record.add_argument("--target")
-    record.add_argument("--progress-key")
-    record.add_argument("--at")
-    assess = sub.add_parser("evaluate")
-    assess.add_argument("--run-dir", required=True, type=Path)
-    shot = sub.add_parser("capture")
-    shot.add_argument("--run-dir", required=True, type=Path)
-    shot.add_argument("--url", required=True)
-    shot.add_argument("--label", default="final")
-    packet = sub.add_parser("packet")
-    packet.add_argument("--run-dir", required=True, type=Path)
-    run = sub.add_parser("execute")
-    run.add_argument("--run-dir", required=True, type=Path)
-    run.add_argument("executor", nargs=argparse.REMAINDER)
-    active = sub.add_parser("run")
-    active.add_argument("--run-dir", required=True, type=Path)
-    active.add_argument("--until")
-    active.add_argument("executor", nargs=argparse.REMAINDER)
-    doctor = sub.add_parser("doctor")
-    doctor.add_argument("executor", nargs=argparse.REMAINDER)
-    chat_start = sub.add_parser("chat-start")
-    chat_source = chat_start.add_mutually_exclusive_group(required=True)
-    chat_source.add_argument("--scenario")
-    chat_source.add_argument("--brief-file", type=Path)
-    chat_start.add_argument("--runs-root", type=Path)
-    chat_start.add_argument("--run-id")
-    chat_status_parser = sub.add_parser("chat-status")
-    chat_status_parser.add_argument("--run-dir", required=True, type=Path)
-    chat_image = sub.add_parser("chat-image")
-    chat_image.add_argument("--run-dir", required=True, type=Path)
-    chat_image.add_argument("--file", required=True, type=Path)
-    chat_next = sub.add_parser("chat-next")
-    chat_next.add_argument("--run-dir", required=True, type=Path)
-    args = parser.parse_args()
-    if args.command == "init":
-        print(create_run(args.scenario, args.runs_root, args.run_id))
-        return 0
-    if args.command == "record":
-        payload = {key: value for key, value in {
-            "event": args.event, "stage": args.stage, "agent": args.agent,
-            "tool": args.tool, "target": args.target,
-            "progress_key": args.progress_key, "at": args.at,
-        }.items() if value is not None}
-        print(json.dumps(append_event(args.run_dir, payload), ensure_ascii=False))
-        return 0
-    if args.command == "evaluate":
-        report = evaluate(args.run_dir)
-        print(json.dumps(report, indent=2, ensure_ascii=False))
-        return 0 if report["status"] == "PASS" else 1
-    if args.command == "capture":
-        for output in capture(args.run_dir, args.url, args.label):
-            print(output)
-        return 0
-    if args.command == "packet":
-        print(create_packet(args.run_dir))
-        return 0
-    if args.command == "doctor":
-        command = args.executor[1:] if args.executor[:1] == ["--"] else args.executor
-        report = executor_doctor(command or None)
-        print(json.dumps(report, indent=2, ensure_ascii=False))
-        return 0 if report["status"] == "READY" else 1
-    if args.command == "chat-start":
-        brief_text = args.brief_file.read_text(encoding="utf-8") if args.brief_file else None
-        print(json.dumps(start_chat_run(args.scenario, args.runs_root, args.run_id, brief_text), indent=2, ensure_ascii=False))
-        return 0
-    if args.command == "chat-status":
-        print(json.dumps(chat_status(args.run_dir), indent=2, ensure_ascii=False))
-        return 0
-    if args.command == "chat-image":
-        print(json.dumps(confirm_chat_image(args.run_dir, args.file), indent=2, ensure_ascii=False))
-        return 0
-    if args.command == "chat-next":
-        result = advance_chat_run(args.run_dir)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-        return 0 if result["status"] not in {"FAILED"} else 1
-    if args.command == "run":
-        command = args.executor[1:] if args.executor[:1] == ["--"] else args.executor
-        result = run_active(args.run_dir, command, args.until)
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-        return 0 if result["status"] in {"COMPLETE", "PARTIAL", "NEEDS_USER"} else 1
-    command = args.executor[1:] if args.executor[:1] == ["--"] else args.executor
-    return execute(args.run_dir, command)
+    from harness_cli import run_cli
+
+    return run_cli(sys.modules[__name__])
 
 
 if __name__ == "__main__":

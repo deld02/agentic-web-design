@@ -26,6 +26,13 @@ Identify every section as a scene with its narrative or functional job. All scen
 | Scene ID | Section | User question / job | Available content and assets | Importance (`PRIMARY | UTILITY`) |
 |---|---|---|---|---|
 
+## Experience spine
+
+Define the semantic progression before art direction. Use `docs/methods/experience-spine.md`; do not prescribe visual style or effects here.
+
+| Scene ID | Entry state | Active user question | Meaning to establish | Proof required | Desired shift | Next tension or action | Narrative function |
+|---|---|---|---|---|---|---|---|
+
 ## Content and copy
 
 Mark material as `FINAL | PROVISIONAL | MISSING`.

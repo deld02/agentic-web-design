@@ -31,6 +31,7 @@ Review the final rendered page against `production-plan.md#Page visual narrative
 | Axis | Rendered evidence | Finding / correction owner | Verdict (`PASS | REVISE`) |
 |---|---|---|---|
 | WHOLE_PAGE_RHYTHM | | | REVISE |
+| EXPERIENCE_CONTINUITY | | | REVISE |
 | ASSET_NECESSITY | | | REVISE |
 | FORMAT_FIT | | | REVISE |
 | MECHANISM_ELIGIBILITY | | | REVISE |

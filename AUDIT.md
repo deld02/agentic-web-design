@@ -1,7 +1,7 @@
 # Audit status
 
-System version: 6.2.2  
-Audit date: 2026-08-24  
+System version: 6.3.1  
+Audit date: 2026-08-26  
 Result: PASS
 
 - 8 roles, 6 gates and 13 stages;
@@ -17,6 +17,7 @@ Result: PASS
 - final desktop/mobile renders required for build review;
 - current visual calibration is repeated per project and expires after 30 days;
 - primary scenes are resolved before foundations and global page rhythm is explicit;
+- every outlined scene has a semantic Experience Spine before art direction and final continuity is reviewed on renders;
 - every outlined section has concrete color roles and transitions;
 - one generated artistic master, sourced from the reviewed direction, is confirmed before webpage composition;
 - binding genome and relational grammar for every scene;
@@ -29,9 +30,9 @@ Result: PASS
 - final image creation separated into an external `IH-*` loop;
 - per-scene `IMAGE | NO_IMAGE` decisions and returned-asset validation;
 - compact release fingerprint for future anti-repetition comparison;
-- 114 tests passed.
+- 130 tests passed.
 
-Full report: `docs/audit/system-audit-v6.2.2.md`  
+Full report: `docs/audit/system-audit-v6.3.1.md`  
 Next review: 2026-11-22
 
 

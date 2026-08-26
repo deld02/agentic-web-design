@@ -8,35 +8,11 @@ from pathlib import Path
 import json
 import re
 
-from validate_delivery import valid_signature
+from validation_common import load_json, section, table_rows, valid_signature
+from validation_experience import experience_spine_errors
 
 
 ROOT = Path(__file__).resolve().parents[1]
-
-
-def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def section(text: str, heading: str) -> str:
-    match = re.search(
-        rf"(?ms)^{re.escape(heading)}\s*$\n(.*?)(?=^#{{1,6}}\s|\Z)", text
-    )
-    return match.group(1).strip() if match else ""
-
-
-def table_rows(text: str, heading: str, header_token: str) -> list[list[str]]:
-    rows: list[list[str]] = []
-    header_skipped = False
-    for line in section(text, heading).splitlines():
-        if not line.startswith("|") or "---" in line:
-            continue
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if not header_skipped:
-            header_skipped = True
-            continue
-        rows.append(cells)
-    return rows
 
 
 def nonempty_section(text: str, heading: str) -> bool:
@@ -620,7 +596,7 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
     qa = markdown(project_dir, "qa-release.md")
     rows = table_rows(qa, "### Visual narrative verification", "Axis")
     required = {
-        "WHOLE_PAGE_RHYTHM", "ASSET_NECESSITY", "FORMAT_FIT",
+        "WHOLE_PAGE_RHYTHM", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT",
         "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK",
     }
     seen: set[str] = set()

@@ -27,6 +27,7 @@
     "audit_system.py",
     "design_capabilities.py",
     "evaluation_harness.py",
+    "harness_cli.py",
     "new_project.py",
     "project_validation.py",
     "ui_quality_scan.py",
@@ -35,7 +36,8 @@
     "validate_gate.py",
     "validate_resource_registry.py",
     "validate_system.py",
-    "validation_common.py"
+    "validation_common.py",
+    "validation_experience.py"
   ],
   "required_runtime_files": [
     "docs/methods/progressive-intake.md",
@@ -44,6 +46,7 @@
     "docs/methods/reference-to-principle.md",
     "docs/methods/typography-spacing.md",
     "docs/methods/image-decisions.md",
+    "docs/methods/experience-spine.md",
     "docs/methods/color-direction.md",
     "docs/methods/scene-color-system.md",
     "docs/methods/scene-visual-production.md",
@@ -64,15 +67,12 @@
     "schemas/project-status.schema.json",
     "schemas/project-config.schema.json",
     "templates/project/status.json",
-    "templates/project/project.config.json"
+    "templates/project/project.config.json",
+    "skills/agentic-web-design/SKILL.md",
+    "skills/web-design-capabilities/SKILL.md"
   ],
-  "forbidden_legacy_tokens": [
-    "Design Resource Scout",
-    "00 Orchestrator",
-    "11 Design Critic",
-    "12 Accessibility",
-    "G14",
-    "G13",
-    "G12"
+  "pack_exclude": [
+    "config/code-quality.json",
+    "config/pack-safety.json"
   ]
 }

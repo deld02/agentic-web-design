@@ -18,6 +18,8 @@ Storyboards, keyframes or small prototypes are enough until a candidate proves u
 
 ## 3. Mechanism eligibility
 
+This section is the single operational authority for accepting or rejecting non-static behavior. Other contracts and methods may route here but must not duplicate these rules.
+
 - `STICKY`: one visual or control must remain while two or more related content states change. Reject it for unrelated paragraphs beside a fixed image.
 - `PINNED_SCROLL`: the order of states is necessary to understand a transformation or comparison. Reject it when ordinary document flow communicates equally well.
 - `PARALLAX`: foreground/background relationships express real depth and the handoff supplies independent layers. Reject it for a single flat photograph.

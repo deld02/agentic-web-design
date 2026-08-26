@@ -1,5 +1,5 @@
 {
-  "version": "6.2.2",
+  "version": "6.3.1",
   "last_revalidated": "2026-08-21",
   "review_by_days": 90,
   "rule": "Compare at least two viable options, including the simplest option that can satisfy the approved experience. Revalidate current versions, support, pricing and deployment constraints when deciding.",

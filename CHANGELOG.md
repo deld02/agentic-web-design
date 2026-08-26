@@ -1,5 +1,22 @@
 # Changelog
 
+## v6.3.1 — 2026-08-26 · Experience Spine sin nuevos agentes
+
+- Añade una progresión semántica por escena dentro de `content-architecture.md` antes de la dirección artística.
+- Mantiene ocho agentes, seis gates, trece etapas y los artefactos de proyecto existentes.
+- Hace que 03/04/05 consuman la misma columna vertebral sin reescribirla.
+- Exige cobertura exacta de todas las escenas en G1 y `EXPERIENCE_CONTINUITY` sobre renders finales en G4/G5.
+- Aísla su validator en `validation_experience.py` para no ampliar `project_validation.py`.
+
+## v6.3.0 — 2026-08-25 · Arquitectura mantenible con enforcement
+
+- Centraliza el inventario runtime en `config/runtime-files.json`; validación y empaquetado consumen la misma autoridad.
+- Extrae los helpers compartidos a `tools/validation_common.py` y elimina la dependencia inversa entre validadores.
+- Separa el adaptador CLI del motor del harness sin cambiar sus comandos públicos.
+- Convierte `effect-selection.md` en autoridad única para elegibilidad de efectos y reduce duplicación entre skill, agente y método de imágenes.
+- Añade ratchets automáticos de tamaño, ownership, dependencias e inventario, más una prueba de arquitectura en CI.
+- Separa explícitamente runtime, verificación, historia y artefactos generados; `dist/` deja de ser estado fuente.
+
 ## v6.2.2 — 2026-08-25 · Paquete limpio para ChatGPT
 
 - Genera una distribución runtime sin auditorías ni arquitecturas históricas.

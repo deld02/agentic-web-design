@@ -1,0 +1,22 @@
+{
+  "module_line_budgets": {
+    "tools/evaluation_harness.py": 950,
+    "tools/project_validation.py": 1000,
+    "tests/test_semantics.py": 1000
+  },
+  "function_line_budgets": {
+    "tools/evaluation_harness.py": 90,
+    "tools/project_validation.py": 90,
+    "tests/test_semantics.py": 140
+  },
+  "unique_function_definitions": [
+    "load_json",
+    "section",
+    "table_rows",
+    "valid_signature"
+  ],
+  "forbidden_import_edges": [
+    ["tools/project_validation.py", "validate_delivery"],
+    ["tools/validate_delivery.py", "project_validation"]
+  ]
+}

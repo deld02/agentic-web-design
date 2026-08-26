@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -37,6 +38,18 @@ class ChatGPTPackTests(unittest.TestCase):
             ).lower()
             for token in FORBIDDEN:
                 self.assertNotIn(token.lower(), corpus)
+
+    def test_pack_validates_as_a_standalone_runtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            pack, _archive = build_pack(Path(directory))
+            result = subprocess.run(
+                [sys.executable, "tools/validate_system.py"],
+                cwd=pack,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,11 @@
+{
+  "forbidden_legacy_tokens": [
+    "Design Resource Scout",
+    "00 Orchestrator",
+    "11 Design Critic",
+    "12 Accessibility",
+    "G14",
+    "G13",
+    "G12"
+  ]
+}

@@ -2,6 +2,8 @@
 from pathlib import Path
 import argparse, re, sys
 
+from validation_common import section, valid_signature
+
 SUPPORTED = {'.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg', '.mp4', '.webm', '.glb', '.gltf'}
 SOURCE_SUFFIXES = {'.html', '.css', '.scss', '.sass', '.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx', '.astro', '.vue', '.svelte'}
 IGNORED_DIRS = {'.git', 'node_modules', '.next', '.astro', '__pycache__'}
@@ -9,11 +11,6 @@ CAPTURE_MARKERS = ('screenshot', 'full-page', 'fullpage', 'desktop-full', 'mobil
 MEDIA_METHODS = {'KEEP_OR_EDIT', 'EXTERNAL_IMAGE_LOOP', 'ORIGINAL_PHOTO', 'LICENSED_SOURCE', 'CUSTOM_ILLUSTRATION', '3D_RENDER', 'VIDEO_RENDER', 'SVG_OR_CSS'}
 DELIVERED_MEDIA = {'FLAT_2D', 'LAYERED_2D', 'RENDERED_3D', 'INTERACTIVE_3D'}
 REAL_3D_MEDIA = {'RENDERED_3D', 'INTERACTIVE_3D'}
-
-
-def section(text, heading):
-    match = re.search(rf'(?ms)^{re.escape(heading)}\s*$\n(.*?)(?=^#{{1,6}}\s|\Z)', text)
-    return match.group(1) if match else ''
 
 
 def inventory(text):
@@ -47,22 +44,6 @@ def three_d_inventory(text):
         if len(cells) >= 7 and re.fullmatch(r'FX-[0-9]{3,}', cells[0]):
             rows.append(cells[:7])
     return rows
-
-
-def valid_signature(path):
-    data = path.read_bytes()
-    if not data:
-        return False
-    suffix = path.suffix.lower()
-    if suffix == '.png': return data.startswith(b'\x89PNG\r\n\x1a\n')
-    if suffix in {'.jpg', '.jpeg'}: return data.startswith(b'\xff\xd8\xff')
-    if suffix == '.gif': return data.startswith((b'GIF87a', b'GIF89a'))
-    if suffix == '.webp': return len(data) > 12 and data[:4] == b'RIFF' and data[8:12] == b'WEBP'
-    if suffix == '.avif': return len(data) > 12 and b'ftypavif' in data[:32]
-    if suffix == '.svg': return b'<svg' in data[:4096].lower()
-    if suffix == '.glb': return data.startswith(b'glTF')
-    if suffix == '.gltf': return data.lstrip().startswith(b'{')
-    return len(data) >= 32
 
 
 def implementation_sources(root):

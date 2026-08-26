@@ -22,6 +22,7 @@ from project_validation import (
     creative_master_confirmation_errors,
     creative_master_fidelity_errors,
     explicit_text_only,
+    experience_spine_errors,
     final_render_errors,
     visual_narrative_review_errors,
     hero_stress_errors,
@@ -94,6 +95,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(structure_challenge_errors(project_dir))
         _primary_scenes, outline_errors = scene_outline(project_dir)
         errors.extend(outline_errors)
+        errors.extend(experience_spine_errors(project_dir))
 
     elif gate_id == "G2":
         text = markdown(project_dir, "creative-direction.md")

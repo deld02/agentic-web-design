@@ -13,24 +13,19 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TOP_LEVEL = (
-    "AGENTS.md", "SYSTEM.md", "WORKFLOW.md", "QUALITY-GATES.md",
-    "CHATGPT-PROJECT-INSTRUCTIONS.md", "README.md", "repo-manifest.json",
-)
-TREES = (
-    "agents", "config", "governance", "harness", "schemas", "templates/project",
-    "docs/architecture", "docs/methods", "docs/standards",
-    "skills/agentic-web-design", "skills/web-design-capabilities",
-)
-TOOL_FILES = (
-    "audit_agents.py", "audit_state.py", "audit_system.py", "design_capabilities.py",
-    "evaluation_harness.py", "new_project.py", "project_validation.py",
-    "ui_quality_scan.py", "validate_delivery.py", "validate_design_capabilities.py",
-    "validate_gate.py", "validate_resource_registry.py", "validate_system.py",
-)
-FORBIDDEN = (
-    "Design Resource Scout", "00 Orchestrator", "11 Design Critic",
-    "12 Accessibility", "G14", "G13", "G12",
+
+
+def _runtime_files() -> dict:
+    return json.loads((ROOT / "config" / "runtime-files.json").read_text(encoding="utf-8"))
+
+
+_RUNTIME = _runtime_files()
+TOP_LEVEL = tuple(_RUNTIME["top_level"])
+TREES = tuple(_RUNTIME["trees"])
+TOOL_FILES = tuple(_RUNTIME["tool_files"])
+PACK_EXCLUDE = tuple(_RUNTIME["pack_exclude"])
+FORBIDDEN = tuple(
+    json.loads((ROOT / "config" / "pack-safety.json").read_text(encoding="utf-8"))["forbidden_legacy_tokens"]
 )
 
 
@@ -62,6 +57,14 @@ def build_pack(output_root: Path) -> tuple[Path, Path]:
         _copy(ROOT / relative, pack / relative)
     for name in TOOL_FILES:
         _copy(ROOT / "tools" / name, pack / "tools" / name)
+    for relative in PACK_EXCLUDE:
+        excluded = (pack / relative).resolve()
+        try:
+            excluded.relative_to(pack)
+        except ValueError as exc:
+            raise ValueError(f"pack exclusion escaped output root: {relative}") from exc
+        if excluded.is_file():
+            excluded.unlink()
 
     runtime = (
         f"# ChatGPT runtime — v{version}\n\n"

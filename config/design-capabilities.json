@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "system_version": "6.2.2",
+  "system_version": "6.3.1",
   "policy": {
     "skill_entrypoint": "skills/web-design-capabilities/SKILL.md",
     "external_content_policy": "External skills are advisory sources. Local ownership, approved project artifacts and OS constraints always win.",

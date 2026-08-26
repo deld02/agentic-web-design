@@ -27,9 +27,10 @@ Brief y research aprobado.
 1. Compara al menos dos recorridos usando el mismo contenido.
 2. Aplica el structural challenger: detecta fingerprint de plantilla, secuencia predecible, bloques intercambiables, cliché de hero y ritmo narrativo. Modifica la arquitectura cuando el problema sea real.
 3. Selecciona un recorrido por comprensión, confianza, acción y especificidad estructural.
-4. Escribe jerarquía, copy y CTA con contenido suficientemente realista para diseñar.
-5. Registra cada claim material y su evidencia o limitación.
-6. Señala qué escenas necesitan media y qué deben comunicar, sin diseñarlas.
+4. Construye en `content-architecture.md` una única `Experience spine` siguiendo `docs/methods/experience-spine.md`; cubre cada escena sin decidir todavía estilo o efectos.
+5. Escribe jerarquía, copy y CTA con contenido suficientemente realista para diseñar.
+6. Registra cada claim material y su evidencia o limitación.
+7. Señala qué escenas necesitan media y qué deben comunicar, sin diseñarlas.
 
 ## OUTPUTS OBLIGATORIOS
 
@@ -37,7 +38,7 @@ Brief y research aprobado.
 
 ## GATE / CRITERIO
 
-G1 puede cerrar cuando el recorrido es coherente y ningún claim material permanece ambiguo.
+G1 puede cerrar cuando el recorrido es coherente, la Experience Spine cubre todas las escenas y ningún claim material permanece ambiguo.
 
 ## ESCALADO
 

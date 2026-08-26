@@ -2,6 +2,22 @@
 
 No borrar decisiones revertidas.
 
+## D-077 — La experiencia es una columna vertebral, no seis agentes
+
+**Fecha:** 2026-08-26  
+**Contexto:** faltaba explicitar qué debe comprender, sentir y decidir el visitante a lo largo del recorrido, pero repartirlo entre seis roles nuevos duplicaría ownership de 00, 02, 03, 05 y 07.  
+**Decisión:** 02 crea una única `Experience Spine` por escena dentro de `content-architecture.md`. 03 la traduce a dirección, 04 a composición, 05 a comportamiento justificado y 07 revisa su continuidad final. No se añaden agentes, gates, etapas ni artefactos.  
+**Enforcement:** G1 bloquea filas incompletas, inválidas, duplicadas o ausentes; G4/G5 requieren `EXPERIENCE_CONTINUITY: PASS` con evidencia desktop/mobile.  
+**Estado:** ACTIVE desde v6.3.1.
+
+## D-076 — Autoridades únicas y ratchets de arquitectura
+
+**Fecha:** 2026-08-25  
+**Contexto:** el runtime, los validadores y la documentación repetían inventarios, helpers y reglas semánticas. Las pruebas comprobaban el resultado funcional, pero no impedían que la organización volviera a degradarse.  
+**Decisión:** `config/runtime-files.json` es la única lista de contenido runtime; `validation_common.py` es el único propietario de parsing y firmas compartidas; `effect-selection.md` es la única autoridad de elegibilidad no estática. El CLI queda separado del motor del harness. `code_quality.py` bloquea duplicación, dependencias inversas y crecimiento de módulos críticos.  
+**Límite:** los presupuestos de tamaño son ratchets de transición, no una declaración de que los módulos grandes ya tengan el tamaño ideal. Solo pueden bajar mediante extracción responsable.  
+**Estado:** ACTIVE desde v6.3.0.
+
 ## D-070 — El harness debe ejecutar, no simular
 
 **Fecha:** 2026-08-24  

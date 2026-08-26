@@ -25,7 +25,7 @@ G1 aprobado, contenido, research, material existente y restricciones de producci
 ## PROCESO
 
 1. Sigue `docs/methods/scene-visual-production.md`.
-2. En `direction-divergence`, responde desde G1 qué significa excelencia aquí y crea exactamente tres territorios `DIR-*` físicamente visibles y conceptualmente distantes. Deben diferir en al menos cuatro de: tipografía, composición, media, materialidad, profundidad, motion, presencia humana y metáfora.
+2. En `direction-divergence`, traduce la Experience Spine de G1 y responde qué significa excelencia aquí; crea exactamente tres territorios `DIR-*` físicamente visibles y conceptualmente distantes. Deben diferir en al menos cuatro de: tipografía, composición, media, materialidad, profundidad, motion, presencia humana y metáfora.
 3. No selecciona por color o gusto: documenta qué percepción, ventaja y riesgo tiene cada territorio. 07 los compara en contexto aislado y 00 registra una selección o `REVISE`.
 4. En `creative-master`, consume únicamente el territorio seleccionado, invoca generación y guarda un único `AM-*` artístico. No reabre las tres rutas.
 5. Muestra ese master una sola vez: aprobar, ajustar una vez o delegar.

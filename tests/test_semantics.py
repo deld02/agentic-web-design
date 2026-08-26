@@ -6,6 +6,16 @@ ROOT=Path(__file__).resolve().parents[1]
 def run(repo,*args):
     return subprocess.run([sys.executable,*args],cwd=repo,text=True,capture_output=True,encoding='cp1252',errors='replace')
 
+def add_complete_experience_spine(text):
+    marker='|---|---|---|---|---|---|---|---|'
+    pos=text.find(marker,text.find('## Experience spine'))
+    rows=(
+        '\n| SCN-001 | Knows the problem but cannot distinguish credible specialists | Why should this approach deserve attention now? | Invisible expertise can be made concrete and comparable | Specific thesis plus an immediate evidence signal | From vague interest to focused relevance | Verify whether the method supports the claim | OPENING |'
+        '\n| SCN-002 | Interested but still uncertain about credibility | What proves this is more than positioning language? | The method connects decisions to observable evidence | Ordered method, representative media and bounded claims | From relevance to justified confidence | Decide whether the approach fits the current need | PROOF |'
+        '\n| SCN-003 | Understands the approach and has sufficient confidence | What is the sensible next step without overcommitting? | A diagnostic is the smallest useful next action | Clear scope and one direct primary CTA | From confidence to intentional action | Request the diagnostic or end with clarity | ACTION |'
+    )
+    return text[:pos]+marker+rows+text[pos+len(marker):]
+
 class SemanticValidationTests(unittest.TestCase):
     def clone(self):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
@@ -50,6 +60,7 @@ class SemanticValidationTests(unittest.TestCase):
         pos=text.find(marker,text.find('## Sitemap / page or section outline'))
         rows='\n| SCN-001 | Hero | Establish the thesis and invite the next step | Headline, proof signal and primary action | PRIMARY |\n| SCN-002 | Evidence | Make the promise credible | Method, evidence and representative media | PRIMARY |\n| SCN-003 | Closing action | Resolve the decision | Summary and primary CTA | UTILITY |'
         text=text[:pos]+marker+rows+text[pos+len(marker):]
+        text=add_complete_experience_spine(text)
         content.write_text(text,encoding='utf-8')
         visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
         marker='|---|---|---|---|---|---|'
@@ -160,7 +171,7 @@ class SemanticValidationTests(unittest.TestCase):
         qa=repo/'projects/test-project/qa-release.md'; text=qa.read_text(encoding='utf-8')
         text=text.replace('FINAL_RENDER_DESKTOP:','FINAL_RENDER_DESKTOP: evidence/final-desktop.png',1)
         text=text.replace('FINAL_RENDER_MOBILE:','FINAL_RENDER_MOBILE: evidence/final-mobile.png',1)
-        for axis in ('WHOLE_PAGE_RHYTHM','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
+        for axis in ('WHOLE_PAGE_RHYTHM','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
             text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | desktop and mobile final renders show the intended result | no blocking finding / 07 | PASS |')
         qa.write_text(text,encoding='utf-8')
         text=qa.read_text(encoding='utf-8').replace(

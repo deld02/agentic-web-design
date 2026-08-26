@@ -5,7 +5,8 @@ import json, re, sys
 from design_capabilities import validate_design_capabilities
 from validate_delivery import validate_delivery
 from evaluation_harness import validate_harness_config
-from project_validation import artistic_master_errors, claim_errors as project_claim_errors, color_direction_errors, creative_master_confirmation_errors, creative_master_errors, creative_master_fidelity_errors, final_render_errors, image_handoff_errors, hero_stress_errors, page_rhythm_errors, project_quality_bar_errors, reference_benchmark_errors, review_checkpoint_errors, scene_color_map_errors, scene_outline, scene_strategy_errors, scene_visual_errors, structural_build_errors, technology_freshness_errors
+from project_validation import artistic_master_errors, claim_errors as project_claim_errors, color_direction_errors, creative_master_confirmation_errors, creative_master_errors, creative_master_fidelity_errors, experience_spine_errors, final_render_errors, image_handoff_errors, hero_stress_errors, page_rhythm_errors, project_quality_bar_errors, reference_benchmark_errors, review_checkpoint_errors, scene_color_map_errors, scene_outline, scene_strategy_errors, scene_visual_errors, structural_build_errors, technology_freshness_errors
+from validation_common import section
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
@@ -14,7 +15,6 @@ HEADINGS = ['## MISIÓN','## OWNERSHIP','## NO PUEDE','## MODOS','## INPUTS OBLI
 MANDATORY = {'G1':{'research-strategy'},'G2':{'direction-review'},'G3':{'design-review'},'G4':{'production-plan','technology-selection','build-review'}}
 CONFIG_KEYS = {'system_version','project_type','delivery_profile','visual_identity_mode','content_model','technology','accessibility_target','implementation_root'}
 STATUS_KEYS = {'project','system_version','active_stage','active_gate','active_agent','active_mode','status','gates','checkpoints','release'}
-CORE = ['README.md','SYSTEM.md','AGENTS.md','WORKFLOW.md','QUALITY-GATES.md','DECISIONS.md','docs/methods/progressive-intake.md','docs/methods/bounded-execution.md','docs/methods/material-decisions.md','docs/methods/reference-to-principle.md','docs/methods/typography-spacing.md','docs/methods/image-decisions.md','docs/methods/color-direction.md','docs/methods/scene-color-system.md','docs/methods/scene-visual-production.md','docs/methods/effect-selection.md','docs/standards/landing-quality.md','governance/system-steward.md','config/agents.json','config/gates.json','config/pipeline.json','config/profiles.json','config/technology-options.json','config/design-capabilities.json','config/system-governance.json','skills/web-design-capabilities/SKILL.md','repo-manifest.json','schemas/project-status.schema.json','schemas/project-config.schema.json','templates/project/status.json','templates/project/project.config.json']
 GLOBAL_DECISION_HEADER = ['ID','Scope','Decision','Evidence','Owner','Status']
 GLOBAL_DECISION_STATUSES = {'DECIDED','VERIFIED','SUPERSEDED'}
 
@@ -24,9 +24,14 @@ def load(rel):
     try: return json.loads(path.read_text(encoding='utf-8'))
     except Exception as exc: errors.append(f'INVALID JSON {rel}: {exc}'); return {}
 
-CORE.extend(['skills/agentic-web-design/SKILL.md','CHATGPT-PROJECT-INSTRUCTIONS.md','tools/validate_delivery.py','tools/validate_gate.py','tools/audit_state.py','tools/project_validation.py','tools/evaluation_harness.py','tools/build_chatgpt_pack.py','docs/architecture/review-isolation.md','docs/architecture/evaluation-harness.md','harness/scenarios.json'])
+runtime_files=load('config/runtime-files.json')
+CORE=list(runtime_files.get('top_level',[]))
+CORE.extend(runtime_files.get('required_runtime_files',[]))
+CORE.extend(f"tools/{name}" for name in runtime_files.get('tool_files',[]))
 for rel in CORE:
     if not (ROOT/rel).exists(): errors.append(f'MISSING: {rel}')
+for rel in runtime_files.get('trees',[]):
+    if not (ROOT/rel).is_dir(): errors.append(f'MISSING RUNTIME TREE: {rel}')
 runtime_skill=ROOT/'skills/agentic-web-design/SKILL.md'
 runtime_text=runtime_skill.read_text(encoding='utf-8') if runtime_skill.is_file() else ''
 if not re.search(r'(?m)^name:\s*agentic-web-design\s*$',runtime_text) or not re.search(r'(?m)^description:\s*\S.+$',runtime_text):
@@ -172,10 +177,6 @@ def validate_item(rel,label,item):
     if status=='BLOCKED' and not blockers: errors.append(f'{rel}:{label} BLOCKED without blocker reason')
     if status=='REVIEW' and not evidence: errors.append(f'{rel}:{label} REVIEW without evidence')
 
-def section(text,heading):
-    match=re.search(rf'(?ms)^{re.escape(heading)}\s*$\n(.*?)(?=^#{{1,6}}\s|\Z)',text)
-    return match.group(1) if match else ''
-
 def data_rows(text,heading,header_label):
     body=section(text,heading)
     return [line for line in body.splitlines() if line.startswith('|') and '---' not in line and header_label not in line]
@@ -214,6 +215,7 @@ def validate_owner_artifact(project_dir,rel,gid):
             for reference_error in reference_benchmark_errors(project_dir): errors.append(f'{rel}:{reference_error}')
             _primary_scenes, outline_errors=scene_outline(project_dir)
             for outline_error in outline_errors: errors.append(f'{rel}:{outline_error}')
+            for spine_error in experience_spine_errors(project_dir): errors.append(f'{rel}:{spine_error}')
     if gid=='G3':
         path=project_dir/'visual-system.md'
         if path.is_file():

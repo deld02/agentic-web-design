@@ -1,11 +1,11 @@
 {
   "name":"agentic-web-design-os",
-  "version":"6.2.2",
+  "version":"6.3.1",
   "created":"2026-08-19",
-  "last_audit":"2026-08-24",
+  "last_audit":"2026-08-25",
   "purpose":"Compact, design-first operating system for landing creation",
   "agents":8,
   "release_gate":"G5",
-  "audit":{"date":"2026-08-25","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":124,"verification":"clean ChatGPT runtime packaging, legacy-context exclusion, page-level visual narrative, managed execution and existing delivery invariants validated by 124 local tests"}
+  "audit":{"date":"2026-08-26","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":130,"verification":"Experience Spine ownership, exact scene coverage, final continuity review and existing landing invariants validated by 130 local tests"}
 }
 

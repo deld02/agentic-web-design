@@ -24,7 +24,7 @@ Before deciding assets, map every `SCN-*` as one visual beat: `ANCHOR | PROOF | 
 
 The map must identify the minimum sufficient asset set, any long flat stretch and duplicate jobs removed. Count assets only after this map. A long page may need several visual beats; a compact page may need one dominant image and deliberate typographic rests. Neither receives an arbitrary quota.
 
-Choose format and behavior independently:
+Choose format and behavior independently. This method owns the visual format:
 
 - `BACKGROUND` when atmosphere should surround content without carrying documentary proof;
 - `LATERAL | INLINE` when a specific visual explains nearby content;
@@ -34,7 +34,7 @@ Choose format and behavior independently:
 - `SEQUENCE | VIDEO | REAL_3D` only when transformation, time, matter or viewpoint is essential;
 - `NONE` when type/layout is the stronger intentional rest.
 
-Behavior rules are fail-closed: `STICKY | PINNED_SCROLL` needs a real sequence of related states; `PARALLAX` needs independently produced depth layers; `HOVER` needs an interactive/explorable target; `VIDEO_PLAYBACK` needs temporal content; `INTERACTIVE_3D` needs a real 3D source/runtime. Every non-static behavior needs mobile, reduced-motion and static fallback. Premium appearance alone is never a trigger.
+`docs/methods/effect-selection.md#3-mechanism-eligibility` is the sole authority for behavior eligibility. Record the chosen behavior here, but do not restate or weaken those rules. Every accepted non-static behavior carries the evidence and fallbacks required by that method.
 
 ## 4. Decide image presence and role per scene
 

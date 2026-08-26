@@ -23,7 +23,7 @@ DUPLICATE_JOB_CHECK:
 | Scene ID | Page beat | Visual job | Intensity / relation to adjacent scenes | Selected format | Selected behavior | Narrative trigger / why this behavior | Asset decomposition | Mobile / reduced-motion fallback | Transition onward |
 |---|---|---|---|---|---|---|---|---|---|
 
-This is the single ordered image decision and external-handoff map. The OS does not generate final assets. Every used image or materially different responsive variant has its own row. `Final file / fallback` becomes a real path returned by the external loop, not a prompt.
+This is the single ordered image decision and production map. Every used image or materially different responsive variant has its own row. `Final file / fallback` is a real produced path, never a prompt. Required generation is executed during this stage.
 
 ## Scene image decisions
 
@@ -45,7 +45,7 @@ Each row answers only what production and frontend need:
 - `External loop handoff`: stable `IH-*`, subject/action, art direction, light/material, ratio, safe zones, must include/avoid and continuity with the master.
 - `Exact integration`: section, background/foreground/layer, position, crop, frame/mask, desktop/mobile behavior, effect or `NONE`, reduced-motion/static fallback and alt intent.
 
-Use `PRIMARY:EXTERNAL_IMAGE_LOOP` or `SUPPORTING:EXTERNAL_IMAGE_LOOP` for new production. Status moves `NEEDS_EXTERNAL_PRODUCTION → RETURNED → FINAL`; 05 validates the return and 06 marks it final after integration. The external loop chooses and operates the production tool.
+Use `PRIMARY:EXTERNAL_IMAGE_LOOP` or `SUPPORTING:EXTERNAL_IMAGE_LOOP` for new generated production. Status moves `NEEDS_PRODUCTION → RETURNED → FINAL`; 05 marks the output `FINAL` after validating the real file, and 06 must integrate that exact file. In ChatGPT, every generated row requires `chat-image --asset-id IMG-### --file <path>`.
 
 ## Responsive media, ratios and safe zones
 
@@ -81,7 +81,7 @@ Complete only for a selected `RENDERED_3D` or `INTERACTIVE_3D` mechanism. CSS/SV
 
 ## Acceptance criteria
 
-Authentic documentary media remains valid. New atmosphere, backgrounds, elements or layers are requested through `IH-*`; they are never improvised inside the pipeline.
+Authentic documentary media remains valid. New atmosphere, backgrounds, elements or layers are specified through `IH-*` and produced with the selected real tool; they are never replaced by improvised CSS/SVG pretending to be imagery.
 
 ## Design capability log
 

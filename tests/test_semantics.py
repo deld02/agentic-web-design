@@ -16,6 +16,11 @@ def add_complete_experience_spine(text):
     )
     return text[:pos]+marker+rows+text[pos+len(marker):]
 
+def add_complete_delivery_contract(text):
+    empty='DELIVERY_STATUS: NOT_READY\nLANDING_ENTRY:\nRUN_COMMAND:\nBUILD_COMMAND:\nPREVIEW_TARGET:\nDELIVERY_PACKAGE:\nASSET_COMPLETENESS: INCOMPLETE\nLIMITATIONS:\nHANDOFF_SUMMARY:'
+    complete='DELIVERY_STATUS: READY\nLANDING_ENTRY: index.html\nRUN_COMMAND: python -m http.server 8000 --directory site-test\nBUILD_COMMAND: NOT_REQUIRED\nPREVIEW_TARGET: site-test/index.html\nDELIVERY_PACKAGE: site-test\nASSET_COMPLETENESS: COMPLETE\nLIMITATIONS: NONE\nHANDOFF_SUMMARY: Complete synthetic landing with integrated representative media and verified responsive behavior.'
+    return text.replace(empty,complete)
+
 class SemanticValidationTests(unittest.TestCase):
     def clone(self):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
@@ -168,11 +173,11 @@ class SemanticValidationTests(unittest.TestCase):
         pos=text.find(mechanism,text.find('### Material effect decisions'))
         text=text[:pos]+mechanism+'\n| FX-001 / hero | defining | static proof | subtle layers | scroll assembly | LIVE_EXECUTION + MECHANISM_LAB | expressive wins | prototype/hero-motion.mp4 | reduced static / 05 | FINAL | index.html#data-fx-hero | LAYERED_2D |'+text[pos+len(mechanism):]
         production.write_text(text,encoding='utf-8')
-        qa=repo/'projects/test-project/qa-release.md'; text=qa.read_text(encoding='utf-8')
+        qa=repo/'projects/test-project/qa-release.md'; text=add_complete_delivery_contract(qa.read_text(encoding='utf-8'))
         text=text.replace('FINAL_RENDER_DESKTOP:','FINAL_RENDER_DESKTOP: evidence/final-desktop.png',1)
         text=text.replace('FINAL_RENDER_MOBILE:','FINAL_RENDER_MOBILE: evidence/final-mobile.png',1)
-        for axis in ('WHOLE_PAGE_RHYTHM','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
-            text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | desktop and mobile final renders show the intended result | no blocking finding / 07 | PASS |')
+        for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
+            evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else 'desktop and mobile final renders show the intended result'; text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
         qa.write_text(text,encoding='utf-8')
         text=qa.read_text(encoding='utf-8').replace(
             'BACKGROUND_CHARACTER:\nACCENT_CHARACTER:\nDISPLAY_TYPE_CHARACTER:\nHERO_COMPOSITION:\nHERO_MEDIA:\nSIGNATURE_MECHANISM:\nDEPTH_MEDIUM:\nMOTION_INTENSITY:',
@@ -484,6 +489,25 @@ class SemanticValidationTests(unittest.TestCase):
             self.assertIn('G1 requires at least two narrative alternatives',result.stdout)
         finally: td.cleanup()
 
+    def test_g5_blocks_not_ready_final_delivery_contract(self):
+        td,repo=self.clone()
+        try:
+            self.complete_owner_evidence(repo)
+            path=repo/'projects/test-project/qa-release.md'
+            path.write_text(path.read_text(encoding='utf-8').replace('DELIVERY_STATUS: READY','DELIVERY_STATUS: NOT_READY',1),encoding='utf-8')
+            result=run(repo,'tools/validate_gate.py','G5','--project-dir','projects/test-project')
+            self.assertNotEqual(result.returncode,0); self.assertIn('final delivery is NOT_READY',result.stdout)
+        finally: td.cleanup()
+
+    def test_g5_requires_final_hero_comparison_with_approved_cmp(self):
+        td,repo=self.clone()
+        try:
+            self.complete_owner_evidence(repo)
+            path=repo/'projects/test-project/qa-release.md'; text=path.read_text(encoding='utf-8')
+            path.write_text(text.replace('CMP-001 compared with final desktop and mobile renders','final desktop and mobile renders look consistent',1),encoding='utf-8')
+            result=run(repo,'tools/validate_gate.py','G5','--project-dir','projects/test-project')
+            self.assertNotEqual(result.returncode,0); self.assertIn('HERO_TARGET_FIDELITY must compare the approved CMP-*',result.stdout)
+        finally: td.cleanup()
     def test_g1_requires_current_balanced_reference_captures(self):
         td,repo=self.clone()
         try:

@@ -29,10 +29,11 @@ Petición del usuario, artefactos actuales, estado y resultados de validación.
 3. Antes de cambiar un gate, ejecuta su validador y el audit de estado.
 4. Devuelve findings al owner causal. Una preferencia delegada no elimina evidencia ni review.
 5. Detén la ejecución tras una corrección fallida repetida; conserva los artefactos útiles.
+6. Antes de G5, completa y valida el contrato de entrega con `docs/methods/final-delivery.md`; entrega rutas concretas, no solo una declaración de finalización.
 
 ## OUTPUTS OBLIGATORIOS
 
-`brief.md`, `project.config.json`, `status.json` y decisión de gate trazable.
+`brief.md`, `project.config.json`, `status.json`, decisión de gate trazable y `qa-release.md#Final delivery contract` en release.
 
 ## GATE / CRITERIO
 
@@ -44,4 +45,4 @@ Solicita al usuario únicamente una decisión que no pueda resolverse con eviden
 
 ## REGLAS ESPECÍFICAS
 
-Solo 00 modifica el estado oficial. El proyecto termina en una landing verificada.
+Solo 00 modifica el estado oficial. El proyecto termina en una landing verificada, ejecutable y localizable por el usuario; los documentos del proceso no son el producto.

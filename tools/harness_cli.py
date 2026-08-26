@@ -50,6 +50,7 @@ def _parser(event_types: set[str]) -> argparse.ArgumentParser:
     chat_image = sub.add_parser("chat-image")
     chat_image.add_argument("--run-dir", required=True, type=Path)
     chat_image.add_argument("--file", required=True, type=Path)
+    chat_image.add_argument("--asset-id")
     return parser
 
 
@@ -103,7 +104,7 @@ def run_cli(api: ModuleType) -> int:
         print(json.dumps(api.chat_status(args.run_dir), indent=2, ensure_ascii=False))
         return 0
     if args.command == "chat-image":
-        print(json.dumps(api.confirm_chat_image(args.run_dir, args.file), indent=2, ensure_ascii=False))
+        print(json.dumps(api.confirm_chat_image(args.run_dir, args.file, args.asset_id), indent=2, ensure_ascii=False))
         return 0
     if args.command == "chat-next":
         result = api.advance_chat_run(args.run_dir)

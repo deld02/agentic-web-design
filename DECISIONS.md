@@ -2,6 +2,22 @@
 
 No borrar decisiones revertidas.
 
+## D-079 — El loop de imágenes debe ejecutarse y el hero aprobado debe sobrevivir
+
+**Fecha:** 2026-08-26
+**Contexto:** 05 emitía `IH-*` pero tenía prohibido invocar generación; el harness solo registraba el master. Además, `AM-*` podía percibirse como propuesta de hero aunque G3 implementase luego otra composición.
+**Decisión:** el loop de producción sigue separado de la decisión visual, pero se ejecuta de forma acotada dentro del stage `production-plan`. Cada raster conceptual/representativo generado requiere archivo y recibo `IMG-*`. `AM-*` es fuente artística; el hero `CMP-*` revisado en G3 es el target congelado para 06.
+**Enforcement:** el harness bloquea `production-plan` ante briefs pendientes, archivos generados inválidos o recibos ausentes. G4/G5 requieren `HERO_TARGET_FIDELITY` comparando `CMP-*` con renders finales desktop/mobile.
+**Estado:** ACTIVE desde v6.3.3.
+
+## D-078 — La entrega es un producto físico, no una afirmación
+
+**Fecha:** 2026-08-26
+**Contexto:** G5 podía probar revisión y renders sin definir con precisión qué debía recibir el usuario ni dónde encontrarlo.
+**Decisión:** 00 completa un único `Final delivery contract` en `qa-release.md`. Debe identificar landing ejecutable, entry point, comandos, preview, paquete limpio, assets, estado, limitaciones y resumen; reutiliza los renders ya exigidos.
+**Enforcement:** G5 bloquea `NOT_READY`, rutas inexistentes, entry points fuera del implementation root, paquetes sucios o inválidos, assets incompletos e incoherencias de estado.
+**Estado:** ACTIVE desde v6.3.2.
+
 ## D-077 — La experiencia es una columna vertebral, no seis agentes
 
 **Fecha:** 2026-08-26  

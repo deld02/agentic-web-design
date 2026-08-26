@@ -25,12 +25,15 @@ from project_validation import (
     artistic_master_errors,
     creative_master_confirmation_errors,
     creative_master_errors,
+    image_handoff_errors,
     load_json,
     project_quality_bar_errors,
 )
 from validate_gate import validate_gate
 from ui_quality_scan import scan_implementation
 from validation_common import valid_signature
+from validation_image_generation import generated_asset_file_errors, generated_asset_targets, missing_generation_receipts
+from validation_project_paths import implementation_root_for
 
 
 CONFIG_PATH = ROOT / "harness" / "scenarios.json"
@@ -280,24 +283,33 @@ def chat_status(run_dir: Path) -> dict[str, Any]:
     }
 
 
-def confirm_chat_image(run_dir: Path, image_path: Path) -> dict[str, Any]:
-    """Record a physical raster returned by ChatGPT image generation for creative-master."""
+def confirm_chat_image(run_dir: Path, image_path: Path, asset_id: str | None = None) -> dict[str, Any]:
+    """Record a real generated master or production-plan image."""
     run_dir = run_dir.resolve()
     _require_chat_run(run_dir)
     stage = _current_open_stage(run_dir)
-    if stage["id"] != "creative-master":
-        raise ValueError("chat-image is valid only during creative-master")
+    if stage["id"] not in {"creative-master", "production-plan"}:
+        raise ValueError("chat-image is valid only during creative-master or production-plan")
     project_dir = (run_dir / "project").resolve()
-    candidate = image_path if image_path.is_absolute() else project_dir / image_path
+    base = project_dir
+    if stage["id"] == "production-plan":
+        targets = generated_asset_targets(project_dir)
+        if not asset_id or asset_id not in targets:
+            raise ValueError("production-plan chat-image needs a declared generated --asset-id")
+        config = load_json(project_dir / "project.config.json")
+        base = implementation_root_for(project_dir, ROOT, config.get("implementation_root", "undetermined"))
+    candidate = image_path if image_path.is_absolute() else base / image_path
     candidate = candidate.resolve()
-    if not _inside(candidate, project_dir):
-        raise ValueError("generated master must be inside the managed project")
+    if not _inside(candidate, base):
+        raise ValueError("generated image must be inside its managed output root")
+    if stage["id"] == "production-plan" and candidate != (base / targets[asset_id]).resolve():
+        raise ValueError("generated image path does not match the declared IMG final file")
     if candidate.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp", ".avif"}:
         raise ValueError("generated master must be a raster image")
     if not candidate.is_file() or not valid_signature(candidate):
         raise ValueError("generated master is missing or is not a valid raster file")
-    relative = str(candidate.relative_to(project_dir))
-    append_event(run_dir, {"event": "tool_call", "stage": stage["id"], "agent": stage["agent"], "tool": "CHATGPT_IMAGE"})
+    relative = str(candidate.relative_to(project_dir if _inside(candidate, project_dir) else base))
+    append_event(run_dir, {"event": "tool_call", "stage": stage["id"], "agent": stage["agent"], "tool": "CHATGPT_IMAGE", "target": asset_id})
     append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": relative})
     return {"status": "RECORDED", "stage": stage["id"], "file": relative}
 
@@ -327,6 +339,9 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
         )
         if not generated:
             readiness.append("creative-master needs a physical image registered with chat-image after real generation")
+    if stage["id"] == "production-plan":
+        for generated_id in missing_generation_receipts(run_dir / "project", read_events(run_dir), IMAGE_TOOLS):
+            readiness.append(f"production-plan generated asset {generated_id} lacks a real image-generation receipt")
     if readiness:
         if any("artistic master confirmation is PENDING" in item for item in readiness):
             run.update(status="NEEDS_USER", active_stage=stage["id"], findings=readiness)
@@ -383,7 +398,7 @@ def _stage_prompt(run_dir: Path, stage: dict[str, Any], correction: list[str] | 
         "Work only inside the isolated project and its configured implementation root.",
         "Complete only this stage, update its owned artifact, and let agent 00 update official state as required by the pipeline.",
         "Do not publish, push, create GitHub content or skip a dependency.",
-        "For a real image-generation call, emit one stdout line only after the tool succeeds: HARNESS_EVENT {\"event\":\"tool_call\",\"tool\":\"IMAGE_GEN\"}",
+        "For a real master image call, emit after success: HARNESS_EVENT {\"event\":\"tool_call\",\"tool\":\"IMAGE_GEN\"}. During production-plan also include the declared asset target, for example \"target\":\"IMG-001\".",
         "Exit non-zero if the stage cannot be completed honestly.",
     ]
     if correction:
@@ -414,6 +429,9 @@ def _stage_readiness_errors(run_dir: Path, stage: dict[str, Any]) -> list[str]:
         errors.append("design-review must close G3 as APPROVED")
     if stage_id == "build-review" and status.get("gates", {}).get("G4", {}).get("status") != "APPROVED":
         errors.append("build-review must close G4 as APPROVED")
+    if stage_id == "production-plan":
+        errors.extend(image_handoff_errors(project_dir))
+        errors.extend(generated_asset_file_errors(project_dir, ROOT))
     return errors
 
 

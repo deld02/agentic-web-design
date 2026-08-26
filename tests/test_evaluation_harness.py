@@ -26,6 +26,7 @@ from evaluation_harness import (  # noqa: E402
     validate_harness_config,
     visual_review_findings,
 )
+from validation_image_generation import missing_generation_receipts  # noqa: E402
 
 
 class EvaluationHarnessTests(unittest.TestCase):
@@ -193,6 +194,40 @@ status['release']={'eligible':False,'reason':'G1 pending'}
         image.write_bytes(b"\x89PNG\r\n\x1a\n")
         with self.assertRaisesRegex(ValueError, "creative-master"):
             confirm_chat_image(run_dir, image)
+
+    def test_chat_image_records_declared_production_asset(self):
+        run_dir = self.new_run()
+        run = json.loads((run_dir / "run.json").read_text(encoding="utf-8")); run.update(execution_mode="CHAT_INTERACTIVE", status="RUNNING")
+        (run_dir / "run.json").write_text(json.dumps(run), encoding="utf-8")
+        self.complete_until(run_dir, "technology-selection")
+        self.record(run_dir, "stage_start", "production-plan", "05")
+        project = run_dir / "project"
+        config = json.loads((project / "project.config.json").read_text(encoding="utf-8"))
+        config["implementation_root"] = "site"
+        (project / "project.config.json").write_text(json.dumps(config), encoding="utf-8")
+        plan = project / "production-plan.md"
+        marker = "| ID | Scene + observed render need | Production type + representation/truth class | Payload role / selected method | Status | Final file / fallback | External loop handoff (`IH-*`) + production brief | Exact integration in landing |\n|---|---|---|---|---|---|---|---|"
+        text = plan.read_text(encoding="utf-8").replace(
+            marker, marker + "\n| IMG-001 | SCN-001 hero | SCENE_PLATE / CONCEPTUAL | PRIMARY:EXTERNAL_IMAGE_LOOP | RETURNED | assets/hero.webp | IH-001 generated hero | hero background |",
+        )
+        plan.write_text(text, encoding="utf-8")
+        image = project / "site" / "assets" / "hero.webp"
+        image.parent.mkdir(parents=True)
+        image.write_bytes(b"RIFFxxxxWEBPgenerated")
+        self.assertEqual(missing_generation_receipts(project, read_events(run_dir), {"CHATGPT_IMAGE"}), ["IMG-001"])
+        result = confirm_chat_image(run_dir, image, "IMG-001")
+        self.assertEqual(result["stage"], "production-plan")
+        self.assertTrue(any(item.get("target") == "IMG-001" for item in read_events(run_dir)))
+        self.assertEqual(missing_generation_receipts(project, read_events(run_dir), {"CHATGPT_IMAGE"}), [])
+
+    def test_chat_image_rejects_undeclared_production_asset(self):
+        run_dir = self.new_run()
+        run = json.loads((run_dir / "run.json").read_text(encoding="utf-8")); run.update(execution_mode="CHAT_INTERACTIVE", status="RUNNING")
+        (run_dir / "run.json").write_text(json.dumps(run), encoding="utf-8")
+        self.complete_until(run_dir, "technology-selection")
+        self.record(run_dir, "stage_start", "production-plan", "05")
+        with self.assertRaisesRegex(ValueError, "declared generated"):
+            confirm_chat_image(run_dir, run_dir / "project" / "site" / "hero.png", "IMG-999")
 
 
 if __name__ == "__main__":

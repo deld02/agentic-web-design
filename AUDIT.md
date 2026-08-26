@@ -1,6 +1,6 @@
 # Audit status
 
-System version: 6.3.1  
+System version: 6.3.3
 Audit date: 2026-08-26  
 Result: PASS
 
@@ -30,9 +30,12 @@ Result: PASS
 - final image creation separated into an external `IH-*` loop;
 - per-scene `IMAGE | NO_IMAGE` decisions and returned-asset validation;
 - compact release fingerprint for future anti-repetition comparison;
-- 130 tests passed.
+- final release includes a deterministic physical delivery contract: executable entry, commands, preview, clean package, assets, status and limitations;
+- generated landing imagery requires physical `IMG-*` files and per-asset generation receipts inside the managed production stage;
+- final hero fidelity is reviewed against the approved G3 `CMP-*` target on desktop and mobile;
+- 138 tests passed.
 
-Full report: `docs/audit/system-audit-v6.3.1.md`  
+Full report: `docs/audit/system-audit-v6.3.3.md`
 Next review: 2026-11-22
 
 

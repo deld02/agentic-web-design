@@ -1,5 +1,21 @@
 # Changelog
 
+## v6.3.3 — 2026-08-26 · Producción de imágenes ejecutable y hero estable
+
+- Corrige la contradicción que enviaba los `IH-*` a un loop externo que el harness nunca ejecutaba.
+- Ejecuta un subloop acotado dentro de `production-plan`, con generación real por cada `IMG-*` conceptual/representativo y un único reintento dirigido.
+- `chat-image` registra ahora masters en G2 y assets finales declarados en G4; el stage bloquea archivos inexistentes o recibos ausentes.
+- Distingue el master artístico del hero: el `AM-*` gobierna la dirección y el hero `CMP-*` aprobado en G3 queda congelado como objetivo de implementación.
+- Añade `HERO_TARGET_FIDELITY` al review final para comparar el target con renders desktop/mobile y bloquear desviaciones silenciosas.
+
+## v6.3.2 — 2026-08-26 · Contrato de entrega final verificable
+
+- Define por primera vez qué producto físico debe recibir el usuario al finalizar.
+- Añade un único contrato dentro de `qa-release.md`, propiedad de 00 en G5, sin agentes, gates, etapas ni artefactos de proyecto nuevos.
+- Exige entry point real, comandos exactos, preview, paquete limpio, assets completos, resumen, estado y limitaciones.
+- Reutiliza los renders finales existentes y bloquea paquetes inexistentes, contaminados o marcados `NOT_READY`.
+- Obliga a que la respuesta final exponga rutas concretas: la documentación interna deja de poder presentarse como producto.
+
 ## v6.3.1 — 2026-08-26 · Experience Spine sin nuevos agentes
 
 - Añade una progresión semántica por escena dentro de `content-architecture.md` antes de la dirección artística.

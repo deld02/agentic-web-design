@@ -7,7 +7,7 @@ This method prevents silent retry loops without lowering design quality or impos
 - Each stage gets one initial pass and at most one automatic corrective pass.
 - The same material finding or blocker may trigger only one automatic retry. If it recurs, stop.
 - A failed tool call may be retried once only when the failure is plausibly transient. A different tool or broader action is not a hidden extra retry.
-- The artistic master gets at most one targeted edit/regeneration before its confirmation; a rejected G4 image return gets one directed correction sent back to the external loop.
+- The artistic master gets at most one targeted edit/regeneration before its confirmation; a rejected G4 image output gets one directed regeneration inside the production subloop.
 - Upstream work may reopen automatically once per causal change. A downstream failure must not restart the whole pipeline.
 
 User-requested changes, genuinely new evidence and a user-authorized resumed pass start a new bounded run. They do not retroactively legitimize prior loops.

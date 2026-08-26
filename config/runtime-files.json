@@ -37,7 +37,10 @@
     "validate_resource_registry.py",
     "validate_system.py",
     "validation_common.py",
-    "validation_experience.py"
+    "validation_experience.py",
+    "validation_final_delivery.py",
+    "validation_image_generation.py",
+    "validation_project_paths.py"
   ],
   "required_runtime_files": [
     "docs/methods/progressive-intake.md",
@@ -51,6 +54,7 @@
     "docs/methods/scene-color-system.md",
     "docs/methods/scene-visual-production.md",
     "docs/methods/effect-selection.md",
+    "docs/methods/final-delivery.md",
     "docs/standards/landing-quality.md",
     "docs/architecture/review-isolation.md",
     "docs/architecture/evaluation-harness.md",

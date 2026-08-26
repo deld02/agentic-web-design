@@ -2,13 +2,13 @@
 
 Images are a primary design medium, not a fallback or a documentation exercise. This method uses one approved visual master and one ordered decision/handoff map.
 
-This is the single operational path for deciding and placing imagery. The scene method owns creative direction; 05 owns the specification and validation after the structural render. Final image creation runs in a separate external loop.
+This is the single operational path for deciding, producing and placing imagery. The scene method owns creative direction; 05 owns a bounded production subloop after the structural render. It remains separate from design decisions but is executed and supervised inside `production-plan`.
 
 ## 1. Create the visual master
 
 After research, 03 defines what the visual world must make the visitor feel and understand, then invokes `CHATGPT_GENERATE` to create the physical `ARTISTIC_MASTER` (`AM-*`). Generated text is provisional. A prompt, landing screenshot, UI mockup, HTML, SVG, diagram, gradient or CSS composition does not count.
 
-If a real person, place, product or result is claimed, use authentic documentary media. The later external loop may edit supplied material or create background, light, atmosphere, elements and layers without falsifying identity.
+If a real person, place, product or result is claimed, use authentic documentary media. The later production subloop may edit supplied material or create background, light, atmosphere, elements and layers without falsifying identity.
 
 Show the resulting master once for user confirmation before frontend work.
 
@@ -40,7 +40,7 @@ Choose format and behavior independently. This method owns the visual format:
 
 For every `SCN-*`, 05 records `IMAGE | NO_IMAGE`. `IMAGE` identifies the actual role—background, lateral, inline, foreground, icon, texture or transition—and its perceptual/content job. `NO_IMAGE` states why typography, layout or existing media is stronger. This is a design decision, not a quota.
 
-## 5. Convert selected needs into external handoffs
+## 5. Convert selected needs into production briefs
 
 05 fills `Asset inventory and readiness` only from observed needs. One row per materially different output records:
 
@@ -53,13 +53,13 @@ For every `SCN-*`, 05 records `IMAGE | NO_IMAGE`. `IMAGE` identifies the actual 
 
 The master directs the result but never predetermines the file type. Omit rows that do no real visual work.
 
-## 6. Run image creation outside this system
+## 6. Run the bounded image-production subloop
 
-The external image loop consumes one `IH-*` at a time. It may use ChatGPT image generation, another generator, photography, illustration, 3D or another appropriate production tool. That loop owns creation and its internal iterations; this OS does not invoke those tools.
+Consume one ordered `IH-*` at a time inside the existing `production-plan` stage. New representative or conceptual raster imagery defaults to real ChatGPT image generation. Authentic documentary media, licensed sources, video and real 3D use their appropriate real production route. The loop invokes the selected tool; a brief, prompt, CSS/SVG construction or declaration is not a produced asset.
 
-The loop returns a web-ready file and production metadata. 05 validates the result against the brief and master. An unsuitable result returns to the external loop with one directed finding; it is never replaced with improvised HTML, SVG or prose. A returned file becomes `FINAL` only after 06 integrates it.
+Save every web-ready output at its declared `IMG-*` final path and record its production method. In interactive ChatGPT runs, call `chat-image --asset-id IMG-### --file <path>` immediately after successful generation. In headless runs, emit the image-generation receipt with the same `IMG-*` target. 05 validates the result against the brief, master and target composition. One rejected output may receive one directed regeneration; it is never replaced with improvised HTML, SVG or prose. 05 marks the physical output `FINAL`; 06 then integrates that exact file.
 
-The ordered `IH-*` queue preserves continuity, but it is not an agent stage, gate or hidden generation instruction.
+The ordered queue is not a new agent, stage or gate. `production-plan` cannot close while a required generated `IMG-*` lacks a physical file and a real generation receipt.
 
 ## 7. Integrate, render and correct once
 

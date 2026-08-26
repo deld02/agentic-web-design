@@ -2,7 +2,7 @@
 
 This method turns visual direction into scene-level image decisions and external-production briefs, not a fallback for missing photography. Load it while creating direction compositions and whenever a scene needs atmosphere, conceptual representation, layers or a visual mechanism that CSS/native media alone may not resolve.
 
-It adds no project document or duplicate register. G2 separates direction divergence, isolated selection and one generated artistic master inside `creative-direction.md`; G3 translates its genome through Scene Grammar, Scene Strategy and `Scene visual opportunities`; G4 decides image presence and emits `IH-*` briefs. A separate loop produces final assets and returns them for validation and integration.
+It adds no project document or duplicate register. G2 separates direction divergence, isolated selection and one generated artistic master inside `creative-direction.md`; G3 translates its genome through Scene Grammar, Scene Strategy and `Scene visual opportunities`; G4 decides image presence and runs the bounded `IH-*` production loop inside `production-plan` before integration.
 
 ## 1. Two outputs with different authority
 
@@ -38,7 +38,7 @@ Review each visually distinct scene, not every repeated component. Ask:
 - whether the scene needs a composition reference, final raster/vector media, separate layers or only native CSS;
 - how the visual idea survives mobile, reduced motion, loading and content variation.
 
-Compare only viable delivery modes: `CSS_NATIVE | EXISTING_MEDIA | EXTERNAL_IMAGE_LOOP | CUSTOM_ILLUSTRATION | VIDEO_RENDER | 3D | HYBRID`. G3 records intent and decomposition; G4 turns real render gaps into external handoffs rather than invoking production tools.
+Compare only viable delivery modes: `CSS_NATIVE | EXISTING_MEDIA | EXTERNAL_IMAGE_LOOP | CUSTOM_ILLUSTRATION | VIDEO_RENDER | 3D | HYBRID`. G3 records intent and decomposition; G4 turns real render gaps into production briefs and invokes the selected production route.
 
 For `focused`, G3 resolves the hero in desktop/mobile and adds a body comp only when that scene has a materially different visual job. For `standard` and `extended`, G3 also resolves one materially different body scene in desktop/mobile. Utility scenes still record the value decision but may inherit established rules and need no separate composition evidence when the baseline wins.
 

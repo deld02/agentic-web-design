@@ -28,7 +28,7 @@ Para technology selection: G3 aprobado y requisitos del proyecto. Para implement
 1. En `technology-selection`, compara al menos dos opciones incluyendo la más simple viable.
 2. Selecciona una, construye la landing estructural completa con contenido real y guarda renders desktop/mobile.
 3. Registra stack, fuentes, implementación y renders en `technology-decision.md`; el checkpoint no cierra antes.
-4. En `implementation`, integra los archivos y efectos exactamente según `production-plan.md`. Para cada `FX-*` compara CSS/WAAPI/runtime disponible; si GSAP gana, activa únicamente las skills oficiales necesarias y registra la decisión.
+4. En `implementation`, trata el hero `CMP-*` desktop/mobile aprobado en G3 como objetivo congelado: no inventa otra composición y registra antes cualquier desviación necesaria. Integra los archivos y efectos exactamente según `production-plan.md`. Para cada `FX-*` compara CSS/WAAPI/runtime disponible; si GSAP gana, activa únicamente las skills oficiales necesarias y registra la decisión.
 5. Con GSAP, implementa lifecycle cleanup, scoping, responsive `matchMedia`, refresh, reduced motion y performance; la librería no justifica el efecto.
 6. Renderiza de nuevo y ejecuta calidad, delivery y fallbacks.
 

@@ -31,6 +31,7 @@ Review the final rendered page against `production-plan.md#Page visual narrative
 | Axis | Rendered evidence | Finding / correction owner | Verdict (`PASS | REVISE`) |
 |---|---|---|---|
 | WHOLE_PAGE_RHYTHM | | | REVISE |
+| HERO_TARGET_FIDELITY | | | REVISE |
 | EXPERIENCE_CONTINUITY | | | REVISE |
 | ASSET_NECESSITY | | | REVISE |
 | FORMAT_FIT | | | REVISE |
@@ -75,6 +76,20 @@ DEPTH_MEDIUM:
 MOTION_INTENSITY:
 
 ## Release decision
+
+## Final delivery contract
+
+Complete this only after final review, following `docs/methods/final-delivery.md`. Existing final-render fields above remain the visual proof.
+
+DELIVERY_STATUS: NOT_READY
+LANDING_ENTRY:
+RUN_COMMAND:
+BUILD_COMMAND:
+PREVIEW_TARGET:
+DELIVERY_PACKAGE:
+ASSET_COMPLETENESS: INCOMPLETE
+LIMITATIONS:
+HANDOFF_SUMMARY:
 
 ## Design capability log
 

@@ -10,6 +10,7 @@ import re
 
 from validation_common import load_json, section, table_rows, valid_signature
 from validation_experience import experience_spine_errors
+from validation_final_delivery import final_delivery_contract_errors
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -596,7 +597,7 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
     qa = markdown(project_dir, "qa-release.md")
     rows = table_rows(qa, "### Visual narrative verification", "Axis")
     required = {
-        "WHOLE_PAGE_RHYTHM", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT",
+        "WHOLE_PAGE_RHYTHM", "HERO_TARGET_FIDELITY", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT",
         "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK",
     }
     seen: set[str] = set()
@@ -614,6 +615,8 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
             errors.append(f"G4 visual narrative review {axis} is not PASS")
         if len(evidence.strip()) < 8:
             errors.append(f"G4 visual narrative review {axis} lacks rendered evidence")
+        if axis == "HERO_TARGET_FIDELITY" and not all(token in evidence.upper() for token in ("CMP-", "DESKTOP", "MOBILE")):
+            errors.append("G4 HERO_TARGET_FIDELITY must compare the approved CMP-* with final desktop and mobile renders")
     for axis in sorted(required - seen):
         errors.append(f"G4 visual narrative review missing {axis}")
     return errors

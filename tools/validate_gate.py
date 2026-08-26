@@ -24,6 +24,7 @@ from project_validation import (
     explicit_text_only,
     experience_spine_errors,
     final_render_errors,
+    final_delivery_contract_errors,
     visual_narrative_review_errors,
     hero_stress_errors,
     load_json,
@@ -43,6 +44,7 @@ from project_validation import (
     technology_freshness_errors,
 )
 from validate_delivery import validate_delivery
+from validation_project_paths import implementation_root_for
 
 
 def require_sections(errors: list[str], text: str, gate: str, headings: tuple[str, ...]) -> None:
@@ -156,9 +158,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         if config.get("implementation_root") in {None, "", "undetermined"}:
             errors.append("G4 implementation_root is undetermined")
         else:
-            implementation_root = Path(config["implementation_root"])
-            if not implementation_root.is_absolute():
-                implementation_root = ROOT / implementation_root
+            implementation_root = implementation_root_for(project_dir, ROOT, config["implementation_root"])
             delivery_errors, _ = validate_delivery(project_dir, implementation_root)
             errors.extend(f"G4 delivery proof: {error}" for error in delivery_errors)
 
@@ -172,14 +172,13 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         if status.get("release", {}).get("eligible") is not True:
             errors.append("G5 release is not eligible")
         errors.extend(claim_errors(project_dir))
-        implementation_root = Path(config.get("implementation_root", "undetermined"))
-        if not implementation_root.is_absolute():
-            implementation_root = ROOT / implementation_root
+        implementation_root = implementation_root_for(project_dir, ROOT, config.get("implementation_root", "undetermined"))
         delivery_errors, _ = validate_delivery(project_dir, implementation_root)
         errors.extend(f"G5 delivery proof: {error}" for error in delivery_errors)
         errors.extend(final_render_errors(project_dir))
         errors.extend(visual_narrative_review_errors(project_dir))
         errors.extend(design_fingerprint_errors(project_dir))
+        errors.extend(final_delivery_contract_errors(qa, ROOT, implementation_root))
 
     return errors
 

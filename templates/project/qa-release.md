@@ -41,6 +41,15 @@ Review the final rendered page against `production-plan.md#Page visual narrative
 
 ## Interaction, keyboard and reduced motion
 
+### Runtime traversal
+
+Capture each scene in both desktop and mobile from the final implementation. Use a unique physical raster per row. For interactive scenes, describe the actual state change, not the intended effect. `Source digest` is the current `sha256:<digest>` of the complete implementation tree, produced by `tools/validation_release_integrity.py`.
+
+| Scene ID | Viewport (`DESKTOP | MOBILE`) | Trigger / input | Expected state or transition | Observed result | Physical evidence relative to project | Verdict (`PASS | REVISE`) | Source digest |
+|---|---|---|---|---|---|---|---|
+
+RELEASE_INTEGRITY_MANIFEST: evidence/release-integrity.json
+
 ## Accessibility, performance and asset verification
 
 ### Physical delivery proof

@@ -40,7 +40,9 @@
     "validation_experience.py",
     "validation_final_delivery.py",
     "validation_image_generation.py",
-    "validation_project_paths.py"
+    "validation_project_paths.py",
+    "validation_release_integrity.py",
+    "reopen_project.py"
   ],
   "required_runtime_files": [
     "docs/methods/progressive-intake.md",

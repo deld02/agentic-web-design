@@ -29,7 +29,7 @@ Brief y research aprobado.
 3. Selecciona un recorrido por comprensión, confianza, acción y especificidad estructural.
 4. Construye en `content-architecture.md` una única `Experience spine` siguiendo `docs/methods/experience-spine.md`; cubre cada escena sin decidir todavía estilo o efectos.
 5. Escribe jerarquía, copy y CTA con contenido suficientemente realista para diseñar.
-6. Registra cada claim material y su evidencia o limitación.
+6. Congela en `Content lock` la tesis, CTA y cualquier string cuya deriva cambiaría la propuesta o la verdad; registra cada claim material y su evidencia o limitación.
 7. Señala qué escenas necesitan media y qué deben comunicar, sin diseñarlas.
 
 ## OUTPUTS OBLIGATORIOS
@@ -38,7 +38,7 @@ Brief y research aprobado.
 
 ## GATE / CRITERIO
 
-G1 puede cerrar cuando el recorrido es coherente, la Experience Spine cubre todas las escenas y ningún claim material permanece ambiguo.
+G1 puede cerrar cuando el recorrido es coherente, la Experience Spine cubre todas las escenas, el Content lock congela tesis/CTA y ningún claim material permanece ambiguo.
 
 ## ESCALADO
 

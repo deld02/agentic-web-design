@@ -30,7 +30,8 @@ Para technology selection: G3 aprobado y requisitos del proyecto. Para implement
 3. Registra stack, fuentes, implementación y renders en `technology-decision.md`; el checkpoint no cierra antes.
 4. En `implementation`, trata el hero `CMP-*` desktop/mobile aprobado en G3 como objetivo congelado: no inventa otra composición y registra antes cualquier desviación necesaria. Integra los archivos y efectos exactamente según `production-plan.md`. Para cada `FX-*` compara CSS/WAAPI/runtime disponible; si GSAP gana, activa únicamente las skills oficiales necesarias y registra la decisión.
 5. Con GSAP, implementa lifecycle cleanup, scoping, responsive `matchMedia`, refresh, reduced motion y performance; la librería no justifica el efecto.
-6. Renderiza de nuevo y ejecuta calidad, delivery y fallbacks.
+6. Renderiza de nuevo, demuestra el recorrido final desktop/mobile por escena y ejecuta calidad, delivery y fallbacks.
+7. Después de la evidencia runtime genera `evidence/release-integrity.json`; cualquier cambio posterior en código, assets o artefactos causales invalida G4 hasta repetir traversal, review y snapshot.
 
 ## OUTPUTS OBLIGATORIOS
 

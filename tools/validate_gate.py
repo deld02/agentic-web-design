@@ -45,6 +45,12 @@ from project_validation import (
 )
 from validate_delivery import validate_delivery
 from validation_project_paths import implementation_root_for
+from validation_release_integrity import (
+    content_lock_build_errors,
+    content_lock_definition_errors,
+    integrity_manifest_errors,
+    runtime_traversal_errors,
+)
 
 
 def require_sections(errors: list[str], text: str, gate: str, headings: tuple[str, ...]) -> None:
@@ -98,6 +104,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         _primary_scenes, outline_errors = scene_outline(project_dir)
         errors.extend(outline_errors)
         errors.extend(experience_spine_errors(project_dir))
+        errors.extend(content_lock_definition_errors(project_dir))
 
     elif gate_id == "G2":
         text = markdown(project_dir, "creative-direction.md")
@@ -161,6 +168,9 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             implementation_root = implementation_root_for(project_dir, ROOT, config["implementation_root"])
             delivery_errors, _ = validate_delivery(project_dir, implementation_root)
             errors.extend(f"G4 delivery proof: {error}" for error in delivery_errors)
+            errors.extend(content_lock_build_errors(project_dir, implementation_root))
+            errors.extend(runtime_traversal_errors(project_dir, implementation_root))
+            errors.extend(integrity_manifest_errors(project_dir, implementation_root))
 
     elif gate_id == "G5":
         qa = markdown(project_dir, "qa-release.md")
@@ -179,6 +189,9 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(visual_narrative_review_errors(project_dir))
         errors.extend(design_fingerprint_errors(project_dir))
         errors.extend(final_delivery_contract_errors(qa, ROOT, implementation_root))
+        errors.extend(content_lock_build_errors(project_dir, implementation_root))
+        errors.extend(runtime_traversal_errors(project_dir, implementation_root))
+        errors.extend(integrity_manifest_errors(project_dir, implementation_root))
 
     return errors
 

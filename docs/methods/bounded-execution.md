@@ -8,7 +8,7 @@ This method prevents silent retry loops without lowering design quality or impos
 - The same material finding or blocker may trigger only one automatic retry. If it recurs, stop.
 - A failed tool call may be retried once only when the failure is plausibly transient. A different tool or broader action is not a hidden extra retry.
 - The artistic master gets at most one targeted edit/regeneration before its confirmation; a rejected G4 image output gets one directed regeneration inside the production subloop.
-- Upstream work may reopen automatically once per causal change. A downstream failure must not restart the whole pipeline.
+- Upstream work may reopen once per causal change. 00 uses `tools/reopen_project.py --from-gate G#` so the earliest producing stage for that gate becomes active and every affected approval/checkpoint is invalidated; editing an upstream artifact while preserving downstream `APPROVED` state is forbidden. A downstream failure must not restart work before the causal stage.
 
 User-requested changes, genuinely new evidence and a user-authorized resumed pass start a new bounded run. They do not retroactively legitimize prior loops.
 

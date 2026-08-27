@@ -2,6 +2,14 @@
 
 No borrar decisiones revertidas.
 
+## D-080 — La evidencia de release debe pertenecer al build exacto
+
+**Fecha:** 2026-08-27
+**Contexto:** una landing podía conservar gates aprobados después de cambiar copy, código, assets o artefactos; las capturas representativas tampoco demostraban el recorrido temporal completo.
+**Decisión:** 02 congela tesis/CTA en `Content lock`; 06/07 recorren cada escena desktop/mobile con evidencia física única; un manifiesto SHA-256 liga traversal, implementación y artefactos causales. Si un input cambia, 00 reabre el gate causal y todos sus consumidores pierden aprobación.
+**Enforcement:** G1 bloquea un lock incompleto; G4/G5 bloquean copy ausente/reintroducido, escena o viewport sin traversal, captura reutilizada, digest obsoleto y manifest desactualizado. `reopen_project.py` rechaza cualquier owner distinto de 00.
+**Estado:** ACTIVE desde v6.4.0.
+
 ## D-079 — El loop de imágenes debe ejecutarse y el hero aprobado debe sobrevivir
 
 **Fecha:** 2026-08-26

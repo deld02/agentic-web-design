@@ -37,6 +37,13 @@ Define the semantic progression before art direction. Use `docs/methods/experien
 
 Mark material as `FINAL | PROVISIONAL | MISSING`.
 
+## Content lock
+
+Freeze the exact strings whose later drift would change the approved proposition, action or truth. `REQUIRED` must appear verbatim in implementation source; `OMIT` must not reappear. Ordinary body copy may remain outside this compact lock.
+
+| Content ID | Role (`HERO_THESIS | PRIMARY_CTA | NAVIGATION | CLAIM | PROOF | BODY | LEGAL`) | Exact approved text | Build requirement (`REQUIRED | OPTIONAL | OMIT`) | Intended scene / use |
+|---|---|---|---|---|
+
 ## Claim ledger
 
 Register every material factual, quantitative or testimonial claim. `PROVISIONAL` is allowed while drafting, but factual/quantitative/testimonial claims cannot pass G1 or ship without documentary evidence. Decorative language is not evidence and must not imitate a testimonial or measurable result.

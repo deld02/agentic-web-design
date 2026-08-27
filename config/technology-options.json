@@ -1,5 +1,5 @@
 {
-  "version": "6.3.3",
+  "version": "6.4.0",
   "last_revalidated": "2026-08-21",
   "review_by_days": 90,
   "rule": "Compare at least two viable options, including the simplest option that can satisfy the approved experience. Revalidate current versions, support, pricing and deployment constraints when deciding.",
@@ -12,5 +12,3 @@
   ],
   "decision_criteria": ["landing objective","content model","editorial ownership","rendering","interaction and runtime","forms/external integrations","motion/3D/media","performance and accessibility","team skills","maintenance","hosting and cost","exit path"]
 }
-
-

@@ -1,7 +1,7 @@
 # Audit status
 
-System version: 6.3.3
-Audit date: 2026-08-26  
+System version: 6.4.0
+Audit date: 2026-08-27
 Result: PASS
 
 - 8 roles, 6 gates and 13 stages;
@@ -33,9 +33,11 @@ Result: PASS
 - final release includes a deterministic physical delivery contract: executable entry, commands, preview, clean package, assets, status and limitations;
 - generated landing imagery requires physical `IMG-*` files and per-asset generation receipts inside the managed production stage;
 - final hero fidelity is reviewed against the approved G3 `CMP-*` target on desktop and mobile;
-- 138 tests passed.
+- exact thesis/CTA content is locked from G1 through implementation;
+- runtime traversal covers every scene in desktop/mobile with unique physical evidence tied to the implementation digest;
+- SHA-256 integrity invalidates stale reviews after code, asset or causal-artifact changes;
+- 00 can reopen the causal gate while automatically invalidating every downstream approval;
+- 142 tests passed.
 
-Full report: `docs/audit/system-audit-v6.3.3.md`
+Full report: `docs/audit/system-audit-v6.4.0.md`
 Next review: 2026-11-22
-
-

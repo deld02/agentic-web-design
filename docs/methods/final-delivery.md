@@ -2,6 +2,8 @@
 
 Use this method only after the independent final review. The product is the working landing, not the process documentation.
 
+Before G5, `qa-release.md#Runtime traversal` covers every scene on desktop/mobile with unique physical evidence. Then 06 runs `tools/validation_release_integrity.py`; its manifest hashes the implementation, causal artifacts and traversal evidence. Any later change invalidates the snapshot and requires the causal review to run again.
+
 ## Required handoff
 
 Complete `qa-release.md#Final delivery contract` with:

@@ -6,6 +6,7 @@ from design_capabilities import validate_design_capabilities
 from validate_delivery import validate_delivery
 from evaluation_harness import validate_harness_config
 from project_validation import artistic_master_errors, claim_errors as project_claim_errors, color_direction_errors, creative_master_confirmation_errors, creative_master_errors, creative_master_fidelity_errors, experience_spine_errors, final_render_errors, image_handoff_errors, hero_stress_errors, page_rhythm_errors, project_quality_bar_errors, reference_benchmark_errors, review_checkpoint_errors, scene_color_map_errors, scene_outline, scene_strategy_errors, scene_visual_errors, structural_build_errors, technology_freshness_errors
+from validation_release_integrity import content_lock_build_errors, content_lock_definition_errors, integrity_manifest_errors, runtime_traversal_errors
 from validation_common import section
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -216,6 +217,7 @@ def validate_owner_artifact(project_dir,rel,gid):
             _primary_scenes, outline_errors=scene_outline(project_dir)
             for outline_error in outline_errors: errors.append(f'{rel}:{outline_error}')
             for spine_error in experience_spine_errors(project_dir): errors.append(f'{rel}:{spine_error}')
+            for lock_error in content_lock_definition_errors(project_dir): errors.append(f'{rel}:{lock_error}')
     if gid=='G3':
         path=project_dir/'visual-system.md'
         if path.is_file():
@@ -355,6 +357,9 @@ def validate_status(path):
             delivery_errors,_count=validate_delivery(path.parent,implementation_path)
             for delivery_error in delivery_errors:
                 errors.append(f'{rel}: delivery proof: {delivery_error}')
+            for lock_error in content_lock_build_errors(path.parent,implementation_path): errors.append(f'{rel}:{lock_error}')
+            for traversal_error in runtime_traversal_errors(path.parent,implementation_path): errors.append(f'{rel}:{traversal_error}')
+            for integrity_error in integrity_manifest_errors(path.parent,implementation_path): errors.append(f'{rel}:{integrity_error}')
         qa=path.parent/'qa-release.md'
         if qa.is_file():
             qa_text=qa.read_text(encoding='utf-8')

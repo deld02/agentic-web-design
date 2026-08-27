@@ -1,11 +1,10 @@
 {
   "name":"agentic-web-design-os",
-  "version":"6.3.3",
+  "version":"6.4.0",
   "created":"2026-08-19",
-  "last_audit":"2026-08-26",
+  "last_audit":"2026-08-27",
   "purpose":"Compact, design-first operating system for landing creation",
   "agents":8,
   "release_gate":"G5",
-  "audit":{"date":"2026-08-26","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":138,"verification":"Executable image-production receipts, frozen hero-target fidelity, final delivery and existing landing invariants validated by 138 local tests"}
+  "audit":{"date":"2026-08-27","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":142,"verification":"Content lock, per-scene runtime traversal, SHA-256 evidence freshness, causal reopening and existing landing invariants validated by 142 local tests"}
 }
-

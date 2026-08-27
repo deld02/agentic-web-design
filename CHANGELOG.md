@@ -1,5 +1,13 @@
 # Changelog
 
+## v6.4.0 — 2026-08-27 · Evidencia fresca y reapertura causal
+
+- Congela en G1 la tesis, CTA y strings materiales con un `Content lock` que se contrasta contra el source final.
+- Exige traversal físico de cada escena en desktop/mobile con evidencia única y digest del implementation tree.
+- Añade un manifiesto SHA-256 de código, assets, artefactos causales y evidencia runtime; cualquier cambio posterior invalida G4/G5.
+- Añade reapertura explícita por 00: activa la primera etapa causal e invalida gates/checkpoints consumidores.
+- Mantiene ocho agentes, seis gates, trece etapas y doce artefactos core.
+
 ## v6.3.3 — 2026-08-26 · Producción de imágenes ejecutable y hero estable
 
 - Corrige la contradicción que enviaba los `IH-*` a un loop externo que el harness nunca ejecutaba.

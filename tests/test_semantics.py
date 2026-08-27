@@ -1,6 +1,6 @@
 import json, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
-
+from release_integrity_fixture import add_content_lock_fixture, add_release_integrity_fixture
 ROOT=Path(__file__).resolve().parents[1]
 
 def run(repo,*args):
@@ -65,9 +65,8 @@ class SemanticValidationTests(unittest.TestCase):
         pos=text.find(marker,text.find('## Sitemap / page or section outline'))
         rows='\n| SCN-001 | Hero | Establish the thesis and invite the next step | Headline, proof signal and primary action | PRIMARY |\n| SCN-002 | Evidence | Make the promise credible | Method, evidence and representative media | PRIMARY |\n| SCN-003 | Closing action | Resolve the decision | Summary and primary CTA | UTILITY |'
         text=text[:pos]+marker+rows+text[pos+len(marker):]
-        text=add_complete_experience_spine(text)
-        content.write_text(text,encoding='utf-8')
-        visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
+        text=add_complete_experience_spine(text); text=add_content_lock_fixture(text)
+        content.write_text(text,encoding='utf-8'); visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
         marker='|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('## Foundation alternatives and decision evidence'))
         rows='\n| Serif-led | Specific editorial contrast | Holds real copy | Works across scenes | Licensed | KEEP |\n| Sans-led | Familiar category fit | Clear but generic | Works across scenes | Licensed | REJECT |'
@@ -179,6 +178,7 @@ class SemanticValidationTests(unittest.TestCase):
         for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
             evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else 'desktop and mobile final renders show the intended result'; text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
         qa.write_text(text,encoding='utf-8')
+        add_release_integrity_fixture(repo,run)
         text=qa.read_text(encoding='utf-8').replace(
             'BACKGROUND_CHARACTER:\nACCENT_CHARACTER:\nDISPLAY_TYPE_CHARACTER:\nHERO_COMPOSITION:\nHERO_MEDIA:\nSIGNATURE_MECHANISM:\nDEPTH_MEDIUM:\nMOTION_INTENSITY:',
             'BACKGROUND_CHARACTER: warm paper alternating with deep material ink\nACCENT_CHARACTER: sparse copper decision signal\nDISPLAY_TYPE_CHARACTER: high-contrast editorial serif against factual sans\nHERO_COMPOSITION: asymmetric thesis and evidence field\nHERO_MEDIA: representative layered material scene\nSIGNATURE_MECHANISM: evidence layers assemble into a decision field\nDEPTH_MEDIUM: layered 2D media with restrained parallax\nMOTION_INTENSITY: one defining reveal with quiet body motion')
@@ -441,7 +441,7 @@ class SemanticValidationTests(unittest.TestCase):
             config.write_text(json.dumps(cd,indent=2)+'\n',encoding='utf-8')
             site=repo/'site-test'; (site/'assets').mkdir(parents=True)
             (site/'assets/hero.webp').write_bytes(b'RIFFxxxxWEBPsynthetic-visual')
-            (site/'index.html').write_text('<main data-fx-hero><img src="assets/hero.webp" alt="Synthetic visual"></main>',encoding='utf-8')
+            (site/'index.html').write_text('<main data-fx-hero><h1>Invisible expertise, made concrete</h1><img src="assets/hero.webp" alt="Synthetic visual"><a>Request the diagnostic</a></main>',encoding='utf-8')
             for path in (repo/'projects/test-project').glob('*.md'):
                 text=path.read_text(encoding='utf-8').replace('Status: PENDING','Status: COMPLETE').replace('Status: UNDETERMINED','Status: SELECTED')
                 if len(text.strip())<80: text+='\nVerified synthetic lifecycle evidence.\n'*3

@@ -30,6 +30,7 @@ G1 aprobado, contenido, research, material existente y restricciones de producci
 4. En `creative-master`, consume únicamente el territorio seleccionado, invoca generación y guarda un único `AM-*` artístico. No reabre las tres rutas.
 5. Muestra ese master una sola vez: aprobar, ajustar una vez o delegar.
 6. Extrae `INVARIANTS`, `FLEX` y `CONTEXTUAL`, además de una gramática de relaciones y un mecanismo distintivo derivado del significado.
+7. Puede proponer una metáfora espacial cuando nace del concepto, pero no selecciona modalidad, runtime ni stack; esa comparación pertenece a G3 y tecnología.
 
 ## OUTPUTS OBLIGATORIOS
 

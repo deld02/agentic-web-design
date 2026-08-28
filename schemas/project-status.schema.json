@@ -5,7 +5,7 @@
   "required": ["project","system_version","active_stage","active_gate","active_agent","active_mode","status","gates","checkpoints","release"],
   "properties": {
     "project": {"type":"string","minLength":1},
-    "system_version": {"const":"6.4.0"},
+    "system_version": {"const":"6.5.0"},
     "active_stage": {"type":"string","minLength":1},
     "active_gate": {"type":["string","null"],"pattern":"^G[0-9]+$"},
     "active_agent": {"type":"string","minLength":1},
@@ -22,3 +22,6 @@
   },
   "additionalProperties": false
 }
+
+
+

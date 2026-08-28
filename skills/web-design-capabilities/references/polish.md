@@ -1,6 +1,6 @@
 # Craft polish capability
 
-Use `quick` during iteration and `full` before G3/G4 approval.
+Use `quick` during iteration. `full` is mandatory once on the final integrated desktop/mobile renders before G4/G5 approval; record it as `TEXT_SPACING_CRAFT` in `qa-release.md`.
 
 Inspect evidence, not vibes:
 
@@ -21,3 +21,5 @@ Return prioritized findings with exact location, current behavior, proposed chan
 Do not accept nominal completeness. A second-column asset, offset shadow, mono label or generic reveal counts only when it contributes to the hero thesis; repeat the removal/swap countertest when the composition feels polished but interchangeable.
 
 Write findings into `visual-system.md` or `qa-release.md`.
+
+The final `full` pass inspects the entire scroll with loaded fonts and real copy. It cannot pass from tokens or source CSS alone. Name affected scenes and verify section breathing, paragraph measure/leading, mixed-family optical composition, wrapping and mobile recomposition. “Looks balanced” without rendered locations is not evidence.

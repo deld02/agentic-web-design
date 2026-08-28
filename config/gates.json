@@ -1,5 +1,5 @@
 {
-  "version": "6.4.0",
+  "version": "6.5.0",
   "release_gate": "G5",
   "gates": [
     {"id":"G0","name":"Definition","owner":"00","reviewers":[],"required_artifacts":["PROJECT.md","project.config.json","brief.md"],"approval_requires_stages":[]},
@@ -10,3 +10,6 @@
     {"id":"G5","name":"Release","owner":"00","reviewers":[],"required_artifacts":["decision-log.md","qa-release.md"],"approval_requires_stages":[]}
   ]
 }
+
+
+

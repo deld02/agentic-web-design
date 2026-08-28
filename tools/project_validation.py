@@ -26,13 +26,6 @@ def nonempty_section(text: str, heading: str) -> bool:
     return bool(meaningful)
 
 
-def explicit_text_only(*texts: str) -> bool:
-    return any(
-        re.search(r"(?m)^\s*USER_EXPLICIT_TEXT_ONLY:\s*\S.+$", text)
-        for text in texts
-    )
-
-
 def markdown(project_dir: Path, name: str) -> str:
     path = project_dir / name
     return path.read_text(encoding="utf-8") if path.is_file() else ""
@@ -598,10 +591,14 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
     rows = table_rows(qa, "### Visual narrative verification", "Axis")
     required = {
         "WHOLE_PAGE_RHYTHM", "HERO_TARGET_FIDELITY", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT",
-        "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK",
+        "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK", "TEXT_SPACING_CRAFT",
     }
     seen: set[str] = set()
     errors: list[str] = []
+    if _named_value(qa, "## Visual and responsive verification", "FINAL_TEXT_SPACING_CAPABILITY") != "jakub-interface-polish":
+        errors.append("G4 final text-spacing review must use jakub-interface-polish")
+    if _named_value(qa, "## Visual and responsive verification", "FINAL_TEXT_SPACING_MODE") != "FULL":
+        errors.append("G4 final text-spacing review must run in FULL mode")
     for row in rows:
         if len(row) < 4 or not all(row[:4]):
             errors.append("G4 visual narrative review contains an incomplete row")
@@ -615,6 +612,8 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
             errors.append(f"G4 visual narrative review {axis} is not PASS")
         if len(evidence.strip()) < 8:
             errors.append(f"G4 visual narrative review {axis} lacks rendered evidence")
+        if axis == "TEXT_SPACING_CRAFT" and not all(token in evidence.upper() for token in ("DESKTOP", "MOBILE", "SCN-")):
+            errors.append("G4 TEXT_SPACING_CRAFT evidence must name SCN-* locations and desktop/mobile renders")
         if axis == "HERO_TARGET_FIDELITY" and not all(token in evidence.upper() for token in ("CMP-", "DESKTOP", "MOBILE")):
             errors.append("G4 HERO_TARGET_FIDELITY must compare the approved CMP-* with final desktop and mobile renders")
     for axis in sorted(required - seen):
@@ -625,8 +624,6 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
 def visual_narrative_errors(project_dir: Path) -> list[str]:
     """Require a page-level visual rhythm before counting or briefing assets."""
     production = markdown(project_dir, "production-plan.md")
-    if explicit_text_only(production, markdown(project_dir, "brief.md")):
-        return []
     errors: list[str] = []
     heading = "## Page visual narrative map"
     for field in ("ASSET_SET_RATIONALE", "FLAT_STRETCH_CHECK", "DUPLICATE_JOB_CHECK"):
@@ -693,9 +690,6 @@ def visual_narrative_errors(project_dir: Path) -> list[str]:
 def image_handoff_errors(project_dir: Path) -> list[str]:
     """Require per-scene image decisions and complete external-loop handoffs."""
     production = markdown(project_dir, "production-plan.md")
-    if explicit_text_only(production, markdown(project_dir, "brief.md")):
-        return []
-
     heading = "## Asset inventory and readiness"
     diagnosis_heading = "## Render diagnosis and external handoff"
     errors = structural_build_errors(project_dir)

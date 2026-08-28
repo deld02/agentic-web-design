@@ -1,4 +1,6 @@
 .harness/
+.publish-remote-*/
 dist/
+dist2/
 __pycache__/
 *.pyc

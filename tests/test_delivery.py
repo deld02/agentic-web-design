@@ -25,7 +25,9 @@ class DeliveryValidationTests(unittest.TestCase):
             '| FX-001 / hero | defining | still | reveal | assembly | live + lab | reveal wins | prototype | static / 05 | FINAL | index.html#data-fx-hero | FLAT_2D |\n', encoding='utf-8')
         (project/'brief.md').write_text('# Brief\n', encoding='utf-8')
         asset.write_bytes(payload)
-        (implementation/'index.html').write_text(f'<main data-fx-hero><img src="{reference}" alt="Editorial subject"></main>', encoding='utf-8')
+        (implementation/'index.html').write_text(
+            f'<style>[data-fx-hero]{{transition:transform .3s ease}}</style><main data-fx-hero><img src="{reference}" alt="Editorial subject"></main>',
+            encoding='utf-8')
         return td, project, implementation, asset
 
     def test_real_integrated_asset_passes(self):

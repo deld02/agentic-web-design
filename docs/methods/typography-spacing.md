@@ -73,3 +73,18 @@ El hero no se aprueba porque tenga título grande, dos columnas y espacio libre.
 - El primer viewport debe transmitir una cualidad concreta antes de leer toda la explicación. “Limpio”, “moderno” o “premium” no son cualidades suficientes.
 
 G3 registra una prueba observable del hero. Una captura aislada puede demostrar composición estática; cualquier comportamiento elegido necesita además evidencia de interacción. El reviewer evalúa la imagen real, no acepta como prueba una descripción del owner.
+
+## 6. Full pass final sobre la landing implementada
+
+La prueba de G3 no sustituye la revisión final: fuentes reales, copy definitivo, imágenes, controles y animaciones cambian la geometría. Al terminar la implementación, 07 ejecuta `jakub-interface-polish` en modo `FULL` sobre los renders finales desktop/mobile y registra `TEXT_SPACING_CRAFT` en `qa-release.md`.
+
+La revisión recorre la página completa y comprueba físicamente:
+
+- respiración entre secciones y ausencia de zonas muertas junto a grupos comprimidos;
+- jerarquía `section > group > component > inline` y separación entre título, párrafo, CTA y media;
+- medida, interlineado, tracking y densidad de cada párrafo con su familia realmente cargada;
+- alineación óptica, baseline, escala y saltos de titulares que mezclan familias o estilos;
+- viudas, palabras residuales, clipping y proximidad accidental a bordes;
+- continuidad vertical y recomposición en móvil, no una reducción proporcional del desktop.
+
+La evidencia debe nombrar escenas y renders desktop/mobile. `PASS` significa que se inspeccionó el resultado final; “spacing correcto” no sirve. Un finding vuelve a 04/06 para una única corrección dirigida y se renderiza de nuevo antes de aprobar.

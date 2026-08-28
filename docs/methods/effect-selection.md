@@ -1,6 +1,6 @@
 # Selecting effects
 
-Effects are design candidates, not mandatory decoration. Each creative direction tests one project-specific mechanism in the real scene. The winner may be static.
+Effects are design candidates, not mandatory decoration. Each creative direction tests one project-specific mechanism in the real scene. An individual scene may remain static, but a premium landing ships at least one meaningful non-static behavior unless the immutable user brief explicitly requests a wholly static experience.
 
 ## 1. Start from the intended response
 
@@ -58,6 +58,8 @@ Inspect the original, licensing and mobile behavior. Transfer a principle; do no
 The selected mechanism must use real content, media and responsive layouts. It receives a static or reduced-motion fallback. Production records either:
 
 - `FINAL` with `source/file#marker`, which the validator can locate; or
-- `STATIC_WINNER_REVIEWED` with concrete visual evidence that motion weakened the scene.
+- `STATIC_WINNER_REVIEWED` with concrete visual evidence that motion weakened that scene.
+
+`STATIC_WINNER_REVIEWED` is local, never a global escape hatch. Unless an exact `USER_EXPLICIT_STATIC_ONLY` quote is authorized against the immutable harness scenario, the complete landing must contain at least one selected non-static behavior and at least one physically implemented `FINAL` mechanism. Native CSS/JS is valid; GSAP, parallax, sticky, video or 3D are selected only when their eligibility test is satisfied.
 
 One coherent defining mechanism is normally enough. Standard hover, fade-up, glow, parallax or cursor effects do not become defining merely by being present.

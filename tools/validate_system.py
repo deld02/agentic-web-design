@@ -8,6 +8,10 @@ from evaluation_harness import validate_harness_config
 from project_validation import artistic_master_errors, claim_errors as project_claim_errors, color_direction_errors, creative_master_confirmation_errors, creative_master_errors, creative_master_fidelity_errors, experience_spine_errors, final_render_errors, image_handoff_errors, hero_stress_errors, page_rhythm_errors, project_quality_bar_errors, reference_benchmark_errors, review_checkpoint_errors, scene_color_map_errors, scene_outline, scene_strategy_errors, scene_visual_errors, structural_build_errors, technology_freshness_errors
 from validation_release_integrity import content_lock_build_errors, content_lock_definition_errors, integrity_manifest_errors, runtime_traversal_errors
 from validation_common import section
+from validation_capability_activation import gate_capability_errors
+from validation_motion_payload import motion_payload_errors
+from validation_user_authority import explicit_text_only_authorized
+from validation_spatial_experience import spatial_plan_errors, spatial_qa_errors, spatial_selection_errors, spatial_technology_errors
 
 ROOT = Path(__file__).resolve().parents[1]
 errors = []
@@ -182,9 +186,6 @@ def data_rows(text,heading,header_label):
     body=section(text,heading)
     return [line for line in body.splitlines() if line.startswith('|') and '---' not in line and header_label not in line]
 
-def explicit_text_only(text):
-    return bool(re.search(r'(?m)^\s*USER_EXPLICIT_TEXT_ONLY:\s*\S.+$',text))
-
 def final_visual_assets(text):
     rows=[]
     for line in data_rows(text,'## Asset inventory and readiness','ID'):
@@ -207,6 +208,7 @@ def source_lane_count(value):
     return sum(marker in value for marker in ('LIVE_EXECUTION','MECHANISM_LAB','ELEMENT_BANK','3D_MATERIAL'))
 
 def validate_owner_artifact(project_dir,rel,gid):
+    for capability_error in gate_capability_errors(project_dir,ROOT,gid): errors.append(f'{rel}:{capability_error}')
     if gid=='G1':
         path=project_dir/'content-architecture.md'
         if path.is_file() and len(data_rows(path.read_text(encoding='utf-8'),'## Narrative alternatives and decision evidence','Candidate'))<2:
@@ -226,7 +228,7 @@ def validate_owner_artifact(project_dir,rel,gid):
                 errors.append(f'{rel}:G3 visual-system must compare at least two foundations or justify ONLY_VIABLE')
             if len(data_rows(text,'### Content-driven breakpoint evidence','Range tested'))<1:
                 errors.append(f'{rel}:G3 visual-system needs observed responsive failure/recomposition evidence')
-            if not explicit_text_only(text) and len(data_rows(text,'### Scene visual opportunities','Scene'))<1:
+            if len(data_rows(text,'### Scene visual opportunities','Scene'))<1:
                 errors.append(f'{rel}:G3 visual-system must integrate a substantial visual payload across desktop and mobile')
             mechanisms=mechanism_rows(text,'### Effect opportunity map',6)
             if not mechanisms or not any(row[3] and row[4] and row[5] for row in mechanisms):
@@ -240,6 +242,7 @@ def validate_owner_artifact(project_dir,rel,gid):
                 profile=configs.get(project_dir,{}).get('delivery_profile','focused')
                 for scene_error in scene_visual_errors(project_dir,profile): errors.append(f'{rel}:{scene_error}')
                 for rhythm_error in page_rhythm_errors(project_dir): errors.append(f'{rel}:{rhythm_error}')
+                for spatial_error in spatial_selection_errors(project_dir): errors.append(f'{rel}:{spatial_error}')
     if gid=='G2':
         path=project_dir/'creative-direction.md'
         if path.is_file():
@@ -252,14 +255,18 @@ def validate_owner_artifact(project_dir,rel,gid):
         path=project_dir/'production-plan.md'
         if path.is_file():
             text=path.read_text(encoding='utf-8')
-            if not explicit_text_only(text) and not final_visual_assets(text):
+            if not explicit_text_only_authorized(project_dir) and not final_visual_assets(text):
                 errors.append(f'{rel}:G4 production-plan requires at least one scene-bearing PRIMARY FINAL IMG asset')
             for image_error in image_handoff_errors(project_dir): errors.append(f'{rel}:{image_error}')
+            for spatial_error in spatial_technology_errors(project_dir): errors.append(f'{rel}:{spatial_error}')
+            for spatial_error in spatial_plan_errors(project_dir): errors.append(f'{rel}:{spatial_error}')
             for render_error in final_render_errors(project_dir): errors.append(f'{rel}:{render_error}')
             mechanisms=mechanism_rows(text,'### Material effect decisions',10)
             final=[row for row in mechanisms if row[5] and row[7] and row[9] in {'FINAL','STATIC_WINNER_REVIEWED'}]
             if not final:
-                errors.append(f'{rel}:G4 production-plan requires a FINAL mechanism or evidenced STATIC_WINNER_REVIEWED')
+                errors.append(f'{rel}:G4 production-plan requires a reviewed material mechanism decision')
+            if project_dir.name!='project':
+                for motion_error in motion_payload_errors(project_dir): errors.append(f'{rel}:{motion_error}')
 
 def parse_global_decisions(project_dir,rel):
     path=project_dir/'decision-log.md'
@@ -359,6 +366,7 @@ def validate_status(path):
                 errors.append(f'{rel}: delivery proof: {delivery_error}')
             for lock_error in content_lock_build_errors(path.parent,implementation_path): errors.append(f'{rel}:{lock_error}')
             for traversal_error in runtime_traversal_errors(path.parent,implementation_path): errors.append(f'{rel}:{traversal_error}')
+            for spatial_error in spatial_qa_errors(path.parent,implementation_path): errors.append(f'{rel}:{spatial_error}')
             for integrity_error in integrity_manifest_errors(path.parent,implementation_path): errors.append(f'{rel}:{integrity_error}')
         qa=path.parent/'qa-release.md'
         if qa.is_file():

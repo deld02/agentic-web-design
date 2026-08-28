@@ -25,17 +25,17 @@ from project_validation import (
     artistic_master_errors,
     creative_master_confirmation_errors,
     creative_master_errors,
-    image_handoff_errors,
     load_json,
     project_quality_bar_errors,
 )
 from validate_gate import validate_gate
 from ui_quality_scan import scan_implementation
+from validation_capability_activation import stage_capability_instruction
 from validation_common import valid_signature
-from validation_image_generation import generated_asset_file_errors, generated_asset_targets, missing_generation_receipts
+from validation_image_generation import generated_asset_targets, missing_generation_receipts
 from validation_project_paths import implementation_root_for
-
-
+from validation_spatial_experience import spatial_stage_instruction
+from validation_stage_readiness import stage_readiness_errors
 CONFIG_PATH = ROOT / "harness" / "scenarios.json"
 EVENT_TYPES = {
     "stage_start", "stage_complete", "tool_call", "artifact_write",
@@ -279,7 +279,11 @@ def chat_status(run_dir: Path) -> dict[str, Any]:
         "stage": stage["id"],
         "agent": stage["agent"],
         "mode": stage["mode"],
-        "instruction": "Complete only this stage, then call chat-next. Do not work ahead.",
+        "instruction": " ".join(filter(None, (
+            "Complete only this stage, then call chat-next. Do not work ahead.",
+            stage_capability_instruction(ROOT, stage["id"]),
+            spatial_stage_instruction(run_dir / "project", stage["id"]),
+        ))),
     }
 
 
@@ -330,7 +334,7 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
     for target in sorted(name for name, value in current.items() if previous.get(name) != value and name not in already_recorded):
         append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": target})
 
-    readiness = _stage_readiness_errors(run_dir, stage)
+    readiness = stage_readiness_errors(run_dir, stage, ROOT)
     if stage["id"] == "creative-master":
         generated = any(
             item.get("event") == "tool_call" and item.get("stage") == "creative-master"
@@ -395,6 +399,8 @@ def _stage_prompt(run_dir: Path, stage: dict[str, Any], correction: list[str] | 
         f"Scenario: {scenario_data['brief']}",
         f"Agent contract: {contract_path}",
         f"Pipeline authority: {ROOT / 'config' / 'pipeline.json'}",
+        stage_capability_instruction(ROOT, stage["id"]),
+        spatial_stage_instruction(run_dir / "project", stage["id"]),
         "Work only inside the isolated project and its configured implementation root.",
         "Complete only this stage, update its owned artifact, and let agent 00 update official state as required by the pipeline.",
         "Do not publish, push, create GitHub content or skip a dependency.",
@@ -404,35 +410,6 @@ def _stage_prompt(run_dir: Path, stage: dict[str, Any], correction: list[str] | 
     if correction:
         lines.extend(["This is the single allowed correction pass. Resolve these validator findings:"] + [f"- {item}" for item in correction])
     return "\n".join(lines) + "\n"
-
-
-def _stage_readiness_errors(run_dir: Path, stage: dict[str, Any]) -> list[str]:
-    project_dir = run_dir / "project"
-    status = load_json(project_dir / "status.json")
-    errors = list(audit_state(project_dir))
-    stage_id = stage["id"]
-    gate_id = stage.get("gate")
-    if gate_id:
-        allowed = {"APPROVED"}
-        if gate_id in {"G3", "G4"} and stage_id in {"visual-experience", "implementation"}:
-            allowed.add("REVIEW")
-        gate_status = status.get("gates", {}).get(gate_id, {}).get("status")
-        if gate_status not in allowed:
-            errors.append(f"{stage_id} left {gate_id} in {gate_status or 'missing'}; expected {sorted(allowed)}")
-        if gate_status == "APPROVED":
-            errors.extend(validate_gate(project_dir, gate_id))
-    else:
-        checkpoint = status.get("checkpoints", {}).get(stage_id, {})
-        if checkpoint.get("status") != "APPROVED":
-            errors.append(f"{stage_id} checkpoint is not APPROVED")
-    if stage_id == "design-review" and status.get("gates", {}).get("G3", {}).get("status") != "APPROVED":
-        errors.append("design-review must close G3 as APPROVED")
-    if stage_id == "build-review" and status.get("gates", {}).get("G4", {}).get("status") != "APPROVED":
-        errors.append("build-review must close G4 as APPROVED")
-    if stage_id == "production-plan":
-        errors.extend(image_handoff_errors(project_dir))
-        errors.extend(generated_asset_file_errors(project_dir, ROOT))
-    return errors
 
 
 def _parse_executor_events(run_dir: Path, stage: dict[str, Any], stdout: str) -> None:
@@ -499,7 +476,7 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
             continue
         if stage["id"] not in started:
             append_event(run_dir, {"event": "stage_start", "stage": stage["id"], "agent": stage["agent"]})
-        elif not _stage_readiness_errors(run_dir, stage):
+        elif not stage_readiness_errors(run_dir, stage, ROOT):
             append_event(run_dir, {"event": "stage_complete", "stage": stage["id"], "agent": stage["agent"]})
             if stage["id"] == until:
                 run = load_json(run_dir / "run.json")
@@ -528,7 +505,7 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
             if code != 0:
                 readiness = [f"executor exited {code}: {(stderr or stdout).strip()[:1000]}"]
             else:
-                readiness = _stage_readiness_errors(run_dir, stage)
+                readiness = stage_readiness_errors(run_dir, stage, ROOT)
             if not readiness:
                 break
             if any("artistic master confirmation is PENDING" in item for item in readiness):

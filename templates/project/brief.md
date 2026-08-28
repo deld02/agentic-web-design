@@ -24,6 +24,13 @@ Provided signals, discovery need and explicit dislikes. User-provided examples a
 
 ## Constraints and material risks
 
+## Explicit visual waivers
+
+Copy an exact user sentence only when it rejects all imagery or all motion. Leave blank otherwise. Rejecting one output, style, provider or tool is not a waiver.
+
+USER_EXPLICIT_TEXT_ONLY:
+USER_EXPLICIT_STATIC_ONLY:
+
 ## Facts, preferences, assumptions and unknowns
 
 ## What could materially change the result

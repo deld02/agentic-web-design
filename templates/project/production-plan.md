@@ -10,6 +10,11 @@ Keep media/effect comparisons here. Add to `decision-log.md` only a direction th
 
 VISUAL_DIAGNOSIS: <!-- where the real render loses presence, rhythm, depth, continuity or specificity -->
 
+The following values must exactly match both the user quote in the immutable harness scenario and `brief.md`; otherwise they grant no exception.
+
+USER_EXPLICIT_TEXT_ONLY:
+USER_EXPLICIT_STATIC_ONLY:
+
 ## Page visual narrative map
 
 Decide primero el ritmo visual completo; no cuentes imágenes por sección. `Page beat`: `ANCHOR | PROOF | SUPPORT | ATMOSPHERE | TRANSITION | REST | CLIMAX | CLOSURE`. `Format`: `NONE | BACKGROUND | LATERAL | INLINE | FOREGROUND | TEXTURE | FULL_BLEED | TRANSPARENT_OBJECT | SEQUENCE | VIDEO | REAL_3D`. `Behavior`: `STATIC | HOVER | STICKY | PARALLAX | PINNED_SCROLL | VIDEO_PLAYBACK | INTERACTIVE_3D`.
@@ -63,7 +68,7 @@ Use `PRIMARY:EXTERNAL_IMAGE_LOOP` or `SUPPORTING:EXTERNAL_IMAGE_LOOP` for new ge
 
 Use stable `FX-*` IDs for material mechanisms; they remain in this artifact unless globally consequential.
 
-For `FINAL`, implementation proof is `source/file#marker`: both must exist in `implementation_root`. For `STATIC_WINNER_REVIEWED`, use `STATIC:<evidence>` and record why visible candidates weakened the rendered hero.
+For `FINAL`, implementation proof is `source/file#marker`: both must exist in `implementation_root`. `STATIC_WINNER_REVIEWED` may resolve one scene, but cannot waive motion for the whole landing. A globally static landing requires an exact authorized `USER_EXPLICIT_STATIC_ONLY` quote.
 
 | Effect ID / scene | Opportunity level | Static candidate | Simple candidate | Expressive candidate | Source anchors / transfer | Evaluation / winner | Prototype evidence | Fallback / owner | Status (`FINAL | STATIC_WINNER_REVIEWED`) | Implementation proof | Delivered medium (`FLAT_2D | LAYERED_2D | RENDERED_3D | INTERACTIVE_3D`) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -74,6 +79,19 @@ Complete only for a selected `RENDERED_3D` or `INTERACTIVE_3D` mechanism. CSS/SV
 
 | FX ID | Medium | External source / authoring tool | Asset / runtime | License or rights | Integration proof (`source/file#marker`) | Static / reduced-motion fallback |
 |---|---|---|---|---|---|---|
+
+### Spatial experience contract (conditional)
+
+Complete only when G3 selected `RENDERED_3D` or `INTERACTIVE_3D`. Consume that decision without comparing the media again. Follow `docs/methods/spatial-experience.md`.
+
+ASSET_BUDGET:
+RUNTIME_BUDGET:
+LOADING_STRATEGY:
+LOW_POWER_POLICY:
+FAILURE_FALLBACK:
+
+| State ID | Scene ID | Narrative state / job | Trigger / input | Camera | Object / material / light | HTML / copy relationship | Transition onward | Mobile / reduced-motion / failure fallback | Evidence target |
+|---|---|---|---|---|---|---|---|---|---|
 
 ## Creative mechanisms and risk prototypes
 

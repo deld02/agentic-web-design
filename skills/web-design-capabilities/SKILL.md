@@ -7,6 +7,8 @@ description: Route high-end web design work through a project-specific direction
 
 Use the capability matching the active stage. Project evidence and approved decisions override every external preference.
 
+The harness names the capabilities eligible for the current stage. Read this router first, then only the references it names. Every `core + automatic` capability is mandatory in each allowed active stage and must be recorded with the exact stage ID in that artifact's `Design capability log`; a registered local fallback still counts as execution, omission does not. Conditional capabilities are evaluated only against their declared activation trigger: material motion activates Emil, a classified craft failure activates Impeccable, an already selected GSAP runtime activates its official runtime guidance, and premium language alone never activates Immersive.
+
 For any material choice, follow `docs/methods/material-decisions.md` inside the active owner artifact. External capabilities may supply or challenge candidates, but they cannot select one. Add only cross-phase or expensive-to-reverse outcomes to `decision-log.md`.
 
 ## Routing

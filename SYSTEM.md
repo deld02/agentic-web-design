@@ -1,4 +1,4 @@
-# Agentic Landing Design OS v6.4.0
+# Agentic Landing Design OS v6.5.0
 
 This system creates one high-design landing from research through verified implementation. It does not own SEO, analytics, marketing operations or product-app design.
 
@@ -21,3 +21,6 @@ Load only the current project artifacts, the active agent contract and the metho
 Landing creation is fail-closed: it runs only when the external harness launches the executor and provides the scoped `HARNESS_*` context. An ordinary chat that merely reads the repository can inspect or advise, but cannot build a landing and claim that the pipeline ran.
 
 The user may begin with incomplete information. Ask only questions that would materially change the result; otherwise research, state reasonable assumptions and continue. A delegated preference means the owner chooses among evidenced options without removing review or changing scope.
+
+
+

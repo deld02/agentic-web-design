@@ -24,6 +24,9 @@ Every row must be `COMPLETE | NOT_APPLICABLE | ACCEPTED_RISK`. The latter two re
 FINAL_RENDER_DESKTOP:
 FINAL_RENDER_MOBILE:
 
+FINAL_TEXT_SPACING_CAPABILITY: jakub-interface-polish
+FINAL_TEXT_SPACING_MODE: FULL
+
 ### Visual narrative verification
 
 Review the final rendered page against `production-plan.md#Page visual narrative map`, not against asset count. Every axis must be `PASS`; `REVISE` blocks build review.
@@ -38,6 +41,7 @@ Review the final rendered page against `production-plan.md#Page visual narrative
 | MECHANISM_ELIGIBILITY | | | REVISE |
 | TRANSITION_CONTINUITY | | | REVISE |
 | MOBILE_FALLBACK | | | REVISE |
+| TEXT_SPACING_CRAFT | | | REVISE |
 
 ## Interaction, keyboard and reduced motion
 
@@ -47,6 +51,20 @@ Capture each scene in both desktop and mobile from the final implementation. Use
 
 | Scene ID | Viewport (`DESKTOP | MOBILE`) | Trigger / input | Expected state or transition | Observed result | Physical evidence relative to project | Verdict (`PASS | REVISE`) | Source digest |
 |---|---|---|---|---|---|---|---|
+
+### Spatial QA (conditional)
+
+Complete only when G3 selected `RENDERED_3D` or `INTERACTIVE_3D`.
+
+| Axis | Rendered/runtime evidence | Finding / correction owner | Verdict (`PASS | REVISE`) |
+|---|---|---|---|
+
+### Spatial state traversal (conditional)
+
+For `INTERACTIVE_3D`, capture every approved `SPT-*` state on desktop and mobile. Evidence must be unique and tied to the current implementation digest.
+
+| State ID | Scene ID | Viewport (`DESKTOP | MOBILE`) | Trigger / input | Expected camera/object/HTML state | Observed result | Physical evidence relative to project | Verdict (`PASS | REVISE`) | Source digest |
+|---|---|---|---|---|---|---|---|---|
 
 RELEASE_INTEGRITY_MANIFEST: evidence/release-integrity.json
 

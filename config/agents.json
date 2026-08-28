@@ -1,5 +1,5 @@
 {
-  "version": "6.4.0",
+  "version": "6.5.0",
   "agents": [
     {"id":"00","name":"Design Director","file":"agents/00-design-director.md","modes":["definition","gate-control","release"]},
     {"id":"01","name":"Strategy & Research","file":"agents/01-strategy-research.md","modes":["research-strategy"]},
@@ -11,3 +11,6 @@
     {"id":"07","name":"Critic & QA","file":"agents/07-critic-qa.md","modes":["direction-review","design-review","build-review"]}
   ]
 }
+
+
+

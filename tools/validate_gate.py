@@ -21,7 +21,6 @@ from project_validation import (
     creative_master_errors,
     creative_master_confirmation_errors,
     creative_master_fidelity_errors,
-    explicit_text_only,
     experience_spine_errors,
     final_render_errors,
     final_delivery_contract_errors,
@@ -44,12 +43,21 @@ from project_validation import (
     technology_freshness_errors,
 )
 from validate_delivery import validate_delivery
+from validation_motion_payload import motion_payload_errors
+from validation_capability_activation import gate_capability_errors
+from validation_user_authority import explicit_text_only_authorized
 from validation_project_paths import implementation_root_for
 from validation_release_integrity import (
     content_lock_build_errors,
     content_lock_definition_errors,
     integrity_manifest_errors,
     runtime_traversal_errors,
+)
+from validation_spatial_experience import (
+    spatial_plan_errors,
+    spatial_qa_errors,
+    spatial_selection_errors,
+    spatial_technology_errors,
 )
 
 
@@ -74,6 +82,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
     config = load_json(project_dir / "project.config.json")
     status = load_json(project_dir / "status.json")
     errors.extend(review_checkpoint_errors(status))
+    errors.extend(gate_capability_errors(project_dir, ROOT, gate_id))
 
     if gate_id == "G0":
         brief = markdown(project_dir, "brief.md")
@@ -128,7 +137,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             errors.append("G3 requires two visual foundations or an evidenced ONLY_VIABLE exception")
         if not table_rows(text, "### Content-driven breakpoint evidence", "Range tested"):
             errors.append("G3 requires responsive failure/recomposition evidence")
-        if not explicit_text_only(text) and not table_rows(text, "### Scene visual opportunities", "Scene"):
+        if not table_rows(text, "### Scene visual opportunities", "Scene"):
             errors.append("G3 requires visual payload integration on desktop and mobile")
         fx_rows = table_rows(text, "### Effect opportunity map", "Scene / opportunity")
         if not any(len(row) >= 6 and row[3] and row[4] and row[5] for row in fx_rows):
@@ -141,6 +150,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(scene_grammar_errors(project_dir))
         errors.extend(scene_visual_errors(project_dir, config.get("delivery_profile", "focused")))
         errors.extend(page_rhythm_errors(project_dir))
+        errors.extend(spatial_selection_errors(project_dir))
 
     elif gate_id == "G4":
         production = markdown(project_dir, "production-plan.md")
@@ -149,14 +159,17 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             row for row in table_rows(production, "## Asset inventory and readiness", "ID")
             if len(row) >= 6 and re.fullmatch(r"IMG-[0-9]{3,}", row[0]) and row[3].startswith("PRIMARY:") and row[4] == "FINAL" and row[5]
         ]
-        if not explicit_text_only(production) and not final_assets:
+        if not explicit_text_only_authorized(project_dir) and not final_assets:
             errors.append("G4 requires at least one scene-bearing PRIMARY FINAL IMG asset")
         errors.extend(image_handoff_errors(project_dir))
+        errors.extend(spatial_technology_errors(project_dir))
+        errors.extend(spatial_plan_errors(project_dir))
         errors.extend(final_render_errors(project_dir))
         errors.extend(visual_narrative_review_errors(project_dir))
         fx_rows = table_rows(production, "### Material effect decisions", "Effect ID / scene")
         if not any(len(row) >= 10 and row[6] and row[8] and row[9] in {"FINAL", "STATIC_WINNER_REVIEWED"} for row in fx_rows):
-            errors.append("G4 requires a final creative mechanism or evidenced static winner")
+            errors.append("G4 requires a reviewed material mechanism decision")
+        errors.extend(motion_payload_errors(project_dir))
         tech_rows = [row for row in table_rows(technology, "## Options compared", "Option") if len(row) >= 4 and all(row[:4])]
         if len(tech_rows) < 2:
             errors.append("G4 technology decision must compare at least two viable options")
@@ -170,6 +183,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             errors.extend(f"G4 delivery proof: {error}" for error in delivery_errors)
             errors.extend(content_lock_build_errors(project_dir, implementation_root))
             errors.extend(runtime_traversal_errors(project_dir, implementation_root))
+            errors.extend(spatial_qa_errors(project_dir, implementation_root))
             errors.extend(integrity_manifest_errors(project_dir, implementation_root))
 
     elif gate_id == "G5":
@@ -191,6 +205,10 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(final_delivery_contract_errors(qa, ROOT, implementation_root))
         errors.extend(content_lock_build_errors(project_dir, implementation_root))
         errors.extend(runtime_traversal_errors(project_dir, implementation_root))
+        errors.extend(spatial_selection_errors(project_dir))
+        errors.extend(spatial_technology_errors(project_dir))
+        errors.extend(spatial_plan_errors(project_dir))
+        errors.extend(spatial_qa_errors(project_dir, implementation_root))
         errors.extend(integrity_manifest_errors(project_dir, implementation_root))
 
     return errors

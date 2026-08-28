@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse, re, sys
 
 from validation_common import section, valid_signature
+from validation_user_authority import explicit_static_only_authorized, explicit_text_only_authorized
 
 SUPPORTED = {'.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg', '.mp4', '.webm', '.glb', '.gltf'}
 SOURCE_SUFFIXES = {'.html', '.css', '.scss', '.sass', '.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx', '.astro', '.vue', '.svelte'}
@@ -97,10 +98,7 @@ def validate_delivery(project_dir, implementation_root):
     if errors: return errors, 0
 
     text = plan.read_text(encoding='utf-8')
-    if re.search(r'(?m)^\s*USER_EXPLICIT_TEXT_ONLY:\s*\S.+$', text):
-        brief = project_dir / 'brief.md'
-        if not brief.is_file() or not re.search(r'(?m)^\s*USER_EXPLICIT_TEXT_ONLY:\s*\S.+$', brief.read_text(encoding='utf-8')):
-            errors.append('text-only exception must also be recorded in brief.md as explicit user authority')
+    if explicit_text_only_authorized(project_dir):
         rows = []
     else:
         rows = [row for row in inventory(text) if row[4] == 'FINAL']
@@ -153,9 +151,12 @@ def validate_delivery(project_dir, implementation_root):
         if not any(any(needle in body.replace('\\', '/') for needle in needles) for _source, body in source_text):
             errors.append(f'{image_id}: asset exists but is not referenced by implementation source: {reference}')
 
+    static_only = explicit_static_only_authorized(project_dir)
     effects = [row for row in effect_inventory(text) if row[9] in {'FINAL', 'STATIC_WINNER_REVIEWED'}]
     if not effects:
         errors.append('production plan has no delivered FX mechanism')
+    if not static_only and not any(row[9] == 'FINAL' for row in effects):
+        errors.append('landing has no implemented FINAL motion mechanism; static-only needs immutable explicit user authority')
     for row in effects:
         effect_id, status = row[0], row[9]
         proof = row[10] if len(row) >= 11 else ''
@@ -181,6 +182,11 @@ def validate_delivery(project_dir, implementation_root):
         body = source.read_text(encoding='utf-8', errors='ignore')
         if not marker or marker not in body:
             errors.append(f'{effect_id}: implementation marker not found in {reference}: {marker or "<empty>"}')
+        if not re.search(
+            r'(?i)(transition\s*:|animation\s*:|@keyframes|position\s*:\s*sticky|scroll-timeline|intersectionobserver|requestanimationframe|\.animate\s*\(|addEventListener\s*\(|gsap\.)',
+            body,
+        ):
+            errors.append(f'{effect_id}: FINAL proof source contains no implemented motion/interaction signal')
 
     provenance = {row[0]: row for row in three_d_inventory(text)}
     for row in effects:

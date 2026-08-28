@@ -1,7 +1,7 @@
 # Audit status
 
-System version: 6.4.0
-Audit date: 2026-08-27
+System version: 6.5.0
+Audit date: 2026-08-28  
 Result: PASS
 
 - 8 roles, 6 gates and 13 stages;
@@ -37,7 +37,22 @@ Result: PASS
 - runtime traversal covers every scene in desktop/mobile with unique physical evidence tied to the implementation digest;
 - SHA-256 integrity invalidates stale reviews after code, asset or causal-artifact changes;
 - 00 can reopen the causal gate while automatically invalidating every downstream approval;
-- 142 tests passed.
+- text-only/static-only waivers require exact immutable user authority;
+- rejection of one image, style or provider cannot erase the visual job;
+- one real primary visual and one implemented non-static mechanism are release requirements by default;
+- final loaded-font desktop/mobile renders receive one mandatory full typography/spacing polish pass;
+- `TEXT_SPACING_CRAFT` requires scene-specific evidence and blocks nominal approval;
+- every stage receives its router and exact automatic/conditional capability set;
+- core capability activation is verified by capability ID and exact stage mode;
+- material motion and classified craft failures enforce their conditional capabilities;
+- spatial modality is selected in G3 before technology and never reopened by production;
+- interactive 3D requires a physical runtime spike, semantic `SPT-*` states and bounded loading/fallback policies;
+- spatial QA covers every selected state on desktop/mobile with unique digest-bound evidence;
+- external coding environments remain executor adapters rather than prescribed project dependencies;
+- 161 tests passed.
 
-Full report: `docs/audit/system-audit-v6.4.0.md`
+Full report: `docs/audit/system-audit-v6.5.0.md`
 Next review: 2026-11-22
+
+
+

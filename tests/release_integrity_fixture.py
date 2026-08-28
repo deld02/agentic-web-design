@@ -1,6 +1,13 @@
 import hashlib
 
 
+def add_capability_rows(text, rows):
+    marker = "|---|---|---|---|---|"
+    pos = text.find(marker, text.find("## Design capability log"))
+    payload = "".join(f"\n| {capability} | {mode} | required by registry | applied from routed reference | PASS |" for capability, mode in rows)
+    return text[:pos] + marker + payload + text[pos + len(marker):]
+
+
 def add_content_lock_fixture(text):
     marker = "|---|---|---|---|---|"
     pos = text.find(marker, text.find("## Content lock"))

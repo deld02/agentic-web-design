@@ -27,6 +27,15 @@ Compare at least two viable options, including the simplest viable solution.
 
 ## Spike evidence when needed
 
+### Spatial runtime decision (conditional)
+
+Complete only when G3 selected `INTERACTIVE_3D`. Use the options comparison above; do not create a second stack comparison.
+
+SPATIAL_RUNTIME_SELECTION:
+SIMPLEST_SPATIAL_OPTION_TESTED:
+SPATIAL_SPIKE_EVIDENCE:
+SPATIAL_KILL_CRITERION:
+
 ## Selected architecture and rationale
 
 ## Structural build handoff

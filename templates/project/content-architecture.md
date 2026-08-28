@@ -54,3 +54,8 @@ Register every material factual, quantitative or testimonial claim. `PROVISIONAL
 ## States, errors and content variability
 
 ## Media requirements
+
+## Design capability log
+
+| Capability | Mode | Activation evidence | Adopted / rejected principles | Result |
+|---|---|---|---|---|

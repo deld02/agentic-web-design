@@ -109,6 +109,19 @@ HERO_TO_BODY_CONTINUITY:
 | FX ID / scene | Level: defining / structural / feedback / ambient | User/perceptual job | Static / simple / expressive evidence | Selected mechanism | Desktop / mobile / reduced-motion prototype |
 |---|---|---|---|---|---|
 
+### Spatial modality decision (conditional)
+
+Complete only when a project-specific object, material, transformation, place or viewpoint makes spatial treatment credible. Follow `docs/methods/spatial-experience.md`; this is the sole medium-selection record.
+
+SPATIAL_MODE: `FLAT_2D | LAYERED_2D | RENDERED_3D | INTERACTIVE_3D`
+SELECTED_SCENE_IDS:
+WHY_SIMPLER_FAILS:
+SPATIAL_REVIEW: `PENDING | PASS | REVISE`
+SPATIAL_REVIEW_EVIDENCE:
+
+| Candidate mode | Same narrative job | Observable gain | Interaction / viewpoint necessity | Mobile and performance cost | Fallback equivalence | Verdict (`SELECTED | REJECTED`) |
+|---|---|---|---|---|---|---|
+
 ### Hero experience stress test
 
 Judge the rendered hero, not the owner's description. Every axis must be `PASS`; `REVISE` blocks G3. One type family and a static winner remain valid when the evidence demonstrates deliberate resolution.

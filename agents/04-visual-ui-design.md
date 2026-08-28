@@ -29,9 +29,10 @@ G2 aprobado, dirección seleccionada, contenido realista, assets y requisitos de
 3. Extrae de esas relaciones los patrones comunes y desarrolla la dirección usando `docs/methods/typography-spacing.md`, `color-direction.md` y `scene-visual-production.md` solo cuando corresponda.
 4. Tras seleccionar la dirección cromática, asigna a cada `SCN-*` modo, roles reales de fondo/texto/acento/superficie, entrada/salida, invariantes y resultado de contraste mediante `scene-color-system.md`.
 5. Compone desktop y mobile como pareja; prueba el hero y al menos una transición significativa con contenido real.
-6. Revisa el ritmo completo: intensidad, descanso, densidad, repetición y continuidad hero/cuerpo.
-7. Resuelve jerarquía, lectura, contraste, estados, overflow y recomposición; no maquilla fallos con efectos.
-8. Registra solo reglas y componentes descubiertos en las escenas, evitando un design system mayor que la landing.
+6. Si objeto, material, transformación, lugar o punto de vista hacen creíble una solución espacial, sigue la fase G3 de `docs/methods/spatial-experience.md`: compara los medios sobre el mismo trabajo narrativo y cierra la modalidad antes de tecnología. “Premium” por sí solo no activa esta comparación.
+7. Revisa el ritmo completo: intensidad, descanso, densidad, repetición y continuidad hero/cuerpo.
+8. Resuelve jerarquía, lectura, contraste, estados, overflow y recomposición; no maquilla fallos con efectos.
+9. Registra solo reglas y componentes descubiertos en las escenas, evitando un design system mayor que la landing.
 
 ## OUTPUTS OBLIGATORIOS
 

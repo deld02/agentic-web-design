@@ -15,7 +15,7 @@ Ask one open question: what should be created, for whom and what should it achie
 3. Compare content structures.
 4. Define what premium means for this project, then generate one artistic master before composing the webpage.
 5. Confirm that visual world once, then challenge every section for high-end value and translate the selected forms responsively.
-6. Define the visual system and review it independently.
+6. Define the visual system and review it independently. When spatial treatment is credible, compare 2D/layers/rendered/interactive media here and freeze the least complex winner before technology.
 7. Choose the simplest suitable technology and build the complete structural landing.
 8. Render desktop/mobile, decide image presence and role per scene, send `IH-*` briefs to the separate image loop, then validate/integrate its returned files and review the final build.
 
@@ -27,7 +27,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 - Color, typography, composition and media are judged together while translating the master into rendered scene alternatives.
 - Documentary claims require authentic media. Conceptual, representative and decorative media may be requested from the external image loop when honestly framed.
 - Every landing needs a substantial scene-bearing visual unless the user explicitly requests text only.
-- Effects and depth are explored in context. A 3D decision requires an identified external model/scene/tool or runtime with rights, integration proof and fallback; CSS/SVG imitation is classified as 2D and cannot masquerade as 3D.
+- Effects and depth are explored in context. A 3D decision follows the conditional spatial contract: G3 selects the medium, technology proves the runtime, G4 produces semantic states and QA traverses them. It requires an identified external model/scene/tool or runtime with rights, integration proof and fallback; CSS/SVG imitation is classified as 2D and cannot masquerade as 3D.
 - A screenshot or composition study is evidence, not a shippable asset.
 - Delivery is valid only when final media files exist inside the implementation and the code uses them.
 

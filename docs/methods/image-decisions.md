@@ -59,6 +59,8 @@ Consume one ordered `IH-*` at a time inside the existing `production-plan` stage
 
 Save every web-ready output at its declared `IMG-*` final path and record its production method. In interactive ChatGPT runs, call `chat-image --asset-id IMG-### --file <path>` immediately after successful generation. In headless runs, emit the image-generation receipt with the same `IMG-*` target. 05 validates the result against the brief, master and target composition. One rejected output may receive one directed regeneration; it is never replaced with improvised HTML, SVG or prose. 05 marks the physical output `FINAL`; 06 then integrates that exact file.
 
+A rejection is scoped. “Do not use Magnific”, “this image is generic”, “no stock” or rejection of a style/provider/output invalidates only that route or result. It does not turn `IMAGE` into `NO_IMAGE`, remove the scene's visual job or authorize a text-only landing. Re-brief once, use ChatGPT generation or switch to suitable authentic/licensed production. `IMAGE → NO_IMAGE` is allowed only when the immutable user brief explicitly cancels imagery as a whole, or 07 compares physical before/after renders and finds that removing this specific asset improves the scene while another primary visual still carries the landing.
+
 The ordered queue is not a new agent, stage or gate. `production-plan` cannot close while a required generated `IMG-*` lacks a physical file and a real generation receipt.
 
 ## 7. Integrate, render and correct once
@@ -71,6 +73,6 @@ Frames, masks, bleed, hover, reveal, parallax or 3D are chosen because they stre
 
 ## 8. Acceptance
 
-Before `production-plan` begins, `technology-selection` must contain valid structural desktop/mobile renders. Before `implementation` begins, the page visual narrative covers every scene, its asset count and flat stretches are reasoned, every effect satisfies its trigger/decomposition/fallback rule, every scene has an image decision, every selected new image has an `EXTERNAL:IH-*` handoff, and every required handoff has returned a real web-ready file. Documentary assets remain authentic. Delivery still requires scene-bearing primary media unless the approved direction is explicitly typographic.
+Before `production-plan` begins, `technology-selection` must contain valid structural desktop/mobile renders. Before `implementation` begins, the page visual narrative covers every scene, its asset count and flat stretches are reasoned, every effect satisfies its trigger/decomposition/fallback rule, every scene has an image decision, every selected new image has an `EXTERNAL:IH-*` handoff, and every required handoff has returned a real web-ready file. Documentary assets remain authentic. Delivery still requires scene-bearing primary media unless an exact text-only user instruction is preserved in the immutable harness scenario and repeated verbatim in the brief and production plan.
 
 Delivery validation verifies that final files exist inside `implementation_root`, are valid media and are referenced by code. `PRIMARY` identifies scene-bearing media; `SUPPORTING` identifies auxiliary graphics. SVG/CSS may support the composition but cannot be its only primary visual.

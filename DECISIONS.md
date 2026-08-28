@@ -2,6 +2,38 @@
 
 No borrar decisiones revertidas.
 
+## D-084 — El medio espacial se decide antes del runtime
+
+**Fecha:** 2026-08-28
+**Contexto:** el sistema distinguía 2D y 3D real, pero podía terminar escogiendo la modalidad después de tecnología y no disponía de un contrato entre dirección, estados espaciales e inspección runtime.
+**Decisión:** 04 compara modalidades y congela el medio en G3; 06 prueba y elige runtime solo si gana `INTERACTIVE_3D`; 05 define estados semánticos `SPT-*` y producción; 07 verifica cada estado. `spatial-experience.md` es la única autoridad condicional y la procedencia 3D existente sigue siendo la única fuente de assets, derechos e integración.
+**Enforcement:** el harness enruta el método en ambos modos, valida G3/G4 tras sus reviews y bloquea comparación, spike, storyboard, fallbacks o traversal incompletos. No se añaden agentes, gates, stages ni artefactos.
+**Estado:** ACTIVE desde v6.5.0.
+
+## D-083 — `automatic` significa activación comprobada por stage
+
+**Fecha:** 2026-08-27
+**Contexto:** el registro declaraba capacidades core automáticas, pero el harness no cargaba el router ni los gates comprobaban su uso. Un ejecutor podía omitir Anthropic, Taste, Hallmark, Jakub o Vercel y aun cerrar el pipeline.
+**Decisión:** el harness inyecta router, referencias core y candidatas condicionales en cada stage. El artifact registra capability ID y Mode igual al stage. Las core automáticas son obligatorias; las condicionales conservan su trigger.
+**Enforcement:** `validation_capability_activation.py` bloquea cada stage y gate si falta una activación automática, exige Emil ante motion material e Impeccable ante un finding tipado. El fallback local registrado permite continuar cuando una fuente externa no está disponible.
+**Estado:** ACTIVE desde v6.4.3.
+
+## D-082 — La respiración tipográfica se revisa sobre el producto final
+
+**Fecha:** 2026-08-27
+**Contexto:** el método tipográfico se probaba en G3, pero fuentes reales, copy, media e interacción podían alterar la geometría durante la implementación y llegar a release con párrafos comprimidos, huecos muertos o titulares multifuente rotos.
+**Decisión:** 07 ejecuta exactamente una revisión `jakub-interface-polish` `FULL` sobre los renders finales desktop/mobile. No crea un agente, stage ni gate nuevo.
+**Enforcement:** `TEXT_SPACING_CRAFT` bloquea G4/G5 sin evidencia que nombre escenas y ambos viewports; también se verifican capability y modo. Tres pruebas cubren ausencia de la skill, evidencia nominal y ejecución completa.
+**Estado:** ACTIVE desde v6.4.2.
+
+## D-081 — Rechazar una solución visual no autoriza a eliminar el medio
+
+**Fecha:** 2026-08-27
+**Contexto:** después de recibir una crítica sobre imágenes genéricas o una herramienta concreta, el agente podía inventar una marca `USER_EXPLICIT_TEXT_ONLY` o declarar `STATIC_WINNER_REVIEWED` y entregar una landing sin imágenes ni efectos.
+**Decisión:** las excepciones globales de imagen y motion requieren una cita exacta del usuario, repetida en brief/plan y verificada contra el escenario inmutable del harness. La crítica a un output, estilo o proveedor conserva el trabajo visual y obliga a rebrief o cambio de ruta. Una escena puede ser estática, pero no convierte toda la landing en estática.
+**Enforcement:** G4 exige un `PRIMARY FINAL IMG`, un comportamiento no estático seleccionado, un `FX-* FINAL` y señal física de implementación, salvo la autoridad inmutable correspondiente. Cinco pruebas adversariales cubren falsas excepciones y el escape estático.
+**Estado:** ACTIVE desde v6.4.1.
+
 ## D-080 — La evidencia de release debe pertenecer al build exacto
 
 **Fecha:** 2026-08-27

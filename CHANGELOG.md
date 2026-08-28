@@ -1,5 +1,38 @@
 # Changelog
 
+## v6.5.0 — 2026-08-28 · Experiencia espacial condicional y verificable
+
+- Cierra la modalidad espacial en G3 antes de elegir tecnología; compara 2D, capas, 3D renderizado e interactivo sobre el mismo trabajo narrativo.
+- Mantiene 8 agentes, 6 gates, 13 etapas y los artefactos existentes; añade un único método condicional, no otro pipeline.
+- Exige spike físico para runtime interactivo, estados semánticos `SPT-*`, presupuestos, carga, low-power y fallback.
+- El harness enruta el método, valida G3/G4 al terminar sus reviews y bloquea tecnología, producción o QA espacial incompletas.
+- QA recorre cada estado desktop/mobile con evidencia única ligada al digest del build; rechaza porcentajes de scroll como sustituto del storyboard.
+- Antigravity, Codex o Cursor quedan como ejecutores opcionales, nunca como runtime ni stack obligatorio.
+- Añade seis pruebas espaciales, incluida autoridad única por decisión, y conserva todos los invariantes existentes: 161 tests pasan.
+
+## v6.4.3 — 2026-08-27 · Capacidades automáticas ejecutables
+
+- El harness carga el router `web-design-capabilities` en cada stage y enumera capacidades core obligatorias y candidatas condicionales.
+- Los gates verifican el uso por ID y stage exactos: Hallmark, Anthropic, Taste, Jakub y Vercel dejan de ser recomendaciones opcionales.
+- Motion material exige Emil; un finding `GENERIC | FLAT | SAFE | OVERDESIGNED | WEAK_HIERARCHY | INTERCHANGEABLE` exige Impeccable.
+- Mantiene Immersive, UI/UX Pro Max, MengTo y GSAP sujetos a sus detonantes reales.
+- Añade cinco pruebas adversariales sin crear agentes, stages, gates ni artefactos nuevos.
+
+## v6.4.2 — 2026-08-27 · Full pass final de tipografía y respiración
+
+- Hace obligatorio `jakub-interface-polish` en modo `FULL` sobre los renders finales desktop/mobile.
+- Añade `TEXT_SPACING_CRAFT` al review bloqueante de G4/G5 con evidencia por escena y viewport.
+- Revisa fuentes cargadas, medida/interlineado, jerarquía espacial, titulares multifuente, viudas, clipping y recomposición móvil.
+- Impide aprobar con afirmaciones genéricas sobre spacing y añade tres pruebas adversariales.
+
+## v6.4.1 — 2026-08-27 · Compromiso visual y motion verificable
+
+- Impide que el agente se conceda una excepción `text-only` o `static-only`: exige una cita exacta presente en el brief inmutable del harness.
+- Tratar una imagen, estilo, proveedor o herramienta como no válida ya no elimina el trabajo visual; obliga a corregir el brief o cambiar la ruta de producción.
+- Mantiene la decisión de cantidad por proyecto, pero exige al menos un visual principal real y un mecanismo no estático implementado salvo petición explícita del usuario.
+- Convierte `STATIC_WINNER_REVIEWED` en una decisión local por escena, no en una salida global para entregar toda la landing sin interacción.
+- Añade cinco pruebas adversariales y verificación física de señales de motion en el source final.
+
 ## v6.4.0 — 2026-08-27 · Evidencia fresca y reapertura causal
 
 - Congela en G1 la tesis, CTA y strings materiales con un `Content lock` que se contrasta contra el source final.

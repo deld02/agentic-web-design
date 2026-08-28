@@ -1,6 +1,6 @@
 import json, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
-from release_integrity_fixture import add_content_lock_fixture, add_release_integrity_fixture
+from release_integrity_fixture import add_capability_rows, add_content_lock_fixture, add_release_integrity_fixture
 ROOT=Path(__file__).resolve().parents[1]
 
 def run(repo,*args):
@@ -65,7 +65,7 @@ class SemanticValidationTests(unittest.TestCase):
         pos=text.find(marker,text.find('## Sitemap / page or section outline'))
         rows='\n| SCN-001 | Hero | Establish the thesis and invite the next step | Headline, proof signal and primary action | PRIMARY |\n| SCN-002 | Evidence | Make the promise credible | Method, evidence and representative media | PRIMARY |\n| SCN-003 | Closing action | Resolve the decision | Summary and primary CTA | UTILITY |'
         text=text[:pos]+marker+rows+text[pos+len(marker):]
-        text=add_complete_experience_spine(text); text=add_content_lock_fixture(text)
+        text=add_complete_experience_spine(text); text=add_content_lock_fixture(text); text=add_capability_rows(text,(('hallmark-structure-challenger','content-architecture'),))
         content.write_text(text,encoding='utf-8'); visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
         marker='|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('## Foundation alternatives and decision evidence'))
@@ -101,7 +101,7 @@ class SemanticValidationTests(unittest.TestCase):
         text=text.replace(
             'STATUS: PENDING\nPRESENTED_MASTER:\nUSER_SIGNAL:',
             'STATUS: DELEGATED\nPRESENTED_MASTER: AM-001\nUSER_SIGNAL: haz tu propuesta')
-        creative.write_text(text,encoding='utf-8')
+        text=add_capability_rows(text,(('anthropic-frontend-design','direction-divergence'),('taste-direction-challenger','direction-divergence'),('anthropic-frontend-design','creative-master'),('taste-direction-challenger','creative-master'))); creative.write_text(text,encoding='utf-8')
         visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
         marker='|---|---|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('## Scene strategy'))
@@ -138,7 +138,7 @@ class SemanticValidationTests(unittest.TestCase):
         text=text[:pos]+marker+'\n| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | selected improves material distinction | PASS |'+text[pos+len(marker):]
         for axis in ('THESIS','TYPOGRAPHIC_VOICE','COLOR_PROVENANCE','COLOR_COMPOSITION','MEDIA_INTEGRATION','MECHANISM_SALIENCE','DEPTH_RHYTHM_DETAIL','DIRECTION_FIDELITY'):
             text=text.replace(f'| {axis} | | | | REVISE |',f'| {axis} | rendered evidence | removal changes the thesis | desktop.png + mobile.png + interaction.mp4 | PASS |')
-        visual.write_text(text,encoding='utf-8')
+        text=add_capability_rows(text,(('anthropic-frontend-design','visual-experience'),('jakub-interface-polish','visual-experience'),('jakub-interface-polish','design-review'))); visual.write_text(text,encoding='utf-8')
         technology=repo/'projects/test-project/technology-decision.md'; text=technology.read_text(encoding='utf-8')
         text=text.replace(
             'STRUCTURAL_BUILD_STATUS: PENDING\nIMPLEMENTATION_ROOT:\nSTRUCTURAL_RENDER_DESKTOP:\nSTRUCTURAL_RENDER_MOBILE:',
@@ -171,13 +171,13 @@ class SemanticValidationTests(unittest.TestCase):
         mechanism='|---|---|---|---|---|---|---|---|---|---|---|---|'
         pos=text.find(mechanism,text.find('### Material effect decisions'))
         text=text[:pos]+mechanism+'\n| FX-001 / hero | defining | static proof | subtle layers | scroll assembly | LIVE_EXECUTION + MECHANISM_LAB | expressive wins | prototype/hero-motion.mp4 | reduced static / 05 | FINAL | index.html#data-fx-hero | LAYERED_2D |'+text[pos+len(mechanism):]
-        production.write_text(text,encoding='utf-8')
+        text=add_capability_rows(text,(('emil-motion-craft','production-plan'),)); production.write_text(text,encoding='utf-8')
         qa=repo/'projects/test-project/qa-release.md'; text=add_complete_delivery_contract(qa.read_text(encoding='utf-8'))
         text=text.replace('FINAL_RENDER_DESKTOP:','FINAL_RENDER_DESKTOP: evidence/final-desktop.png',1)
         text=text.replace('FINAL_RENDER_MOBILE:','FINAL_RENDER_MOBILE: evidence/final-mobile.png',1)
-        for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK'):
-            evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else 'desktop and mobile final renders show the intended result'; text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
-        qa.write_text(text,encoding='utf-8')
+        for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK','TEXT_SPACING_CRAFT'):
+            evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else ('SCN-001, SCN-002 and SCN-003 inspected in final desktop and mobile renders with loaded fonts' if axis=='TEXT_SPACING_CRAFT' else 'desktop and mobile final renders show the intended result'); text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
+        text=add_capability_rows(text,(('jakub-interface-polish','build-review'),('vercel-web-interface-guidelines','build-review'))); qa.write_text(text,encoding='utf-8')
         add_release_integrity_fixture(repo,run)
         text=qa.read_text(encoding='utf-8').replace(
             'BACKGROUND_CHARACTER:\nACCENT_CHARACTER:\nDISPLAY_TYPE_CHARACTER:\nHERO_COMPOSITION:\nHERO_MEDIA:\nSIGNATURE_MECHANISM:\nDEPTH_MEDIUM:\nMOTION_INTENSITY:',
@@ -236,7 +236,7 @@ class SemanticValidationTests(unittest.TestCase):
                 d['gates']['G4'].update(status='APPROVED',evidence=['production-plan.md','technology-decision.md','qa-release.md'],blockers=[],last_decision='production approved')
             self.mutate_json(repo,'projects/test-project/status.json',change)
             result=run(repo,'tools/validate_system.py')
-            self.assertNotEqual(result.returncode,0); self.assertIn('requires a FINAL mechanism or evidenced STATIC_WINNER_REVIEWED',result.stdout)
+            self.assertNotEqual(result.returncode,0); self.assertIn('requires a reviewed material mechanism decision',result.stdout)
         finally: td.cleanup()
 
     def test_g4_cannot_approve_without_final_visual_asset(self):
@@ -441,7 +441,7 @@ class SemanticValidationTests(unittest.TestCase):
             config.write_text(json.dumps(cd,indent=2)+'\n',encoding='utf-8')
             site=repo/'site-test'; (site/'assets').mkdir(parents=True)
             (site/'assets/hero.webp').write_bytes(b'RIFFxxxxWEBPsynthetic-visual')
-            (site/'index.html').write_text('<main data-fx-hero><h1>Invisible expertise, made concrete</h1><img src="assets/hero.webp" alt="Synthetic visual"><a>Request the diagnostic</a></main>',encoding='utf-8')
+            (site/'index.html').write_text('<style>[data-fx-hero]{transition:transform .3s ease}</style><main data-fx-hero><h1>Invisible expertise, made concrete</h1><img src="assets/hero.webp" alt="Synthetic visual"><a>Request the diagnostic</a></main>',encoding='utf-8')
             for path in (repo/'projects/test-project').glob('*.md'):
                 text=path.read_text(encoding='utf-8').replace('Status: PENDING','Status: COMPLETE').replace('Status: UNDETERMINED','Status: SELECTED')
                 if len(text.strip())<80: text+='\nVerified synthetic lifecycle evidence.\n'*3

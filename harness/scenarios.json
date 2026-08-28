@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "system_version": "6.4.0",
+  "system_version": "6.5.0",
   "limits": {
     "max_total_minutes": 75,
     "max_stage_minutes": 25,
@@ -69,7 +69,10 @@
       "brief": "Create a landing about physical material transformation. Compare static layers, motion and 3D honestly; keep the least complex implementation that preserves the explanatory and perceptual gain.",
       "assets": "process-facts-no-final-visuals",
       "identity": "establish",
-      "risk_focus": ["effect_for_effect", "missing_fallback", "performance", "mobile_recomposition"]
+      "risk_focus": ["effect_for_effect", "fake_3d", "premature_runtime", "missing_spatial_states", "missing_fallback", "performance", "mobile_recomposition"]
     }
   ]
 }
+
+
+

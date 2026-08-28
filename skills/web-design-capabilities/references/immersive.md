@@ -4,6 +4,8 @@ This capability is explicit-only. It requires an approved direction with `experi
 
 This restriction applies to the immersive booster, not to all 3D. A focused or standard landing may evaluate a contained 3D, shader, depth or spatial mechanism when it fits the subject and passes production constraints.
 
+When a real spatial medium is a credible candidate, use `docs/methods/spatial-experience.md` as the decision and delivery authority. This booster may enrich an already approved immersive direction; it never selects the medium, stack or runtime.
+
 Treat preloaders, smooth scrolling, full-viewport heroes, split typography, cinematic entrances, grain, glass, large fluid type and scroll choreography as candidates—not defaults.
 
 For each candidate answer:

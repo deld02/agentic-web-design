@@ -10,6 +10,8 @@ Una decisión es material si cambia la narrativa, dirección, foundation, verdad
 
 If research already evaluated material, downstream preserves the recorded decision or constraint and resolves only the uncertainty assigned to its owner. It does not silently choose again.
 
+Identity authority is the strict case of this rule. G1 assigns stable `IDN-*` references to existing identity evidence and resolves each as `BINDING`, `EVOLVE_WITHIN_LIMITS` or `OPEN_TO_REPLACE`. G2 and G3 reference those IDs instead of restating or silently reinterpreting the brand. `NO_EXISTING_IDENTITY` closes the same question when no identity exists.
+
 ## Subdivisiones internas
 
 Las áreas se organizan dentro de los artefactos existentes:

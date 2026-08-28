@@ -42,6 +42,7 @@ from project_validation import (
     table_rows,
     technology_freshness_errors,
 )
+from validation_identity import identity_authority_errors, identity_direction_trace_errors, identity_visual_trace_errors
 from validate_delivery import validate_delivery
 from validation_motion_payload import motion_payload_errors
 from validation_capability_activation import gate_capability_errors
@@ -109,6 +110,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(claim_errors(project_dir))
         errors.extend(reference_benchmark_errors(project_dir))
         errors.extend(context_compiler_errors(project_dir))
+        errors.extend(identity_authority_errors(project_dir))
         errors.extend(structure_challenge_errors(project_dir))
         _primary_scenes, outline_errors = scene_outline(project_dir)
         errors.extend(outline_errors)
@@ -126,6 +128,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         require_sections(errors, text, "G2", ("## Project-specific quality bar", "## Artistic master", "## Creative master handoff"))
         errors.extend(project_quality_bar_errors(project_dir))
         errors.extend(direction_divergence_errors(project_dir))
+        errors.extend(identity_direction_trace_errors(project_dir))
         errors.extend(artistic_master_errors(project_dir))
         errors.extend(creative_master_confirmation_errors(project_dir))
         errors.extend(creative_master_errors(project_dir))
@@ -145,6 +148,7 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(hero_stress_errors(project_dir))
         errors.extend(creative_master_fidelity_errors(project_dir))
         errors.extend(color_direction_errors(project_dir))
+        errors.extend(identity_visual_trace_errors(project_dir))
         errors.extend(scene_color_map_errors(project_dir))
         errors.extend(scene_strategy_errors(project_dir))
         errors.extend(scene_grammar_errors(project_dir))

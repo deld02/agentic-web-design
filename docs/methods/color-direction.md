@@ -28,11 +28,11 @@ Después de elegir, `scene-color-system.md` aplica la dirección por escenas y r
 
 ## 4. Challenge independiente
 
-07 recibe el hero elegido y crea una única lámina física `CLR-*` que muestra sobre esa misma composición: accent eliminado, neutralización y paleta plausible/típica de la categoría. Registra qué pierde o mejora cada counterfactual. Si la elegida no mejora claramente percepción y dirección, devuelve `REVISE` a 04. Un `PASS` escrito sin lámina física no cuenta.
+07 recibe el hero elegido y crea una única lámina física `CLR-*` que muestra sobre esa misma composición: accent eliminado, neutralización y paleta plausible/típica de la categoría. La misma lámina contrasta los `IDN-*` heredados y registra reconocimiento o deriva de marca. Si la elegida no mejora claramente percepción y dirección, devuelve `REVISE`; si contradice autoridad de identidad, devuelve `BRAND_DRIFT`. Un `PASS` escrito sin lámina física o sin trazabilidad de identidad no cuenta.
 
 ## 5. Límites
 
 - Los validadores comprueban archivos, estructura, jerarquía declarada, contraste registrado y revisión; no deciden belleza.
-- No existe color obligatorio ni paleta prohibida.
-- Existing identity informs the brand-led option, but research may change or reject it when it conflicts with the current objective.
+- No existe color obligatorio ni paleta prohibida universal. G1 sí puede fijarlos para un proyecto mediante un `IDN-*` vinculante y evidencia concreta.
+- Existing identity informs the brand-led option, but research may change or reject it when it conflicts with the current objective. Esa libertad debe quedar resuelta en G1 como `EVOLVE_WITHIN_LIMITS` u `OPEN_TO_REPLACE`; no puede aparecer por primera vez en G3.
 - Los tres territorios son variantes del mismo hero, no tres nuevas direcciones creativas.

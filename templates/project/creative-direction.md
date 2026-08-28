@@ -18,6 +18,13 @@ Create exactly three physically visible territories before the master. They must
 | Direction ID | Concept / perception | Typography | Composition | Media / materiality | Depth / motion | Human presence / metaphor | Physical board relative to project |
 |---|---|---|---|---|---|---|---|
 
+### Identity constraint fit
+
+Evaluate all three territories against the `IDN-*` contract from G1. `OPEN_TO_REPLACE` permits departure but still requires an explicit response. A territory that contradicts `BINDING` or exceeds `EVOLVE_WITHIN_LIMITS` is invalid, however original it appears.
+
+| Direction ID | Identity IDs addressed | Preserve / evolve / replace response | Observable evidence and risk | Verdict (`PASS | FAIL`) |
+|---|---|---|---|---|
+
 ## Direction selection handoff
 
 07 reviews the three boards in isolated context before 03 creates the master. The rejected directions must remain visibly different alternatives.
@@ -57,6 +64,7 @@ The selected physical composition becomes the binding creative reference for G3 
 
 CREATIVE_MASTER: AM-___
 SOURCE_DIRECTION: DIR-___
+IDENTITY_INHERITANCE: `IDN-* | NO_EXISTING_IDENTITY`
 VISUAL_THESIS:
 INVARIANTS: TYPE=; COLOR=; COMPOSITION=; MEDIA=; SPACE=; DEPTH=; MOTION=
 FLEX:

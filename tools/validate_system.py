@@ -6,6 +6,7 @@ from design_capabilities import validate_design_capabilities
 from validate_delivery import validate_delivery
 from evaluation_harness import validate_harness_config
 from project_validation import artistic_master_errors, claim_errors as project_claim_errors, color_direction_errors, creative_master_confirmation_errors, creative_master_errors, creative_master_fidelity_errors, experience_spine_errors, final_render_errors, image_handoff_errors, hero_stress_errors, page_rhythm_errors, project_quality_bar_errors, reference_benchmark_errors, review_checkpoint_errors, scene_color_map_errors, scene_outline, scene_strategy_errors, scene_visual_errors, structural_build_errors, technology_freshness_errors
+from validation_identity import identity_authority_errors, identity_direction_trace_errors, identity_visual_trace_errors
 from validation_release_integrity import content_lock_build_errors, content_lock_definition_errors, integrity_manifest_errors, runtime_traversal_errors
 from validation_common import section
 from validation_capability_activation import gate_capability_errors
@@ -216,6 +217,7 @@ def validate_owner_artifact(project_dir,rel,gid):
         if project_dir.name!='project':
             for claim_error in project_claim_errors(project_dir): errors.append(f'{rel}:{claim_error}')
             for reference_error in reference_benchmark_errors(project_dir): errors.append(f'{rel}:{reference_error}')
+            for identity_error in identity_authority_errors(project_dir): errors.append(f'{rel}:{identity_error}')
             _primary_scenes, outline_errors=scene_outline(project_dir)
             for outline_error in outline_errors: errors.append(f'{rel}:{outline_error}')
             for spine_error in experience_spine_errors(project_dir): errors.append(f'{rel}:{spine_error}')
@@ -237,6 +239,7 @@ def validate_owner_artifact(project_dir,rel,gid):
                 for hero_error in hero_stress_errors(project_dir): errors.append(f'{rel}:{hero_error}')
                 for master_error in creative_master_fidelity_errors(project_dir): errors.append(f'{rel}:{master_error}')
                 for color_error in color_direction_errors(project_dir): errors.append(f'{rel}:{color_error}')
+                for identity_error in identity_visual_trace_errors(project_dir): errors.append(f'{rel}:{identity_error}')
                 for scene_color_error in scene_color_map_errors(project_dir): errors.append(f'{rel}:{scene_color_error}')
                 for strategy_error in scene_strategy_errors(project_dir): errors.append(f'{rel}:{strategy_error}')
                 profile=configs.get(project_dir,{}).get('delivery_profile','focused')
@@ -251,6 +254,7 @@ def validate_owner_artifact(project_dir,rel,gid):
                 for artistic_error in artistic_master_errors(project_dir): errors.append(f'{rel}:{artistic_error}')
                 for confirmation_error in creative_master_confirmation_errors(project_dir): errors.append(f'{rel}:{confirmation_error}')
                 for master_error in creative_master_errors(project_dir): errors.append(f'{rel}:{master_error}')
+                for identity_error in identity_direction_trace_errors(project_dir): errors.append(f'{rel}:{identity_error}')
     if gid=='G4':
         path=project_dir/'production-plan.md'
         if path.is_file():

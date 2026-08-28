@@ -958,10 +958,10 @@ def color_direction_errors(project_dir: Path) -> list[str]:
         errors.append("G3 independent color challenge requires exactly one evidence row")
         return errors
     row = challenge_rows[0]
-    if len(row) < 6 or not all(row[:5]):
+    if len(row) < 8 or not all(row[:7]):
         errors.append("G3 independent color challenge row is incomplete")
         return errors
-    evidence, accent_removed, neutral_swap, category_swap, advantage, verdict = row[:6]
+    evidence, accent_removed, neutral_swap, category_swap, _identity_test, _drift, advantage, verdict = row[:8]
     match = re.fullmatch(r"(CLR-[0-9]{3,}):(.+)", evidence.strip().strip("`"))
     if not match:
         errors.append("G3 independent color challenge needs physical CLR-ID:path evidence")

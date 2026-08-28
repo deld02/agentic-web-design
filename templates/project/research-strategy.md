@@ -27,6 +27,15 @@ Record only findings that can change the landing. Existing material and referenc
 | Item / source | Finding | Use, change or ignore | Reason / constraint / uncertainty | Downstream owner |
 |---|---|---|---|---|
 
+## Identity authority contract
+
+Resolve the authority of existing identity before art direction. This is not a palette brief: it decides what carries recognition or equity, what may evolve and what is genuinely open to replacement. Use `NO_EXISTING_IDENTITY` only when research found no identity to evaluate.
+
+IDENTITY_STATUS: `EVALUATED | NO_EXISTING_IDENTITY`
+
+| Identity ID | Element / source | Current evidence and role | Authority (`BINDING | EVOLVE_WITHIN_LIMITS | OPEN_TO_REPLACE`) | Objective fit | Allowed change | Forbidden consequence | Downstream owner |
+|---|---|---|---|---|---|---|---|
+
 ## Reference route and discovery question
 
 ### Project reference search brief

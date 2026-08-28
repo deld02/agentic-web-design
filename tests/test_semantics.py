@@ -1,6 +1,7 @@
 import json, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
 from release_integrity_fixture import add_capability_rows, add_content_lock_fixture, add_release_integrity_fixture
+from identity_fixture import add_direction_identity, add_research_identity, add_visual_identity
 ROOT=Path(__file__).resolve().parents[1]
 
 def run(repo,*args):
@@ -55,6 +56,7 @@ class SemanticValidationTests(unittest.TestCase):
         text=text.replace(
             'BUSINESS_MODEL:\nPRIMARY_ACTION:\nAUDIENCE_SOPHISTICATION:\nTRUST_REQUIREMENT:\nHUMAN_PRESENCE:\nAUTHORITY_WARMTH_BALANCE:\nTECHNICALITY:\nEXPERIMENTAL_TOLERANCE:\nLOCALITY:\nPROOF_DENSITY:\nNARRATIVE_COMPLEXITY:\nEMOTIONAL_TARGET:\nMOBILE_IMPORTANCE:',
             'BUSINESS_MODEL: expert service sold through a diagnostic conversation\nPRIMARY_ACTION: request a diagnostic\nAUDIENCE_SOPHISTICATION: informed buyers comparing specialist alternatives\nTRUST_REQUIREMENT: high because the service outcome is intangible\nHUMAN_PRESENCE: expert-led without fabricated documentary portraits\nAUTHORITY_WARMTH_BALANCE: authoritative with measured human warmth\nTECHNICALITY: explain method without software-dashboard aesthetics\nEXPERIMENTAL_TOLERANCE: medium in structure and high in authored media\nLOCALITY: locally credible without folkloric visual codes\nPROOF_DENSITY: medium and evidence-led\nNARRATIVE_COMPLEXITY: one thesis with progressive proof\nEMOTIONAL_TARGET: considered confidence and productive tension\nMOBILE_IMPORTANCE: primary acquisition surface with compact visual hierarchy')
+        text=add_research_identity(text)
         research.write_text(text,encoding='utf-8')
         content=repo/'projects/test-project/content-architecture.md'; text=content.read_text(encoding='utf-8')
         text=text.replace(
@@ -92,17 +94,18 @@ class SemanticValidationTests(unittest.TestCase):
         pos=text.find(marker,text.find('## Direction divergence'))
         rows='\n| DIR-001 | restrained institutional confidence | humanist sans | centered modular field | documentary paper | flat with precise fades | expert portrait as witness | evidence/dir-a.png |\n| DIR-002 | editorial material authority | expressive serif contrast | asymmetric spatial proof | macro material layers | deep parallax reveal | process as transformation metaphor | evidence/dir-b.png |\n| DIR-003 | technical experimental clarity | grotesk plus mono | radial data composition | translucent scientific plates | orbital responsive motion | no person; signal-field metaphor | evidence/dir-c.png |'
         text=text[:pos]+marker+rows+text[pos+len(marker):]
+        text=add_direction_identity(text)
         text=text.replace(
             'SELECTED_DIRECTION: DIR-___\nDIRECTION_REVIEW_CHECKPOINT: direction-review\nSELECTION_EVIDENCE:\nREJECTED_DIFFERENCE:',
             'SELECTED_DIRECTION: DIR-002\nDIRECTION_REVIEW_CHECKPOINT: direction-review\nSELECTION_EVIDENCE: isolated review found the strongest match between authority, material proof and distinctive recall\nREJECTED_DIFFERENCE: DIR-001 was too conventional; DIR-003 over-signalled technology')
         text=text.replace(
-            'CREATIVE_MASTER: AM-___\nSOURCE_DIRECTION: DIR-___\nVISUAL_THESIS:\nINVARIANTS: TYPE=; COLOR=; COMPOSITION=; MEDIA=; SPACE=; DEPTH=; MOTION=\nFLEX:\nCONTEXTUAL:\nSCENE_GRAMMAR: DOMINANT=; COUNTERPOINT=; TENSION=; SIGNAL=; REST=; TRANSITION=\nSIGNATURE_MECHANISM:\nANTI_RULES:\nDECOMPOSITION_RISKS:',
-            'CREATIVE_MASTER: AM-001\nSOURCE_DIRECTION: DIR-002\nVISUAL_THESIS: Editorial evidence makes expertise tangible\nINVARIANTS: TYPE=editorial contrast; COLOR=controlled material palette; COMPOSITION=asymmetric proof; MEDIA=integrated process; SPACE=large narrative pauses; DEPTH=layered evidence; MOTION=reveal construction\nFLEX: crop, scene intensity and proof scale adapt to content density\nCONTEXTUAL: human presence appears only where authentic evidence exists\nSCENE_GRAMMAR: DOMINANT=one authored thesis gesture; COUNTERPOINT=quiet factual structure; TENSION=scale against restraint; SIGNAL=copper decision cue; REST=warm open field; TRANSITION=material motif changes state\nSIGNATURE_MECHANISM: evidence layers assemble into one legible decision field\nANTI_RULES: no generic card grid or adjacent decorative image\nDECOMPOSITION_RISKS: preserve negative space and independent layers')
+            'CREATIVE_MASTER: AM-___\nSOURCE_DIRECTION: DIR-___\nIDENTITY_INHERITANCE: IDN-001\nVISUAL_THESIS:\nINVARIANTS: TYPE=; COLOR=; COMPOSITION=; MEDIA=; SPACE=; DEPTH=; MOTION=\nFLEX:\nCONTEXTUAL:\nSCENE_GRAMMAR: DOMINANT=; COUNTERPOINT=; TENSION=; SIGNAL=; REST=; TRANSITION=\nSIGNATURE_MECHANISM:\nANTI_RULES:\nDECOMPOSITION_RISKS:',
+            'CREATIVE_MASTER: AM-001\nSOURCE_DIRECTION: DIR-002\nIDENTITY_INHERITANCE: IDN-001\nVISUAL_THESIS: Editorial evidence makes expertise tangible\nINVARIANTS: TYPE=editorial contrast; COLOR=controlled material palette; COMPOSITION=asymmetric proof; MEDIA=integrated process; SPACE=large narrative pauses; DEPTH=layered evidence; MOTION=reveal construction\nFLEX: crop, scene intensity and proof scale adapt to content density\nCONTEXTUAL: human presence appears only where authentic evidence exists\nSCENE_GRAMMAR: DOMINANT=one authored thesis gesture; COUNTERPOINT=quiet factual structure; TENSION=scale against restraint; SIGNAL=copper decision cue; REST=warm open field; TRANSITION=material motif changes state\nSIGNATURE_MECHANISM: evidence layers assemble into one legible decision field\nANTI_RULES: no generic card grid or adjacent decorative image\nDECOMPOSITION_RISKS: preserve negative space and independent layers')
         text=text.replace(
             'STATUS: PENDING\nPRESENTED_MASTER:\nUSER_SIGNAL:',
             'STATUS: DELEGATED\nPRESENTED_MASTER: AM-001\nUSER_SIGNAL: haz tu propuesta')
         text=add_capability_rows(text,(('anthropic-frontend-design','direction-divergence'),('taste-direction-challenger','direction-divergence'),('anthropic-frontend-design','creative-master'),('taste-direction-challenger','creative-master'))); creative.write_text(text,encoding='utf-8')
-        visual=repo/'projects/test-project/visual-system.md'; text=visual.read_text(encoding='utf-8')
+        visual=repo/'projects/test-project/visual-system.md'; text=add_visual_identity(visual.read_text(encoding='utf-8'))
         marker='|---|---|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('## Scene strategy'))
         rows='\n| SCN-001 | Establish thesis with headline, proof and CTA | Expertise feels abstract | Direct split hero with supporting proof | Bespoke layered evidence world assembled through depth, material light and authored reveal | HIGH_VALUE=expertise becomes tangible and memorable; SIMPLIFY=generated depth layers with controlled reveal; EXPENSIVE_NOISE=free-camera WebGL and decorative particles | Generated depth layers with semantic HTML and restrained reveal | Direct translation of material tension from AM-001 |\n| SCN-002 | Make method credible with evidence and representative media | Proof can become a generic card grid | Ordered evidence list with one documentary image | Spatial evidence field where scale and media respond to proof density | HIGH_VALUE=proof gains hierarchy and reading rhythm; SIMPLIFY=layered editorial grid with selective crops; EXPENSIVE_NOISE=continuous scroll choreography on every item | Layered editorial evidence with a deliberate rest zone | Low-intensity translation of material and type relationships |\n| SCN-003 | Resolve decision with summary and primary CTA | Closing can feel like a generic color block | Concise centered CTA | Cinematic return of the master motif with a bespoke transition into the action | HIGH_VALUE=recall reconnects action to the thesis; SIMPLIFY=cropped motif and one transition; EXPENSIVE_NOISE=3D scene built only for the footer | Cropped motif with compact CTA; baseline structure on narrow mobile | Returns to AM-001 without repeating the hero |'
@@ -112,8 +115,8 @@ class SemanticValidationTests(unittest.TestCase):
         rows='\n| SCN-001 | oversized thesis | precise proof ledger | atmospheric media against factual copy | copper CTA | open upper field | layered motif opens into paper | full-intensity signature mechanism |\n| SCN-002 | evidence sequence | one material crop | dense facts against large pauses | numbered proof cue | blank reading column | paper field darkens at boundary | quieter grammar with stronger rest |\n| SCN-003 | decisive action | compact service summary | cropped motif against direct CTA | high-contrast action | generous terminal space | master motif resolves and stops | signature returns without hero repetition |'
         text=text[:pos]+marker+rows+text[pos+len(marker):]
         text=text.replace(
-            'CREATIVE_MASTER_SOURCE: AM-___\nINVARIANTS_PRESERVED:\nDELIBERATE_DEVIATIONS:\nHERO_BODY_TRANSLATION:',
-            'CREATIVE_MASTER_SOURCE: AM-001\nINVARIANTS_PRESERVED: editorial contrast, asymmetric proof, material layers\nDELIBERATE_DEVIATIONS: mobile stacks media after thesis for reading\nHERO_BODY_TRANSLATION: body reduces intensity while retaining type, material and spacing language')
+            'CREATIVE_MASTER_SOURCE: AM-___\nIDENTITY_INHERITANCE: IDN-001\nINVARIANTS_PRESERVED:\nDELIBERATE_DEVIATIONS:\nHERO_BODY_TRANSLATION:',
+            'CREATIVE_MASTER_SOURCE: AM-001\nIDENTITY_INHERITANCE: IDN-001\nINVARIANTS_PRESERVED: editorial contrast, asymmetric proof, material layers\nDELIBERATE_DEVIATIONS: mobile stacks media after thesis for reading\nHERO_BODY_TRANSLATION: body reduces intensity while retaining type, material and spacing language')
         text=text.replace(
             'RHYTHM_SEQUENCE:\nPEAKS_AND_RESTS:\nREPETITION_CONTROL:\nHERO_TO_BODY_CONTINUITY:',
             'RHYTHM_SEQUENCE: impact → evidence → rest → resolution\nPEAKS_AND_RESTS: SCN-001 and SCN-003 peak; SCN-002 alternates proof with reading space\nREPETITION_CONTROL: no adjacent scene repeats the same split, scale or media treatment\nHERO_TO_BODY_CONTINUITY: type contrast, material crops and spacing cadence survive at lower intensity')
@@ -133,9 +136,6 @@ class SemanticValidationTests(unittest.TestCase):
         marker='|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('### Effect opportunity map'))
         text=text[:pos]+marker+'\n| FX-001 / hero | defining | reveal construction | static/simple/expressive prototypes | layered reveal | desktop.mp4 / mobile.mp4 / reduced.png |'+text[pos+len(marker):]
-        marker='|---|---|---|---|---|---|'
-        pos=text.find(marker,text.find('### Independent color challenge'))
-        text=text[:pos]+marker+'\n| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | selected improves material distinction | PASS |'+text[pos+len(marker):]
         for axis in ('THESIS','TYPOGRAPHIC_VOICE','COLOR_PROVENANCE','COLOR_COMPOSITION','MEDIA_INTEGRATION','MECHANISM_SALIENCE','DEPTH_RHYTHM_DETAIL','DIRECTION_FIDELITY'):
             text=text.replace(f'| {axis} | | | | REVISE |',f'| {axis} | rendered evidence | removal changes the thesis | desktop.png + mobile.png + interaction.mp4 | PASS |')
         text=add_capability_rows(text,(('anthropic-frontend-design','visual-experience'),('jakub-interface-polish','visual-experience'),('jakub-interface-polish','design-review'))); visual.write_text(text,encoding='utf-8')
@@ -860,8 +860,8 @@ class SemanticValidationTests(unittest.TestCase):
             text=path.read_text(encoding='utf-8').replace(
                 '| COLOR_COMPOSITION | rendered evidence | removal changes the thesis | desktop.png + mobile.png + interaction.mp4 | PASS |',
                 '| COLOR_COMPOSITION | rendered evidence | removal changes the thesis | desktop.png + mobile.png + interaction.mp4 | REVISE |',1).replace(
-                '| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | selected improves material distinction | PASS |',
-                '| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | selected improves material distinction | REVISE |',1)
+                '| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | IDN-001 | Deep-ink recognition remains dominant; no prohibited consequence observed | selected improves material distinction without losing recognition | PASS |',
+                '| CLR-900:evidence/clr-challenge-sheet.png | hierarchy weakens | identity flattens | becomes interchangeable | IDN-001 | Deep-ink recognition remains dominant; no prohibited consequence observed | selected improves material distinction without losing recognition | REVISE |',1)
             path.write_text(text,encoding='utf-8')
             result=run(repo,'tools/validate_gate.py','G3','--project-dir','projects/test-project')
             self.assertNotEqual(result.returncode,0)

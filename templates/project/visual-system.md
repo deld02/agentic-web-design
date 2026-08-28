@@ -26,6 +26,7 @@ Apply each candidate to the same representative headline, paragraph, CTA, media 
 Develop the selected G2 composition rather than restarting art direction. Preserve its transferable logic across the hero and body; record every intentional change.
 
 CREATIVE_MASTER_SOURCE: AM-___
+IDENTITY_INHERITANCE: `IDN-* | NO_EXISTING_IDENTITY`
 INVARIANTS_PRESERVED:
 DELIBERATE_DEVIATIONS:
 HERO_BODY_TRANSLATION:
@@ -145,8 +146,8 @@ Judge the rendered hero, not the owner's description. Every axis must be `PASS`;
 
 07 produces one physical contact sheet over the selected hero. A written `PASS` without the file is invalid.
 
-| Physical evidence (`CLR-ID:path`) | Accent removed | Neutral swap | Category-typical swap | Observable advantage of selected territory | Verdict (`PASS | REVISE`) |
-|---|---|---|---|---|---|
+| Physical evidence (`CLR-ID:path`) | Accent removed | Neutral swap | Category-typical swap | Identity constraints tested (`IDN-* | NO_EXISTING_IDENTITY`) | Recognition / brand-drift finding | Observable advantage of selected territory | Verdict (`PASS | BRAND_DRIFT | REVISE`) |
+|---|---|---|---|---|---|---|---|
 
 ## Design capability log
 

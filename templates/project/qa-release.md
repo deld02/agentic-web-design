@@ -118,6 +118,17 @@ ASSET_COMPLETENESS: INCOMPLETE
 LIMITATIONS:
 HANDOFF_SUMMARY:
 
+### Managed execution proof
+
+These fields are written by the harness only after `release` completes and the full evaluation passes. Owners do not prefill or simulate them.
+
+EXECUTION_MODE: UNMANAGED
+HARNESS_RUN_ID: NOT_AVAILABLE
+HARNESS_STATUS: NOT_COMPLETE
+STAGES_COMPLETED: 0/13
+VALIDATION_REPORT: NOT_RUN
+EXECUTION_RECEIPT: NOT_AVAILABLE
+
 ## Design capability log
 
 | Capability | Mode | Rule scope | Findings | Closure evidence |

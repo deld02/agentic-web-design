@@ -42,13 +42,15 @@
     "validation_final_delivery.py",
     "validation_image_generation.py",
     "validation_identity.py",
+    "validation_execution_receipt.py",
     "validation_project_paths.py",
     "validation_release_integrity.py",
     "validation_motion_payload.py",
     "validation_spatial_experience.py",
     "validation_stage_readiness.py",
     "validation_user_authority.py",
-    "reopen_project.py"
+    "reopen_project.py",
+    "verify_execution.py"
   ],
   "required_runtime_files": [
     "docs/methods/progressive-intake.md",

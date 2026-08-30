@@ -50,17 +50,24 @@ python tools/validate_delivery.py --project-dir projects/my-landing --implementa
 python -m unittest discover -s tests -v
 ```
 
-## Harness externo de evaluación
+## Ejecución gestionada
 
-El harness prueba el sistema sin añadir agentes ni fases al proyecto. Crea un run aislado, registra el orden real, limita tiempo y correcciones, exige evidencia de generación visual y prepara un snapshot para la revisión final de 07.
+Leer el repositorio no equivale a ejecutar el sistema. Para un proyecto real dentro de ChatGPT existe un único arranque canónico:
 
 ```text
-python tools/evaluation_harness.py init --scenario institutional-event
-python tools/evaluation_harness.py record --run-dir <run> --event stage_start --stage definition --agent 00
-python tools/evaluation_harness.py evaluate --run-dir <run>
-python tools/evaluation_harness.py packet --run-dir <run>
+python tools/evaluation_harness.py chat-start --brief-file <brief>
 ```
 
-Los seis escenarios y sus límites viven en `harness/scenarios.json`. `capture` genera renders desktop/móvil con Chrome o Edge local; `execute` aplica un timeout total a un ejecutor externo.
+La respuesta debe exponer `execution_mode`, `run_id`, `run_dir`, `project_dir`, `stage`, `agent` y `mode`. Completa exclusivamente esa etapa y avanza con `chat-next`. Durante `creative-master` y la producción de imágenes finales, registra cada raster real con `chat-image`.
+
+Para un ejecutor headless, usa `doctor`, `init` y `run`; `record` es instrumentación de bajo nivel y nunca sustituye una ejecución gestionada. Los seis escenarios y sus límites viven en `harness/scenarios.json`.
+
+Una ejecución completa genera `execution-receipt.json`. Verifícala sin confiar en la declaración del modelo:
+
+```text
+python tools/verify_execution.py --receipt <run-dir>/execution-receipt.json
+```
+
+Sin un recibo válido, el resultado puede estar inspirado en la metodología, pero no puede presentarse como una ejecución completa de Agentic Web Design.
 
 All writes stay in the local project and implementation roots supplied by the user. Publishing or writing to an external service requires an explicit request.

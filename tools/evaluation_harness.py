@@ -33,6 +33,7 @@ from ui_quality_scan import scan_implementation
 from validation_capability_activation import stage_capability_instruction
 from validation_common import valid_signature
 from validation_image_generation import generated_asset_targets, missing_generation_receipts
+from validation_execution_receipt import write_execution_receipt
 from validation_project_paths import implementation_root_for
 from validation_spatial_experience import spatial_stage_instruction
 from validation_stage_readiness import stage_readiness_errors
@@ -274,6 +275,7 @@ def chat_status(run_dir: Path) -> dict[str, Any]:
     return {
         "status": run["status"],
         "execution_mode": "CHAT_INTERACTIVE",
+        "run_id": run["run_id"],
         "run_dir": str(run_dir),
         "project_dir": str((run_dir / "project").resolve()),
         "stage": stage["id"],
@@ -371,10 +373,8 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
     index = next(i for i, item in enumerate(stages) if item["id"] == stage["id"])
     if index == len(stages) - 1:
         report = evaluate(run_dir)
-        run = load_json(run_dir / "run.json")
-        run.update(status="COMPLETE" if report["status"] == "PASS" else "FAILED", executor_finished_at=utc_now(), report_status=report["status"])
-        write_json(run_dir / "run.json", run)
-        return {"status": run["status"], "run_dir": str(run_dir), "report": report["status"], "findings": report["findings"]}
+        run = _finish_managed_run(run_dir, report)
+        return {"status": run["status"], "run_dir": str(run_dir), "report": run["report_status"], "execution_receipt": run.get("execution_receipt"), "findings": report["findings"]}
     next_stage = stages[index + 1]
     append_event(run_dir, {"event": "stage_start", "stage": next_stage["id"], "agent": next_stage["agent"]})
     run = load_json(run_dir / "run.json")
@@ -467,7 +467,7 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
     completed = {event["stage"] for event in existing_events if event.get("event") == "stage_complete"}
     started = {event["stage"] for event in existing_events if event.get("event") == "stage_start"}
     run = load_json(run_dir / "run.json")
-    run.update(status="RUNNING", executor_command=command, executor_started_at=utc_now())
+    run.update(status="RUNNING", execution_mode="HEADLESS_MANAGED", executor_command=command, executor_started_at=utc_now())
     write_json(run_dir / "run.json", run)
     for stage in stages:
         if stage["id"] in completed:
@@ -526,10 +526,20 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
             run.update(status="PARTIAL", active_stage=stage["id"], executor_finished_at=utc_now())
             write_json(run_dir / "run.json", run)
             return run
-    report = evaluate(run_dir)
+    return _finish_managed_run(run_dir, evaluate(run_dir))
+
+
+def _finish_managed_run(run_dir: Path, report: dict[str, Any]) -> dict[str, Any]:
     run = load_json(run_dir / "run.json")
     run.update(status="COMPLETE" if report["status"] == "PASS" else "FAILED", executor_finished_at=utc_now(), report_status=report["status"])
     write_json(run_dir / "run.json", run)
+    if run["status"] == "COMPLETE":
+        try:
+            receipt = write_execution_receipt(run_dir, ROOT)
+            run["execution_receipt"] = str(receipt.resolve())
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            run.update(status="FAILED", report_status="FAIL", findings=[f"execution receipt failed: {exc}"])
+        write_json(run_dir / "run.json", run)
     return run
 
 
@@ -868,7 +878,7 @@ def create_packet(run_dir: Path) -> Path:
             copy(source, artifacts / source.relative_to(project_dir))
     for index, source in enumerate(_referenced_files(project_dir), 1):
         copy(source, evidence / f"{index:03d}-{source.name}")
-    for name in ("scenario.json", "run.json", "events.jsonl", "report.json", "report.md", "visual-review.json", "quality-scan.json"):
+    for name in ("scenario.json", "run.json", "events.jsonl", "report.json", "report.md", "visual-review.json", "quality-scan.json", "execution-receipt.json"):
         source = run_dir / name
         if source.is_file():
             copy(source, packet / "harness" / name)

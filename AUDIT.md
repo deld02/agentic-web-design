@@ -1,7 +1,7 @@
 # Audit status
 
-System version: 6.5.0
-Audit date: 2026-08-28  
+System version: 6.6.0
+Audit date: 2026-08-30
 Result: PASS
 
 - 8 roles, 6 gates and 13 stages;
@@ -51,7 +51,7 @@ Result: PASS
 - external coding environments remain executor adapters rather than prescribed project dependencies;
 - 161 tests passed.
 
-Full report: `docs/audit/system-audit-v6.5.0.md`
+Full report: `docs/audit/system-audit-v6.6.0.md`
 Next review: 2026-11-22
 
 

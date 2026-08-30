@@ -1,4 +1,4 @@
-# Workflow — v6.5.0
+# Workflow — v6.6.0
 
 `config/pipeline.json` is the executable workflow. This page is only its human-readable summary.
 

@@ -29,4 +29,6 @@ The delivery package contains only what the recipient needs to run, build or ins
 
 ## User-facing completion
 
-The final response must expose concrete paths or URLs for the package, entry/preview and both final renders, plus the status, commands and limitations. Never say “delivered” while making the user search for the product.
+After `release`, the harness writes the managed-execution fields in `qa-release.md` and creates `execution-receipt.json`, bound to the events, report, final contract and implementation digest. Verify it with `tools/verify_execution.py --receipt <path>`.
+
+The final response begins with `AGENTIC WEB DESIGN: VERIFIED` and exposes the receipt, package, entry/preview and both final renders, plus status, commands and limitations. Without a valid receipt it begins with `AGENTIC WEB DESIGN: UNMANAGED` and may not claim the system or pipeline completed. Never say “delivered” while making the user search for the product.

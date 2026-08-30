@@ -45,6 +45,8 @@ python tools/evaluation_harness.py chat-next --run-dir <run>
 
 `chat-next` derives artifact writes from filesystem changes, validates the current owner, gate and checkpoint, and opens exactly one successor. It permits the same single correction and user checkpoint as `run`. `chat-image` works only during `creative-master`, requires a valid raster inside the managed project and records the generation receipt; without it, progression is blocked.
 
+On a successful final `release`, both managed adapters create `execution-receipt.json`. It records the exact 13-stage sequence, approved gates, isolated reviews and digests for events, report, final contract and implementation. `tools/verify_execution.py` recomputes those values; a changed build or fabricated/stale receipt fails. This receipt is user-facing proof of execution, not a score of artistic quality.
+
 The harness sets `HARNESS_RUN_DIR`, `HARNESS_PROJECT_DIR`, `HARNESS_SCENARIO`, `HARNESS_STAGE`, `HARNESS_AGENT`, `HARNESS_MODE` and `HARNESS_PROMPT_FILE`. The stage prompt is also sent through stdin. `execute` remains available only as a low-level uninstrumented primitive; use `run` for an actual evaluation.
 
 If `doctor` returns `NO_EXECUTOR`, use `CHAT_INTERACTIVE` when the current chat has Python and repository-file access. Otherwise install or provide a headless agent CLI. A packaged desktop application that Windows refuses to invoke cannot be driven by Python; the harness reports that limitation instead of pretending an external execution started.

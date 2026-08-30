@@ -1,5 +1,5 @@
 {
-  "version": "6.5.0",
+  "version": "6.6.0",
   "agents": [
     {"id":"00","name":"Design Director","file":"agents/00-design-director.md","modes":["definition","gate-control","release"]},
     {"id":"01","name":"Strategy & Research","file":"agents/01-strategy-research.md","modes":["research-strategy"]},

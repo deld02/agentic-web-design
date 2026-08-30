@@ -2,6 +2,14 @@
 
 No borrar decisiones revertidas.
 
+## D-085 — La ejecución completa necesita un recibo externo verificable
+
+**Fecha:** 2026-08-30
+**Contexto:** conversaciones externas leían la metodología, construían manualmente y solo al ser interrogadas admitían que el harness nunca había gobernado el trabajo. La documentación fail-closed no permitía al usuario distinguirlo al recibir la landing.
+**Decisión:** el arranque canónico de ChatGPT es `chat-start`; antes del diseño se exponen sus valores gestionados. Tras `release`, el harness crea un recibo ligado a secuencia, gates, reviews, master, informe, contrato y build. Sin verificación, la respuesta debe declararse `UNMANAGED`.
+**Enforcement:** ambos adaptadores gestionados producen `execution-receipt.json`; `tools/verify_execution.py` recalcula todos los digests y bloquea secuencias incompletas, recibos alterados y builds posteriores. No añade agentes, gates, stages ni checkpoints.
+**Estado:** ACTIVE desde v6.6.0.
+
 ## D-084 — El medio espacial se decide antes del runtime
 
 **Fecha:** 2026-08-28

@@ -1,5 +1,14 @@
 # Changelog
 
+## v6.6.0 — 2026-08-30 · Ejecución gestionada demostrable
+
+- Unifica el arranque de ChatGPT en `chat-start → chat-next` y retira del README el flujo manual obsoleto como vía de ejecución.
+- Expone modo, run, proyecto y etapa activa antes de investigar o diseñar; sin preflight el resultado es `UNMANAGED`.
+- Genera `execution-receipt.json` únicamente tras completar las 13 etapas, aprobar G0–G5, cerrar las tres revisiones aisladas y obtener `PASS`.
+- Vincula el recibo a los eventos, informe, contrato final y digest completo del build; cualquier cambio posterior invalida la prueba.
+- Añade `tools/verify_execution.py` y obliga a distinguir `AGENTIC WEB DESIGN: VERIFIED` de una entrega meramente inspirada en el método.
+- Conserva ocho agentes, seis gates, trece etapas y un único checkpoint humano; 170 tests pasan.
+
 ## v6.5.0 — 2026-08-28 · Experiencia espacial condicional y verificable
 
 - Cierra la modalidad espacial en G3 antes de elegir tecnología; compara 2D, capas, 3D renderizado e interactivo sobre el mismo trabajo narrativo.

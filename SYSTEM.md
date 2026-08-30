@@ -1,4 +1,4 @@
-# Agentic Landing Design OS v6.5.0
+# Agentic Landing Design OS v6.6.0
 
 This system creates one high-design landing from research through verified implementation. It does not own SEO, analytics, marketing operations or product-app design.
 

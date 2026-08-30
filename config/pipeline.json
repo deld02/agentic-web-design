@@ -1,5 +1,5 @@
 {
-  "version": "6.5.0",
+  "version": "6.6.0",
   "owner_of_state": "00",
   "stages": [
     {"id":"definition","agent":"00","mode":"definition","gate":"G0","depends_on":[],"entry_requires":{"gates":{},"checkpoints":{}}},

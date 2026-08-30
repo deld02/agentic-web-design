@@ -72,8 +72,11 @@ def build_pack(output_root: Path) -> tuple[Path, Path]:
         "The only roles are `00` through `07`; the only pipeline authority is `config/pipeline.json`.\n\n"
         "For a real project, first save the user brief and run:\n\n"
         "```text\npython tools/evaluation_harness.py chat-start --brief-file <brief>\n```\n\n"
-        "Then complete only the returned stage and use `chat-next`. During `creative-master`, "
-        "generate a real raster and register it with `chat-image` before advancing.\n\n"
+        "Before design, show the returned execution mode, run ID/directories and active stage/agent/mode. "
+        "Then complete only that stage and use `chat-next`. During `creative-master`, "
+        "generate a real raster and register it with `chat-image` before advancing. A valid final run "
+        "creates `execution-receipt.json`; verify it with `tools/verify_execution.py`. Without it, report "
+        "`AGENTIC WEB DESIGN: UNMANAGED` and never claim pipeline completion.\n\n"
         "Do not search for or reconstruct earlier architectures. This pack intentionally contains no historical audits, changelog or superseded decision log.\n"
     )
     (pack / "START-HERE.md").write_text(runtime, encoding="utf-8")

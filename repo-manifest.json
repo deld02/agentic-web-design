@@ -1,12 +1,12 @@
 {
   "name":"agentic-web-design-os",
-  "version":"6.6.0",
+  "version":"6.8.0",
   "created":"2026-08-19",
-  "last_audit":"2026-08-27",
+  "last_audit":"2026-08-31",
   "purpose":"Compact, design-first operating system for landing creation",
   "agents":8,
   "release_gate":"G5",
-  "audit":{"date":"2026-08-28","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":161,"verification":"Conditional spatial modality, runtime spike, semantic-state production and digest-bound spatial QA enforced by the harness and validated with 161 local tests"}
+  "audit":{"date":"2026-08-31","status":"PASS","agents":8,"gates":6,"stages":13,"dependency_cycles":0,"tests":181,"verification":"One MCP orchestrator supplies bounded specialist packets, owns official state and enforces physical creative evidence; 181 local tests pass"}
 }
 
 

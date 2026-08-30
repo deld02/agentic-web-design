@@ -1,12 +1,13 @@
 # Audit status
 
-System version: 6.6.0
-Audit date: 2026-08-30
+System version: 6.8.0
+Audit date: 2026-08-31
 Result: PASS
 
 - 8 roles, 6 gates and 13 stages;
 - 0 dependency cycles;
 - one executable critical path;
+- one harness-owned orchestrator that supplies the complete active specialist packet and is the sole managed writer of official state;
 - progressive loading of the active owner and method;
 - independent direction, visual and build reviews;
 - physical generated-direction, structural-render, media and effect evidence;
@@ -49,9 +50,13 @@ Result: PASS
 - interactive 3D requires a physical runtime spike, semantic `SPT-*` states and bounded loading/fallback policies;
 - spatial QA covers every selected state on desktop/mobile with unique digest-bound evidence;
 - external coding environments remain executor adapters rather than prescribed project dependencies;
-- 161 tests passed.
+- MCP clients are restricted to the active owner and the canonical pipeline;
+- MCP initialization states the mandatory order and supports private ChatGPT access through Secure MCP Tunnel;
+- paid image generation writes and registers physical raster evidence at existing image stages;
+- focal visual authority rejects CSS/SVG primitives, amateur icons and remote URLs as substitutes for required imagery;
+- 178 tests passed.
 
-Full report: `docs/audit/system-audit-v6.6.0.md`
+Full report: `docs/audit/system-audit-v6.8.0.md`
 Next review: 2026-11-22
 
 

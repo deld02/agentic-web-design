@@ -12,6 +12,7 @@ Diagnóstico visual del render, decisiones de media, encuadres, capas, motion, f
 
 - producir assets antes del build estructural aprobado;
 - sustituir generación real por SVG/CSS, prompts o briefs pendientes;
+- clasificar como decoración auxiliar una geometría, diagrama o icono que ocupa el foco reservado para media;
 - inventar fotografía documental;
 - añadir efectos sin una mejora visible;
 - elegir el stack.
@@ -31,7 +32,7 @@ Technology checkpoint aprobado, master creativo, build estructural y renders des
 3. Para cada escena selecciona formato y comportamiento por separado siguiendo el inventario de `image-decisions.md`.
 4. Aplica sin reinterpretar la elegibilidad de `effect-selection.md`, autoridad única para mecanismos no estáticos. Registra siempre mobile, reduced-motion y fallback.
 5. Cuando G3 haya seleccionado `RENDERED_3D` o `INTERACTIVE_3D`, consume esa decisión sin reabrirla y completa únicamente la fase de producción/storyboard de `docs/methods/spatial-experience.md`.
-6. Decide `IMAGE | NO_IMAGE` y define representación, verdad, proporción, encuadre, responsive e integración. Elimina assets que repiten el mismo trabajo visual.
+6. Decide `IMAGE | NO_IMAGE` y define representación, verdad, proporción, encuadre, responsive e integración. Todo elemento no textual focal entra en esta decisión aunque sea CSS/SVG. Compara su render con eliminación total y una alternativa producida creíble; elimina assets que repiten el mismo trabajo visual.
 7. Emite briefs `IH-*` y ejecuta el subloop de producción dentro de `production-plan`. Para raster representativo/conceptual nuevo usa generación real de ChatGPT salvo que el brief justifique otro medio; registra cada `IMG-*`. Media auténtica, licenciada, vídeo o 3D siguen su ruta real. Valida continuidad, verdad, safe zones y formato; permite una única regeneración dirigida por asset.
 8. Una crítica o prohibición de una imagen, estilo, proveedor o herramienta invalida solo ese resultado o ruta: conserva el trabajo visual de la escena, cambia el brief o el medio y produce la alternativa. No convierte la landing en text-only ni static-only salvo cita exacta del usuario validada contra el escenario inmutable.
 9. Cuando una referencia temporal aprobada sea material, consume su especificación MengTo; no copia el efecto ni su superprompt.

@@ -7,6 +7,8 @@ description: Research, design and build a distinctive landing through the reposi
 
 ## Execution lock — check before any design work
 
+When the harness MCP is available, it is the canonical chat runtime. Call `start_landing` and execute only the returned `stage_packet`. The packet already contains the active specialist contract, required project inputs, current writable artifact, stage-specific methods and automatic capabilities. Load a conditional capability with `get_guidance` only when its declared trigger is present. Never reconstruct the system from GitHub or edit `status.json`; the harness embodies agent 00 and owns every transition.
+
 Landing creation is valid only in one of two harness-managed modes:
 
 - `HEADLESS_MANAGED`: `tools/evaluation_harness.py run` launched the executor and exposes `HARNESS_RUN_DIR`, `HARNESS_PROJECT_DIR`, `HARNESS_STAGE`, `HARNESS_AGENT` and `HARNESS_MODE`.
@@ -18,7 +20,7 @@ Before research or design, show the user the managed bootstrap values returned b
 
 During `creative-master`, invoke real image generation. In headless mode emit the required `HARNESS_EVENT` only after success. In chat mode save the returned raster inside the managed project and immediately run `chat-image --file <path>`; `chat-next` blocks without it. A manually drawn SVG, CSS composition, prompt or declaration is not equivalent. The `AM-*` is an art-direction source, not a promised hero layout; the actual implementation target is the reviewed hero `CMP-*` created in G3.
 
-Use `config/pipeline.json` as the execution authority. Create a project with `tools/new_project.py` when needed, then load only its current artifacts, the active agent contract and the method linked there. Do not reconstruct the whole system in context.
+Use `config/pipeline.json` as the execution authority. Outside MCP, create a project with `tools/new_project.py` when needed, then load only its current artifacts, the active agent contract and the method linked there. Do not reconstruct the whole system in context.
 
 At every stage, read the capability router path supplied by the harness. Apply and log every `core + automatic` capability listed for that exact stage; evaluate conditional candidates only by their registered trigger. `chat-next` and the headless stage validator block missing activations, so a handwritten substitute or an unlogged claim is not a completed stage.
 
@@ -41,4 +43,4 @@ When a tool or correction fails twice, stop with valid work preserved and explai
 
 Write only inside the user-approved local project and implementation roots. Publishing, pushing or writing to GitHub or any external service requires an explicit user request.
 
-For a headless executor use `doctor`, `init` and active `run`. Inside ChatGPT without an external CLI use `chat-start`, `chat-status`, `chat-image` and `chat-next`. Never treat an initialized folder or manually injected event log as an executed test.
+When the harness MCP tools are available, use `start_landing`, the bounded active-stage file tools, `generate_image | register_image`, `advance_stage` and final `verify_run`; this is the canonical chat route. For a headless executor use `doctor`, `init` and active `run`. Inside ChatGPT without MCP or an external CLI use `chat-start`, `chat-status`, `chat-image` and `chat-next`. Never treat an initialized folder or manually injected event log as an executed test.

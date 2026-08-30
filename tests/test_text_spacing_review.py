@@ -11,7 +11,7 @@ from project_validation import visual_narrative_review_errors
 
 AXES = (
     "WHOLE_PAGE_RHYTHM", "HERO_TARGET_FIDELITY", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY",
-    "FORMAT_FIT", "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK", "TEXT_SPACING_CRAFT",
+    "FORMAT_FIT", "FOCAL_VISUAL_AUTHORITY", "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK", "TEXT_SPACING_CRAFT",
 )
 
 
@@ -27,6 +27,8 @@ class TextSpacingReviewTests(unittest.TestCase):
                 evidence = "CMP-001 compared with final desktop and mobile renders"
             elif axis == "TEXT_SPACING_CRAFT":
                 evidence = spacing_evidence
+            elif axis == "FOCAL_VISUAL_AUTHORITY":
+                evidence = "SCN-001 removal and produced alternative compared in final desktop and mobile renders"
             else:
                 evidence = "final desktop and mobile rendered evidence"
             rows.append(f"| {axis} | {evidence} | no finding / 07 | PASS |")
@@ -59,6 +61,21 @@ class TextSpacingReviewTests(unittest.TestCase):
         td, project = self.fixture(spacing_evidence="Spacing looks correct")
         try:
             self.assertTrue(any("TEXT_SPACING_CRAFT evidence" in item for item in visual_narrative_review_errors(project)))
+        finally:
+            td.cleanup()
+
+    def test_focal_visual_without_physical_alternative_comparison_is_blocked(self):
+        td, project = self.fixture()
+        try:
+            qa = project / "qa-release.md"
+            qa.write_text(
+                qa.read_text(encoding="utf-8").replace(
+                    "SCN-001 removal and produced alternative compared in final desktop and mobile renders",
+                    "The decorative circles look acceptable",
+                ),
+                encoding="utf-8",
+            )
+            self.assertTrue(any("FOCAL_VISUAL_AUTHORITY" in item for item in visual_narrative_review_errors(project)))
         finally:
             td.cleanup()
 

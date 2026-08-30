@@ -590,7 +590,7 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
     qa = markdown(project_dir, "qa-release.md")
     rows = table_rows(qa, "### Visual narrative verification", "Axis")
     required = {
-        "WHOLE_PAGE_RHYTHM", "HERO_TARGET_FIDELITY", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT",
+        "WHOLE_PAGE_RHYTHM", "HERO_TARGET_FIDELITY", "EXPERIENCE_CONTINUITY", "ASSET_NECESSITY", "FORMAT_FIT", "FOCAL_VISUAL_AUTHORITY",
         "MECHANISM_ELIGIBILITY", "TRANSITION_CONTINUITY", "MOBILE_FALLBACK", "TEXT_SPACING_CRAFT",
     }
     seen: set[str] = set()
@@ -616,6 +616,8 @@ def visual_narrative_review_errors(project_dir: Path) -> list[str]:
             errors.append("G4 TEXT_SPACING_CRAFT evidence must name SCN-* locations and desktop/mobile renders")
         if axis == "HERO_TARGET_FIDELITY" and not all(token in evidence.upper() for token in ("CMP-", "DESKTOP", "MOBILE")):
             errors.append("G4 HERO_TARGET_FIDELITY must compare the approved CMP-* with final desktop and mobile renders")
+        if axis == "FOCAL_VISUAL_AUTHORITY" and not all(token in evidence.upper() for token in ("SCN-", "DESKTOP", "MOBILE", "REMOV", "PRODUC")):
+            errors.append("G4 FOCAL_VISUAL_AUTHORITY must name SCN-* and compare removal with a produced alternative in desktop/mobile renders")
     for axis in sorted(required - seen):
         errors.append(f"G4 visual narrative review missing {axis}")
     return errors

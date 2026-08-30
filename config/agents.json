@@ -1,7 +1,7 @@
 {
-  "version": "6.6.0",
+  "version": "6.8.0",
   "agents": [
-    {"id":"00","name":"Design Director","file":"agents/00-design-director.md","modes":["definition","gate-control","release"]},
+    {"id":"00","name":"Orchestrator & Design Director","file":"agents/00-design-director.md","modes":["definition","gate-control","release"]},
     {"id":"01","name":"Strategy & Research","file":"agents/01-strategy-research.md","modes":["research-strategy"]},
     {"id":"02","name":"UX & Content","file":"agents/02-ux-content.md","modes":["content-architecture"]},
     {"id":"03","name":"Art Direction","file":"agents/03-art-direction.md","modes":["direction-divergence","creative-master"]},

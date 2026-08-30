@@ -38,6 +38,8 @@ Review each visually distinct scene, not every repeated component. Ask:
 - whether the scene needs a composition reference, final raster/vector media, separate layers or only native CSS;
 - how the visual idea survives mobile, reduced motion, loading and content variation.
 
+A native graphic is not automatically the simple winner. When it occupies the visual slot of an image or artwork, compare it on the real composition against removal and a credible produced alternative. Interchangeable primitive geometry, faux diagrams and generic icon arrangements are failed focal visuals, not economical implementations.
+
 Compare only viable delivery modes: `CSS_NATIVE | EXISTING_MEDIA | EXTERNAL_IMAGE_LOOP | CUSTOM_ILLUSTRATION | VIDEO_RENDER | 3D | HYBRID`. G3 records intent and decomposition; G4 turns real render gaps into production briefs and invokes the selected production route.
 
 For `focused`, G3 resolves the hero in desktop/mobile and adds a body comp only when that scene has a materially different visual job. For `standard` and `extended`, G3 also resolves one materially different body scene in desktop/mobile. Utility scenes still record the value decision but may inherit established rules and need no separate composition evidence when the baseline wins.

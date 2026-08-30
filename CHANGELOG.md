@@ -1,5 +1,24 @@
 # Changelog
 
+## v6.8.0 — 2026-08-31 · Orquestación ejecutable para ChatGPT
+
+- Mantiene los ocho especialistas existentes y convierte a 00 en el único orquestador; no añade roles, gates ni etapas redundantes.
+- Cada llamada MCP devuelve un `stage_packet` autocontenido con contrato, inputs, artefacto, métodos y capacidades de la etapa activa.
+- El chat deja de depender de leer GitHub, reconstruir el sistema en contexto o recordar instrucciones de fases anteriores.
+- El harness pasa a ser el único writer de `status.json`: valida la evidencia, cierra el estado actual y abre exactamente un sucesor.
+- Las capacidades condicionales se cargan bajo demanda y solo si pertenecen a la etapa activa.
+- Añade pruebas de aislamiento de estado, contenido del paquete y transición secuencial; 181 tests pasan.
+
+## v6.7.0 — 2026-08-30 · Harness MCP e imagen física obligatoria
+
+- Expone el pipeline canónico mediante un servidor MCP stdio/HTTP; no añade agentes, gates, stages ni artefactos de diseño.
+- Limita cada escritura al owner activo y bloquea paths fuera del proyecto gestionado.
+- Integra generación raster real con `gpt-image-2`, registra el recibo existente y conserva aprobación del cliente para la llamada con coste.
+- Impide que CSS, SVG, círculos, diagramas, iconos improvisados o URLs remotas sustituyan un visual focal exigido.
+- Añade `FOCAL_VISUAL_AUTHORITY` a la revisión final y exige comparación física de eliminación y alternativa producida en desktop/móvil.
+- Solo `verify_run: verified=true` permite presentar la ejecución como completa.
+- Añade instrucciones MCP de inicialización y la ruta privada mediante OpenAI Secure MCP Tunnel; GitHub/ZIP dejan de presentarse como runtime por sí solos.
+
 ## v6.6.0 — 2026-08-30 · Ejecución gestionada demostrable
 
 - Unifica el arranque de ChatGPT en `chat-start → chat-next` y retira del README el flujo manual obsoleto como vía de ejecución.

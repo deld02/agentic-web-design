@@ -33,7 +33,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 
 ## Roles
 
-The eight files in `agents/` define ownership, not eight mandatory conversations. Only the active owner contract and its linked method should be loaded. Agent 07 reviews independently; findings return to the owner.
+The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. In managed chat mode the MCP returns a complete `stage_packet` containing only the active specialist contract, its required inputs, stage-specific methods and applicable capabilities. The harness—not the model—owns `status.json`, validates the stage and opens exactly one successor. Agent 07 reviews independently; findings return to the causal owner.
 
 ## Technology
 
@@ -51,6 +51,38 @@ python -m unittest discover -s tests -v
 ```
 
 ## Ejecución gestionada
+
+La vía preferente para un cliente compatible es el MCP del harness. No crea otro
+pipeline: expone el existente como herramientas acotadas y verificables.
+
+```bash
+# Codex/cliente local (stdio)
+python tools/harness_mcp_server.py --transport stdio
+
+# Desarrollo HTTP local
+python tools/harness_mcp_server.py --transport http --host 127.0.0.1 --port 8765
+```
+
+El endpoint HTTP es `http://127.0.0.1:8765/mcp`. Para ChatGPT en developer mode,
+la opción preferente es **Secure MCP Tunnel**: crea el túnel en OpenAI Platform y
+ejecuta `tunnel-client` en el equipo con un perfil stdio cuyo `--mcp-command` sea
+`python <repo>/tools/harness_mcp_server.py --transport stdio`. Es una conexión HTTPS
+saliente; no exige publicar el ordenador. Mantén `tunnel-client run` activo mientras
+se usa la app en ChatGPT. La alternativa pública sí requiere HTTPS, autenticación y
+un origen permitido; el servidor se niega a enlazar una interfaz no local sin token.
+
+Configura `OPENAI_API_KEY` para que `generate_image` produzca y registre el raster
+físico con `gpt-image-2`. La llamada puede tener coste y debe conservar la aprobación
+del cliente MCP. El ZIP o el conector de GitHub por sí solos no ejecutan nada: solo
+son una ruta válida cuando el chat dispone realmente de Python, inicia `chat-start`
+y muestra el preflight gestionado antes de investigar.
+
+El flujo MCP es `start_landing` → ejecutar únicamente el `stage_packet` →
+`advance_stage`. Los especialistas no escriben `status.json`. `creative-master` no avanza sin `generate_image` o
+`register_image`; `production-plan` tampoco avanza si un `IMG-*` generado no ha
+vuelto físicamente. CSS, SVG, círculos, diagramas o iconos improvisados no cuentan
+como sustitutos de una imagen exigida. `verify_run` debe devolver `verified: true`
+antes de afirmar que el sistema se ejecutó por completo.
 
 Leer el repositorio no equivale a ejecutar el sistema. Para un proyecto real dentro de ChatGPT existe un único arranque canónico:
 

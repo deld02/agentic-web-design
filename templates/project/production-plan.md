@@ -34,6 +34,8 @@ This is the single ordered image decision and production map. Every used image o
 
 Every outlined `SCN-*` receives one decision. Roles: `BACKGROUND | LATERAL | INLINE | FOREGROUND | ICON | TEXTURE | TRANSITION | NONE`.
 
+A large or high-contrast CSS/SVG/icon composition is focal media, not exempt decoration. Its scene row must record the physical comparison against complete removal and a credible produced-media/artwork alternative. Interchangeable primitive geometry cannot be selected merely because it is cheap or already coded.
+
 | Scene ID | Decision (`IMAGE | NO_IMAGE`) | Role | What it must represent / why none | Truth or source constraint | Desktop/mobile placement and behavior | Production route (`EXISTING | EXTERNAL:IH-### | NONE`) |
 |---|---|---|---|---|---|---|
 

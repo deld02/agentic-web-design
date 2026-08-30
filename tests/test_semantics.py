@@ -175,8 +175,8 @@ class SemanticValidationTests(unittest.TestCase):
         qa=repo/'projects/test-project/qa-release.md'; text=add_complete_delivery_contract(qa.read_text(encoding='utf-8'))
         text=text.replace('FINAL_RENDER_DESKTOP:','FINAL_RENDER_DESKTOP: evidence/final-desktop.png',1)
         text=text.replace('FINAL_RENDER_MOBILE:','FINAL_RENDER_MOBILE: evidence/final-mobile.png',1)
-        for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK','TEXT_SPACING_CRAFT'):
-            evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else ('SCN-001, SCN-002 and SCN-003 inspected in final desktop and mobile renders with loaded fonts' if axis=='TEXT_SPACING_CRAFT' else 'desktop and mobile final renders show the intended result'); text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
+        for axis in ('WHOLE_PAGE_RHYTHM','HERO_TARGET_FIDELITY','EXPERIENCE_CONTINUITY','ASSET_NECESSITY','FORMAT_FIT','FOCAL_VISUAL_AUTHORITY','MECHANISM_ELIGIBILITY','TRANSITION_CONTINUITY','MOBILE_FALLBACK','TEXT_SPACING_CRAFT'):
+            evidence='CMP-001 compared with final desktop and mobile renders' if axis=='HERO_TARGET_FIDELITY' else ('SCN-001 removal and produced alternative compared in final desktop and mobile renders' if axis=='FOCAL_VISUAL_AUTHORITY' else ('SCN-001, SCN-002 and SCN-003 inspected in final desktop and mobile renders with loaded fonts' if axis=='TEXT_SPACING_CRAFT' else 'desktop and mobile final renders show the intended result')); text=text.replace(f'| {axis} | | | REVISE |',f'| {axis} | {evidence} | no blocking finding / 07 | PASS |')
         text=add_capability_rows(text,(('jakub-interface-polish','build-review'),('vercel-web-interface-guidelines','build-review'))); qa.write_text(text,encoding='utf-8')
         add_release_integrity_fixture(repo,run)
         text=qa.read_text(encoding='utf-8').replace(

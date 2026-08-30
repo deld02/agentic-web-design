@@ -333,7 +333,7 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
         item.get("target") for item in read_events(run_dir)
         if item.get("event") == "artifact_write" and item.get("stage") == stage["id"]
     }
-    for target in sorted(name for name, value in current.items() if previous.get(name) != value and name not in already_recorded):
+    for target in sorted(name for name, value in current.items() if name != "status.json" and previous.get(name) != value and name not in already_recorded):
         append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": target})
 
     readiness = stage_readiness_errors(run_dir, stage, ROOT)

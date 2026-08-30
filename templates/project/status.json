@@ -1,6 +1,6 @@
 {
   "project": "replace-me",
-  "system_version": "6.6.0",
+  "system_version": "6.8.0",
   "active_stage": "definition",
   "active_gate": "G0",
   "active_agent": "00",

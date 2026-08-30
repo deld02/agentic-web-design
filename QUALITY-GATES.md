@@ -1,4 +1,4 @@
-# Quality gates — v6.6.0
+# Quality gates — v6.8.0
 
 | Gate | Must demonstrate | Blocks when |
 |---|---|---|

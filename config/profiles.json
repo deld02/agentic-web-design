@@ -1,5 +1,5 @@
 {
-  "version": "6.6.0",
+  "version": "6.8.0",
   "profiles": {
     "focused": {"description":"Landing pequeña o validación rápida. Conserva todas las fases con evidencia compacta.","design_evidence":"hero, key sections, mobile composition and representative build","qa_scope":"primary action and representative viewport/browser checks"},
     "standard": {"description":"Landing de marca o campaña con dirección y validación visual completas.","design_evidence":"complete landing, responsive states and defining interactions","qa_scope":"full page, responsive/browser checks and included form states"},

@@ -27,6 +27,8 @@
     "audit_system.py",
     "design_capabilities.py",
     "evaluation_harness.py",
+    "harness_mcp_server.py",
+    "stage_orchestrator.py",
     "harness_cli.py",
     "new_project.py",
     "project_validation.py",

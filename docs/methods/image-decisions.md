@@ -40,6 +40,10 @@ Choose format and behavior independently. This method owns the visual format:
 
 For every `SCN-*`, 05 records `IMAGE | NO_IMAGE`. `IMAGE` identifies the actual role—background, lateral, inline, foreground, icon, texture or transition—and its perceptual/content job. `NO_IMAGE` states why typography, layout or existing media is stronger. This is a design decision, not a quota.
 
+Any non-text element that occupies a reserved media region, attracts attention through scale/contrast/motion or balances the main composition is a focal visual, even when implemented with CSS or SVG. It cannot escape this decision as “decoration”. Primitive circles, orbit diagrams, blobs, line icons, fake charts and improvised pseudo-3D may remain subordinate UI notation only when they encode project-specific information or an established identity language. They cannot fill an empty scene, simulate authored imagery or become the counterweight to a headline.
+
+For every proposed focal native graphic, inspect the same desktop/mobile scene in three physical states: the graphic, its complete removal and a credible produced-media/artwork alternative. Keep the native graphic only when 07 can see a project-specific communicative advantage over both alternatives. If removal wins, select `NO_IMAGE` and leave intentional space. If representation still adds value, select `IMAGE` and produce it through the appropriate real route. Failed or rejected production never authorizes a primitive CSS/SVG substitute.
+
 ## 5. Convert selected needs into production briefs
 
 05 fills `Asset inventory and readiness` only from observed needs. One row per materially different output records:

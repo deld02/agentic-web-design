@@ -38,6 +38,7 @@ Review the final rendered page against `production-plan.md#Page visual narrative
 | EXPERIENCE_CONTINUITY | | | REVISE |
 | ASSET_NECESSITY | | | REVISE |
 | FORMAT_FIT | | | REVISE |
+| FOCAL_VISUAL_AUTHORITY | | | REVISE |
 | MECHANISM_ELIGIBILITY | | | REVISE |
 | TRANSITION_CONTINUITY | | | REVISE |
 | MOBILE_FALLBACK | | | REVISE |

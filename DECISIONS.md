@@ -2,6 +2,23 @@
 
 No borrar decisiones revertidas.
 
+## D-087 — El orquestador entrega especialistas ejecutables, no identificadores
+
+**Fecha:** 2026-08-31
+**Contexto:** el MCP devolvía la etapa y el ID del owner, pero ChatGPT no recibía su contrato ni los métodos necesarios. El modelo podía además editar `status.json`, contradiciendo la autoridad exclusiva de 00.
+**Decisión:** mantener ocho especialistas y convertir el harness en la ejecución real de 00. Cada etapa produce un `stage_packet` autocontenido; el especialista solo escribe su artefacto y el harness deriva la transición oficial tras validar evidencia.
+**Enforcement:** `tools/stage_orchestrator.py` compone el paquete progresivo; `harness_mcp_server.py` bloquea `status.json`, carga capacidades condicionales de forma acotada y abre un único sucesor mediante el validador existente.
+**Estado:** ACTIVE desde v6.8.0.
+
+
+## D-086 — El harness se expone como herramientas, no como texto interpretable
+
+**Fecha:** 2026-08-30
+**Contexto:** una conversación podía admitir que no había ejecutado el harness después de entregar HTML, omitir producción visual y sustituirla por geometría CSS o iconos amateurs. La prohibición documental era correcta, pero el cliente no disponía de una interfaz directa que acotase escritura, orden y generación.
+**Decisión:** añadir un adaptador MCP del harness existente. El cliente inicia un run, consulta una única etapa, escribe solo el artefacto del owner, genera o registra raster físico en las dos etapas autorizadas y avanza mediante el mismo validador. La autoridad visual focal se revisa sobre renders finales y no acepta primitivas UI como visual principal.
+**Enforcement:** `tools/harness_mcp_server.py` delega en `evaluation_harness.py`, restringe paths y etapas, registra `CHATGPT_IMAGE` tras una respuesta física y solo certifica mediante el recibo existente. HTTP es loopback por defecto y exige token fuera de loopback. No se añaden roles, gates, stages ni checkpoints.
+**Estado:** ACTIVE desde v6.7.0.
+
 ## D-085 — La ejecución completa necesita un recibo externo verificable
 
 **Fecha:** 2026-08-30

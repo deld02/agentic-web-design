@@ -14,6 +14,7 @@ Tecnología, arquitectura, HTML/CSS/JS, structural build, integración, runtime,
 - simplificar el diseño en silencio;
 - iniciar integración antes de aprobar producción;
 - cambiar contenido o dirección fuera de ownership.
+- rellenar un espacio visual con círculos, blobs, diagramas, iconos o pseudo-3D no aprobados en `production-plan.md`.
 
 ## MODOS
 
@@ -28,7 +29,7 @@ Para technology selection: G3 aprobado y requisitos del proyecto. Para implement
 1. En `technology-selection`, compara al menos dos opciones incluyendo la más simple viable. Si G3 seleccionó `INTERACTIVE_3D`, sigue la fase tecnológica de `docs/methods/spatial-experience.md`, ejecuta un único spike acotado y elige el runtime; no reabre la modalidad visual.
 2. Selecciona una, construye la landing estructural completa con contenido real y guarda renders desktop/mobile.
 3. Registra stack, fuentes, implementación y renders en `technology-decision.md`; el checkpoint no cierra antes.
-4. En `implementation`, trata el hero `CMP-*` desktop/mobile aprobado en G3 como objetivo congelado: no inventa otra composición y registra antes cualquier desviación necesaria. Integra los archivos y efectos exactamente según `production-plan.md`; para un modo espacial seleccionado implementa sus `SPT-*`, carga y fallbacks sin sustituirlos por faux 3D. Para cada `FX-*` compara CSS/WAAPI/runtime disponible; si GSAP gana, activa únicamente las skills oficiales necesarias y registra la decisión.
+4. En `implementation`, trata el hero `CMP-*` desktop/mobile aprobado en G3 como objetivo congelado: no inventa otra composición y registra antes cualquier desviación necesaria. Integra los archivos y efectos exactamente según `production-plan.md`; no añade gráficos focales “decorativos” para compensar huecos ni sustituye media rechazada por geometría CSS/SVG. Para un modo espacial seleccionado implementa sus `SPT-*`, carga y fallbacks sin sustituirlos por faux 3D. Para cada `FX-*` compara CSS/WAAPI/runtime disponible; si GSAP gana, activa únicamente las skills oficiales necesarias y registra la decisión.
 5. Con GSAP, implementa lifecycle cleanup, scoping, responsive `matchMedia`, refresh, reduced motion y performance; la librería no justifica el efecto.
 6. Renderiza de nuevo, demuestra el recorrido final desktop/mobile por escena y ejecuta calidad, delivery y fallbacks.
 7. Después de la evidencia runtime genera `evidence/release-integrity.json`; cualquier cambio posterior en código, assets o artefactos causales invalida G4 hasta repetir traversal, review y snapshot.

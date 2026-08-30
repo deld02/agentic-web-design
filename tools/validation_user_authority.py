@@ -8,6 +8,27 @@ from pathlib import Path
 import re
 
 
+def record_master_confirmation(artifact: Path, status: str, user_signal: str) -> dict[str, str]:
+    """Update only the bounded artistic-master checkpoint fields."""
+    normalized = status.strip().upper()
+    if normalized not in {"APPROVED", "DELEGATED", "ADJUST"}:
+        raise ValueError("master status must be APPROVED, DELEGATED or ADJUST")
+    signal = " ".join(user_signal.split())
+    if not signal:
+        raise ValueError("master confirmation needs the user's actual signal")
+    if not artifact.is_file():
+        raise ValueError("creative-direction.md is missing")
+    text = artifact.read_text(encoding="utf-8")
+    heading = "## Artistic master confirmation"
+    if heading not in text:
+        raise ValueError("artistic master confirmation section is missing")
+    before, section = text.split(heading, 1)
+    section = re.sub(r"(?m)^STATUS:\s*.*$", f"STATUS: {normalized}", section, count=1)
+    section = re.sub(r"(?m)^USER_SIGNAL:\s*.*$", f"USER_SIGNAL: {signal}", section, count=1)
+    artifact.write_text(before + heading + section, encoding="utf-8")
+    return {"status": normalized, "user_signal": signal}
+
+
 def _marker(path: Path, name: str) -> str:
     if not path.is_file():
         return ""

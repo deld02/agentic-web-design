@@ -1,10 +1,10 @@
-# Agentic Landing Design OS v6.6.0
+# Agentic Landing Design OS v6.8.0
 
 This system creates one high-design landing from research through verified implementation. It does not own SEO, analytics, marketing operations or product-app design.
 
 ## Five invariants
 
-1. **Follow the pipeline.** `config/pipeline.json` is the executable order. Only agent 00 changes official state; no stage is skipped, merged, parallelized or reopened unless its declared conditions allow it.
+1. **Follow the pipeline.** `config/pipeline.json` is the executable order. In managed execution the harness embodies agent 00: it supplies one active specialist packet and is the only writer of official state. No stage is skipped, merged, parallelized or reopened unless its declared conditions allow it.
 2. **Decide from evidence.** The active owner makes the decision in its artifact. Discovered material informs the decision but never becomes a requirement merely because it exists.
 3. **Diverge before selecting.** Research compiles project constraints and current direct, adjacent, frontier, simple and saturated evidence. 03 creates three physically distinct territories; 07 selects one in isolated context before any master exists.
 4. **Turn the selected world into relationships.** 03 generates one physical artistic master, shows it once and extracts its genome. G3 applies that genome through a scene grammar, challenges the value of each treatment and derives only the foundations the landing needs.
@@ -16,7 +16,7 @@ Python verifies state, dependencies, evidence files, media validity and implemen
 
 ## Runtime
 
-Load only the current project artifacts, the active agent contract and the method linked by that contract. Internal IDs such as `CMP-*`, `IMG-*` and `FX-*` exist only to connect evidence across files.
+Load only the managed `stage_packet`: current required inputs, active agent contract, stage-specific methods and applicable capabilities. Internal IDs such as `CMP-*`, `IMG-*` and `FX-*` exist only to connect evidence across files.
 
 Landing creation is fail-closed: it runs only when the external harness launches the executor and provides the scoped `HARNESS_*` context. An ordinary chat that merely reads the repository can inspect or advise, but cannot build a landing and claim that the pipeline ran.
 

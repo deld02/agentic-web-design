@@ -45,6 +45,33 @@ python tools/evaluation_harness.py chat-next --run-dir <run>
 
 `chat-next` derives artifact writes from filesystem changes, validates the current owner, gate and checkpoint, and opens exactly one successor. It permits the same single correction and user checkpoint as `run`. `chat-image` works only during `creative-master`, requires a valid raster inside the managed project and records the generation receipt; without it, progression is blocked.
 
+## MCP adapter
+
+`tools/harness_mcp_server.py` is a transport adapter, not an agent and not an
+alternative state machine. It delegates start, status, image receipts, validation
+and progression to this harness. Its file tools are restricted to the active
+owner's artifact and, at the two build stages, the configured implementation root.
+Paths cannot escape the managed run.
+
+The adapter supports newline-delimited MCP over stdio and Streamable HTTP at
+`POST /mcp`. HTTP defaults to loopback. Non-loopback binding is refused without a
+bearer token; callers must also pass the configured Origin check. `generate_image`
+uses the OpenAI Image API, writes the returned raster to its canonical target and
+immediately records the existing `CHATGPT_IMAGE` event. It cannot run outside
+`creative-master` or `production-plan`.
+
+This closes the former interpretation gap: a client can no longer claim it ran the
+harness merely because it read the repository, and a required image cannot be
+represented by a prompt, CSS primitive, SVG or remote URL. Only a final valid
+`execution-receipt.json`, surfaced by `verify_run`, certifies completion.
+
+For ChatGPT developer-mode testing, keep the server private and connect its stdio
+command through OpenAI Secure MCP Tunnel. The tunnel is transport only: the managed
+run and its files remain on the host. The MCP initialization response repeats the
+four critical invariants—start first, one stage at a time, physical images and final
+receipt—in a short `instructions` field consumed alongside tool metadata. GitHub or
+a ZIP remains documentation until a real runtime starts the managed run.
+
 On a successful final `release`, both managed adapters create `execution-receipt.json`. It records the exact 13-stage sequence, approved gates, isolated reviews and digests for events, report, final contract and implementation. `tools/verify_execution.py` recomputes those values; a changed build or fabricated/stale receipt fails. This receipt is user-facing proof of execution, not a score of artistic quality.
 
 The harness sets `HARNESS_RUN_DIR`, `HARNESS_PROJECT_DIR`, `HARNESS_SCENARIO`, `HARNESS_STAGE`, `HARNESS_AGENT`, `HARNESS_MODE` and `HARNESS_PROMPT_FILE`. The stage prompt is also sent through stdin. `execute` remains available only as a low-level uninstrumented primitive; use `run` for an actual evaluation.

@@ -1,12 +1,12 @@
-# 00 · DESIGN DIRECTOR
+# 00 · ORCHESTRATOR & DESIGN DIRECTOR
 
 ## MISIÓN
 
-Mantener un proyecto landing bien definido y moverlo por el pipeline únicamente cuando exista evidencia suficiente.
+Mantener un proyecto landing bien definido, activar un único especialista cada vez y moverlo por el pipeline únicamente cuando exista evidencia suficiente.
 
 ## OWNERSHIP
 
-Definición, estado oficial, gates, alcance, excepciones y release.
+Orquestación de especialistas, definición, estado oficial, gates, alcance, excepciones y release.
 
 ## NO PUEDE
 

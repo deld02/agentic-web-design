@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -68,6 +69,63 @@ class HarnessMcpServerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not writable during definition"):
             mcp.write_file({"run_id": started["run_id"], "path": "status.json", "text": "{}"})
 
+    def test_rejected_stage_never_leaves_approved_state(self):
+        started = self.start()
+        state = Path(started["project_dir"]) / "status.json"
+        before = state.read_bytes()
+        result = mcp.advance_stage({"run_id": started["run_id"]})
+        self.assertEqual(result["status"], "REVISE")
+        self.assertEqual(state.read_bytes(), before)
+        result = mcp.advance_stage({"run_id": started["run_id"]})
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(state.read_bytes(), before)
+        self.assertEqual(mcp.get_stage({"run_id": started["run_id"]})["status"], "FAILED")
+
+    def test_validation_exception_restores_state(self):
+        started = self.start()
+        state = Path(started["project_dir"]) / "status.json"
+        before = state.read_bytes()
+        with patch.object(mcp.harness, "advance_chat_run", side_effect=RuntimeError("validator crashed")):
+            with self.assertRaisesRegex(RuntimeError, "validator crashed"):
+                mcp.advance_stage({"run_id": started["run_id"]})
+        self.assertEqual(state.read_bytes(), before)
+
+    def test_implementation_root_cannot_grant_state_access(self):
+        started = self.start()
+        project = Path(started["project_dir"])
+        original = (project / "project.config.json").read_bytes()
+        for value in (".", "..", str(project), "assets", "implementation/.."):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, "implementation_root"):
+                    mcp.write_file({"run_id": started["run_id"], "path": "project.config.json",
+                                    "text": json.dumps({"implementation_root": value})})
+                self.assertEqual((project / "project.config.json").read_bytes(), original)
+        mcp.write_file({"run_id": started["run_id"], "path": "project.config.json",
+                        "text": json.dumps({"implementation_root": "implementation"})})
+        for target in ("status.json", "brief.md", "implementation/../status.json"):
+            with self.assertRaises(ValueError):
+                mcp._write_allowed(project, "implementation", target)
+        self.assertEqual(mcp._write_allowed(project, "implementation", "implementation/index.html"),
+                         project / "implementation" / "index.html")
+
+    def test_reviews_cannot_self_approve_or_rewrite_owner(self):
+        started = self.start()
+        project = Path(started["project_dir"])
+        stages = mcp.load_json(ROOT / "config" / "pipeline.json")["stages"]
+        for stage_id, artifact in (("direction-review", "creative-direction.md"),
+                                   ("design-review", "visual-system.md"),
+                                   ("build-review", "qa-release.md")):
+            stage = next(item for item in stages if item["id"] == stage_id)
+            with self.assertRaises(ValueError):
+                mcp._write_allowed(project, stage_id, artifact)
+            with self.assertRaisesRegex(ValueError, "isolated executor"):
+                mcp.complete_stage_status(project, stage, [])
+            active = {**started, "stage": stage_id, "agent": "07"}
+            with patch.object(mcp, "_project_and_stage", return_value=(Path(started["run_dir"]), active, project)):
+                result = mcp.advance_stage({"run_id": started["run_id"]})
+                self.assertEqual(result["status"], "BLOCKED")
+                self.assertIn("INDEPENDENT_REVIEW_UNAVAILABLE", result["findings"][0])
+
     def test_orchestrator_advances_one_valid_stage_and_owns_state(self):
         started = self.start()
         brief = mcp.read_file({"run_id": started["run_id"], "path": "brief.md"})["text"]
@@ -92,6 +150,16 @@ class HarnessMcpServerTests(unittest.TestCase):
         started = self.start()
         with self.assertRaisesRegex(ValueError, "unavailable"):
             mcp.get_guidance({"run_id": started["run_id"], "capability_id": "emil-motion-craft"})
+
+    def test_packet_does_not_repeat_shared_guidance_or_artifacts(self):
+        started = self.start()
+        stages = mcp.load_json(ROOT / "config" / "pipeline.json")["stages"]
+        for stage in stages:
+            packet = mcp.build_stage_packet(ROOT, Path(started["project_dir"]), stage,
+                                            mcp.STAGE_FILES[stage["id"]])
+            self.assertFalse(set(packet["current_artifacts"]) & set(packet["required_inputs"]))
+            loaded = [item["reference"] for item in packet["capabilities"]["automatic"] if "guidance" in item]
+            self.assertEqual(len(loaded), len(set(loaded)))
 
     def test_active_owner_artifact_can_be_written(self):
         started = self.start()

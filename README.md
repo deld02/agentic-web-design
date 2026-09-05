@@ -33,7 +33,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 
 ## Roles
 
-The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. In managed chat mode the MCP returns a complete `stage_packet` containing only the active specialist contract, its required inputs, stage-specific methods and applicable capabilities. The harness—not the model—owns `status.json`, validates the stage and opens exactly one successor. Agent 07 reviews independently; findings return to the causal owner.
+The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 requires a genuinely separate execution context; the current MCP adapter cannot dispatch that context and blocks review stages instead of granting a false approval.
 
 ## Technology
 
@@ -52,8 +52,11 @@ python -m unittest discover -s tests -v
 
 ## Ejecución gestionada
 
-La vía preferente para un cliente compatible es el MCP del harness. No crea otro
-pipeline: expone el existente como herramientas acotadas y verificables.
+El MCP del harness es un **adaptador parcial, no una ruta completa de producción
+para ChatGPT**. Expone el pipeline existente, pero todavía faltan un ejecutor
+de revisión aislada y operaciones gestionadas de build, render y entrega.
+Se detiene en la primera revisión independiente: no basta con que el propio chat
+escriba `PASS`. No lo uses para prometer una landing certificada de principio a fin.
 
 ```bash
 # Codex/cliente local (stdio)
@@ -83,6 +86,13 @@ El flujo MCP es `start_landing` → ejecutar únicamente el `stage_packet` →
 vuelto físicamente. CSS, SVG, círculos, diagramas o iconos improvisados no cuentan
 como sustitutos de una imagen exigida. `verify_run` debe devolver `verified: true`
 antes de afirmar que el sistema se ejecutó por completo.
+
+En este adaptador, `implementation_root` debe ser `implementation`, una carpeta
+dedicada dentro del proyecto gestionado. La elección tecnológica sigue siendo libre;
+esta restricción protege el estado, no prescribe un framework. Ejecuta una sola
+instancia de servidor por directorio de runs. Las operaciones se serializan en ese
+proceso y una validación rechazada restaura el estado previo; esto no constituye
+aislamiento frente a otros procesos locales ni recuperación ante un corte del proceso.
 
 Leer el repositorio no equivale a ejecutar el sistema. Para un proyecto real dentro de ChatGPT existe un único arranque canónico:
 

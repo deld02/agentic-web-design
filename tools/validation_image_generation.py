@@ -8,6 +8,13 @@ from validation_common import section
 from validation_common import load_json, valid_signature
 from validation_project_paths import implementation_root_for
 
+IMAGE_TOOLS = {"CHATGPT_GENERATE", "IMAGE_GEN", "IMAGEGEN", "CHATGPT_IMAGE"}
+
+
+def is_image_generation_event(item: dict) -> bool:
+    tool = re.sub(r"[^A-Z0-9]+", "_", str(item.get("tool", "")).upper()).strip("_")
+    return item.get("event") == "tool_call" and tool in IMAGE_TOOLS
+
 
 def generated_asset_targets(project_dir: Path) -> dict[str, str]:
     plan = project_dir / "production-plan.md"

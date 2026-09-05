@@ -11,6 +11,7 @@ import re
 from validation_common import load_json
 from validation_project_paths import implementation_root_for
 from validation_release_integrity import implementation_digest
+from validation_image_generation import is_image_generation_event
 
 
 SCHEMA_VERSION = 1
@@ -48,7 +49,7 @@ def write_execution_receipt(run_dir: Path, repository_root: Path) -> Path:
     events = [json.loads(line) for line in events_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     expected_stages = [item["id"] for item in pipeline["stages"]]
     completed = _completed_stages(events)
-    master_generated = any(item.get("event") == "tool_call" and item.get("stage") == "creative-master" for item in events)
+    master_generated = any(is_image_generation_event(item) and item.get("stage") == "creative-master" for item in events)
     mode = run.get("execution_mode")
     if mode not in {"CHAT_INTERACTIVE", "HEADLESS_MANAGED"}:
         raise ValueError("execution receipt requires a managed execution mode")
@@ -139,7 +140,7 @@ def execution_receipt_errors(receipt_path: Path, repository_root: Path) -> list[
         errors.append("execution receipt does not prove all pipeline stages in order")
     if receipt.get("gates_approved") != sorted(project_status.get("gates", {})) or receipt.get("isolated_reviews") != list(REVIEW_CHECKPOINTS):
         errors.append("execution receipt approval inventory does not match the project")
-    if receipt.get("artistic_master_generated") is not True or not any(item.get("event") == "tool_call" and item.get("stage") == "creative-master" for item in events):
+    if receipt.get("artistic_master_generated") is not True or not any(is_image_generation_event(item) and item.get("stage") == "creative-master" for item in events):
         errors.append("execution receipt lacks artistic-master generation proof")
     if any(item.get("status") != "APPROVED" for item in project_status.get("gates", {}).values()):
         errors.append("execution receipt project gates are no longer approved")

@@ -11,8 +11,11 @@ import argparse
 import base64
 import json
 import os
+import stat
 import sys
 import urllib.request
+from functools import wraps
+from threading import RLock
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Callable
@@ -21,27 +24,37 @@ import evaluation_harness as harness
 from project_validation import ROOT, load_json
 from validation_execution_receipt import execution_receipt_errors
 from validation_image_generation import generated_asset_targets
-from validation_project_paths import implementation_root_for
 from validation_user_authority import record_master_confirmation
 from stage_orchestrator import activate_stage_status, build_stage_packet, capability_guidance, complete_stage_status
 
 PROTOCOL_VERSION = "2025-06-18"
 RUNS_ROOT = (ROOT / ".harness" / "runs").resolve()
 MAX_TEXT_BYTES = 1_000_000
+# One server process owns a runs directory. Serialize reads as well as writes so
+# clients cannot observe candidate state while its validation is in progress.
+_STATE_LOCK = RLock()
+
+
+def _serialized(function):
+    @wraps(function)
+    def guarded(*args, **kwargs):
+        with _STATE_LOCK:
+            return function(*args, **kwargs)
+    return guarded
 
 STAGE_FILES: dict[str, set[str]] = {
     "definition": {"PROJECT.md", "brief.md", "project.config.json"},
     "research-strategy": {"research-strategy.md"},
     "content-architecture": {"content-architecture.md"},
     "direction-divergence": {"creative-direction.md"},
-    "direction-review": {"creative-direction.md"},
+    "direction-review": set(),
     "creative-master": {"creative-direction.md"},
     "visual-experience": {"visual-system.md"},
-    "design-review": {"visual-system.md"},
+    "design-review": set(),
     "technology-selection": {"technology-decision.md", "project.config.json"},
     "production-plan": {"production-plan.md"},
     "implementation": set(),
-    "build-review": {"qa-release.md"},
+    "build-review": set(),
     "release": {"qa-release.md", "decision-log.md"},
 }
 IMPLEMENTATION_STAGES = {"technology-selection", "implementation"}
@@ -72,14 +85,29 @@ def _project_and_stage(run_id: str) -> tuple[Path, dict[str, Any], Path]:
     return run_dir, status, (run_dir / "project").resolve()
 
 
-def _implementation_root(project: Path) -> Path:
-    config = load_json(project / "project.config.json")
-    return implementation_root_for(project, ROOT, config.get("implementation_root", "undetermined")).resolve()
+def _implementation_root(project: Path, config: dict | None = None) -> Path:
+    config = config if config is not None else load_json(project / "project.config.json")
+    value = config.get("implementation_root", "undetermined")
+    # A managed implementation is always a dedicated, non-overlapping subtree.
+    # Allowing arbitrary roots turns a code-write permission into state access.
+    if not isinstance(value, str) or value.replace("\\", "/") != "implementation":
+        raise ValueError("managed implementation_root must be 'implementation'")
+    implementation = _bounded_project_file(project, value)
+    if implementation != project / "implementation":
+        raise ValueError("implementation_root must not redirect through a link")
+    return implementation
 
 
 def _bounded_project_file(project: Path, relative: str) -> Path:
-    if not relative or Path(relative).is_absolute():
+    if not relative or Path(relative).is_absolute() or ":" in relative:
         raise ValueError("path must be relative to the managed project")
+    lexical = project / relative
+    for part in (lexical, *lexical.parents):
+        if part == project:
+            break
+        attributes = getattr(part.lstat(), "st_file_attributes", 0) if part.exists() else 0
+        if part.is_symlink() or attributes & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0):
+            raise ValueError("managed paths must not traverse links or junctions")
     candidate = (project / relative).resolve()
     if not _inside(candidate, project):
         raise ValueError("path escapes the managed project")
@@ -98,6 +126,7 @@ def _write_allowed(project: Path, stage: str, relative: str) -> Path:
     raise ValueError(f"{relative} is not writable during {stage}")
 
 
+@_serialized
 def start_landing(arguments: dict[str, Any]) -> dict[str, Any]:
     brief = str(arguments.get("brief", "")).strip()
     scenario = str(arguments.get("scenario", "")).strip() or None
@@ -105,16 +134,27 @@ def start_landing(arguments: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("brief or scenario is required")
     result = harness.start_chat_run(scenario, RUNS_ROOT, None, brief or None)
     result["managed"] = True
+    result["adapter_readiness"] = {
+        "end_to_end": False,
+        "missing": ["isolated_review_executor", "managed_build_render_delivery"],
+        "first_blocking_stage": "direction-review",
+    }
     return _with_stage_packet(result)
 
 
+@_serialized
 def get_stage(arguments: dict[str, Any]) -> dict[str, Any]:
-    return _with_stage_packet(harness.chat_status(_run_dir(str(arguments.get("run_id", "")))))
+    run_dir = _run_dir(str(arguments.get("run_id", "")))
+    run = load_json(run_dir / "run.json")
+    if run.get("status") not in {"RUNNING", "NEEDS_USER"}:
+        return {"status": run.get("status"), "run_id": run_dir.name,
+                "findings": run.get("findings", []), "stage": run.get("active_stage")}
+    return _with_stage_packet(harness.chat_status(run_dir))
 
 
 def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
     stage_id = status.get("stage")
-    if not stage_id:
+    if not stage_id or "project_dir" not in status or status.get("status") == "FAILED":
         return status
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == stage_id)
@@ -124,6 +164,7 @@ def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
     return status
 
 
+@_serialized
 def list_files(arguments: dict[str, Any]) -> dict[str, Any]:
     _run, status, project = _project_and_stage(str(arguments.get("run_id", "")))
     files = [
@@ -134,6 +175,7 @@ def list_files(arguments: dict[str, Any]) -> dict[str, Any]:
     return {"stage": status["stage"], "files": files}
 
 
+@_serialized
 def read_file(arguments: dict[str, Any]) -> dict[str, Any]:
     _run, status, project = _project_and_stage(str(arguments.get("run_id", "")))
     relative = str(arguments.get("path", ""))
@@ -145,6 +187,7 @@ def read_file(arguments: dict[str, Any]) -> dict[str, Any]:
     return {"stage": status["stage"], "path": relative, "text": candidate.read_text(encoding="utf-8")}
 
 
+@_serialized
 def get_guidance(arguments: dict[str, Any]) -> dict[str, Any]:
     _run, status, _project = _project_and_stage(str(arguments.get("run_id", "")))
     return {"stage": status["stage"]} | capability_guidance(
@@ -154,6 +197,7 @@ def get_guidance(arguments: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+@_serialized
 def write_file(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, status, project = _project_and_stage(str(arguments.get("run_id", "")))
     relative = str(arguments.get("path", ""))
@@ -163,6 +207,12 @@ def write_file(arguments: dict[str, Any]) -> dict[str, Any]:
     if len(text.encode("utf-8")) > MAX_TEXT_BYTES:
         raise ValueError("file exceeds MCP write limit")
     candidate = _write_allowed(project, status["stage"], relative)
+    if candidate == project / "project.config.json":
+        config = json.loads(text)
+        if not isinstance(config, dict):
+            raise ValueError("project configuration must be an object")
+        if config.get("implementation_root", "undetermined") != "undetermined":
+            _implementation_root(project, config)
     if candidate.suffix.lower() not in TEXT_SUFFIXES:
         raise ValueError("only supported text/code files may be written")
     candidate.parent.mkdir(parents=True, exist_ok=True)
@@ -172,6 +222,7 @@ def write_file(arguments: dict[str, Any]) -> dict[str, Any]:
     return {"status": "WRITTEN", "stage": status["stage"], "path": target, "bytes": len(text.encode("utf-8"))}
 
 
+@_serialized
 def register_image(arguments: dict[str, Any]) -> dict[str, Any]:
     return harness.confirm_chat_image(
         _run_dir(str(arguments.get("run_id", ""))),
@@ -212,6 +263,7 @@ def _openai_image(prompt: str, api_key: str, output_format: str = "png", opener:
     return base64.b64decode(encoded, validate=True)
 
 
+@_serialized
 def generate_image(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, status, _project = _project_and_stage(str(arguments.get("run_id", "")))
     if status["stage"] not in {"creative-master", "production-plan"}:
@@ -233,6 +285,7 @@ def generate_image(arguments: dict[str, Any]) -> dict[str, Any]:
     return harness.confirm_chat_image(run_dir, output, asset_id)
 
 
+@_serialized
 def confirm_master(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
     if active["stage"] != "creative-master":
@@ -249,16 +302,30 @@ def confirm_master(arguments: dict[str, Any]) -> dict[str, Any]:
     return result | {"stage": active["stage"]}
 
 
+@_serialized
 def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == active["stage"])
+    if stage["agent"] == "07":
+        return {**active, "status": "BLOCKED", "findings": [
+            "INDEPENDENT_REVIEW_UNAVAILABLE: this adapter has no isolated reviewer executor. "
+            "A role switch or client-authored PASS cannot approve this stage."
+        ]}
     evidence = [
         str(item.get("target")) for item in harness.read_events(run_dir)
         if item.get("event") == "artifact_write" and item.get("stage") == stage["id"] and item.get("target")
     ]
-    complete_stage_status(project, stage, evidence)
-    result = harness.advance_chat_run(run_dir)
+    state_path = project / "status.json"
+    original = state_path.read_bytes()
+    accepted = False
+    try:
+        complete_stage_status(project, stage, evidence)
+        result = harness.advance_chat_run(run_dir)
+        accepted = result.get("status") not in {"FAILED", "REVISE", "NEEDS_USER", "BLOCKED"}
+    finally:
+        if not accepted:
+            state_path.write_bytes(original)
     if result.get("stage") and result.get("status") not in {"FAILED", "REVISE", "NEEDS_USER"}:
         next_stage = next(item for item in stages if item["id"] == result["stage"])
         activate_stage_status(project, next_stage)
@@ -266,6 +333,7 @@ def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
     return _with_stage_packet(result)
 
 
+@_serialized
 def verify_run(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir = _run_dir(str(arguments.get("run_id", "")))
     receipt = run_dir / "execution-receipt.json"

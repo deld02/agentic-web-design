@@ -75,6 +75,12 @@ class ExecutionReceiptTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "artistic-master generation"):
             write_execution_receipt(self.run, ROOT)
 
+    def test_unrelated_tool_call_is_not_image_generation(self):
+        ledger = self.run / "events.jsonl"
+        ledger.write_text(ledger.read_text(encoding="utf-8").replace("IMAGE_GEN", "READ_FILE"), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "artistic-master generation"):
+            write_execution_receipt(self.run, ROOT)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -80,7 +80,9 @@ def _capability_packet(root: Path, stage_id: str) -> dict[str, Any]:
         }
         if item.get("tier") == "core" and item.get("activation") == "automatic":
             reference = (root / item["reference"]).resolve()
-            summary["guidance"] = reference.read_text(encoding="utf-8")
+            summary["reference"] = reference.relative_to(root).as_posix()
+            if reference not in loaded_references:
+                summary["guidance"] = reference.read_text(encoding="utf-8")
             automatic.append(summary)
             loaded_references.add(reference)
         else:
@@ -132,7 +134,7 @@ def build_stage_packet(
     inputs: dict[str, str] = {}
     for relative in STAGE_INPUTS.get(stage["id"], []):
         candidate = project / relative
-        if candidate.is_file():
+        if candidate.is_file() and relative not in current:
             inputs[relative] = candidate.read_text(encoding="utf-8")
     return {
         "orchestrator": "00 · Design Director",
@@ -166,6 +168,8 @@ def build_stage_packet(
 
 def complete_stage_status(project: Path, stage: dict[str, Any], evidence: list[str]) -> None:
     """Apply the candidate transition as the harness-owned state writer."""
+    if stage["id"] in {"direction-review", "design-review", "build-review"}:
+        raise ValueError("Independent review requires an isolated executor; automatic approval is forbidden")
     path = project / "status.json"
     status = load_json(path)
     stage_id = stage["id"]
@@ -178,15 +182,6 @@ def complete_stage_status(project: Path, stage: dict[str, Any], evidence: list[s
     else:
         item = status["checkpoints"][stage_id]
     item.update(status=decision, evidence=sorted(set(evidence)), blockers=[], last_decision=f"{stage_id} validated by harness")
-    if stage_id in {"direction-review", "design-review", "build-review"}:
-        item["review_context"] = "ISOLATED"
-    review_gate = {"design-review": "G3", "build-review": "G4"}.get(stage_id)
-    if review_gate:
-        status["gates"][review_gate].update(
-            status="APPROVED",
-            blockers=[],
-            last_decision=f"{stage_id} approved by independent review",
-        )
     status["status"] = decision
     status["release"]["eligible"] = all(status["gates"][f"G{i}"]["status"] == "APPROVED" for i in range(5))
     status["release"]["reason"] = None if status["release"]["eligible"] else f"{stage_id} completed; pipeline continues"

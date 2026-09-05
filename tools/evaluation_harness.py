@@ -32,7 +32,7 @@ from validate_gate import validate_gate
 from ui_quality_scan import scan_implementation
 from validation_capability_activation import stage_capability_instruction
 from validation_common import valid_signature
-from validation_image_generation import generated_asset_targets, missing_generation_receipts
+from validation_image_generation import IMAGE_TOOLS, generated_asset_targets, missing_generation_receipts
 from validation_execution_receipt import write_execution_receipt
 from validation_project_paths import implementation_root_for
 from validation_spatial_experience import spatial_stage_instruction
@@ -43,7 +43,6 @@ EVENT_TYPES = {
     "correction", "render", "heartbeat",
 }
 REVIEW_VALUES = {"PASS", "REVISE"}
-IMAGE_TOOLS = {"CHATGPT_GENERATE", "IMAGE_GEN", "IMAGEGEN", "CHATGPT_IMAGE"}
 
 
 def utc_now() -> str:

@@ -72,6 +72,12 @@ def stage_activation_errors(project_dir: Path, root: Path, stage_id: str) -> lis
     if not artifact:
         return []
     logged = _logged_modes(project_dir, artifact)
+    if stage_id in {"design-review", "build-review"}:
+        record_path = project_dir / ".reviews" / f"{stage_id}.json"
+        if record_path.is_file():
+            record = json.loads(record_path.read_text(encoding="utf-8"))
+            if record.get("stage") == stage_id and record.get("provider") == "OPENAI_RESPONSES" and record.get("response_id"):
+                logged.update((name, stage_id) for name in record.get("capabilities", []))
     errors = [
         f"{stage_id} must log automatic capability {item['id']} with Mode={stage_id}"
         for item in automatic_for_stage(root, stage_id)

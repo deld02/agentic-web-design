@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import time
+from uuid import uuid4
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -131,7 +132,7 @@ def create_run(
         raise ValueError("; ".join(errors))
     selected = custom_scenario or scenario(config, scenario_id)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    run_id = run_id or f"{stamp}-{scenario_id}"
+    run_id = run_id or f"{stamp}-{scenario_id}-{uuid4().hex[:12]}"
     if not re.fullmatch(r"[A-Za-z0-9._-]+", run_id):
         raise ValueError("run_id contains unsafe characters")
     runs_root = (runs_root or ROOT / ".harness" / "runs").resolve()
@@ -288,7 +289,7 @@ def chat_status(run_dir: Path) -> dict[str, Any]:
     }
 
 
-def confirm_chat_image(run_dir: Path, image_path: Path, asset_id: str | None = None) -> dict[str, Any]:
+def confirm_chat_image(run_dir: Path, image_path: Path, asset_id: str | None = None, *, observed_generation: bool = False) -> dict[str, Any]:
     """Record a real generated master or production-plan image."""
     run_dir = run_dir.resolve()
     _require_chat_run(run_dir)
@@ -314,9 +315,9 @@ def confirm_chat_image(run_dir: Path, image_path: Path, asset_id: str | None = N
     if not candidate.is_file() or not valid_signature(candidate):
         raise ValueError("generated master is missing or is not a valid raster file")
     relative = str(candidate.relative_to(project_dir if _inside(candidate, project_dir) else base))
-    append_event(run_dir, {"event": "tool_call", "stage": stage["id"], "agent": stage["agent"], "tool": "CHATGPT_IMAGE", "target": asset_id})
+    append_event(run_dir, {"event": "tool_call", "stage": stage["id"], "agent": stage["agent"], "tool": "CHATGPT_IMAGE" if observed_generation else "IMAGE_IMPORT", "target": asset_id})
     append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": relative})
-    return {"status": "RECORDED", "stage": stage["id"], "file": relative}
+    return {"status": "RECORDED", "stage": stage["id"], "file": relative, "generation_observed": observed_generation}
 
 
 def advance_chat_run(run_dir: Path) -> dict[str, Any]:
@@ -453,13 +454,21 @@ def _run_stage_process(run_dir: Path, stage: dict[str, Any], command: list[str],
 
 
 def run_active(run_dir: Path, command: list[str], until: str | None = None) -> dict[str, Any]:
-    """Actively execute and validate pipeline stages through a headless adapter."""
-    if not command:
-        raise ValueError("active run needs an executor command after --")
+    from harness_transition import server_lock, transition_rollback
     run_dir = run_dir.resolve()
     if not (run_dir / "run.json").is_file():
         raise ValueError("run directory is not initialized")
+    with server_lock(run_dir.parent), transition_rollback(run_dir):
+        return _run_active(run_dir, command, until)
+
+
+def _run_active(run_dir: Path, command: list[str], until: str | None = None) -> dict[str, Any]:
+    """Actively execute and validate pipeline stages through a headless adapter."""
+    if not command:
+        raise ValueError("active run needs an executor command after --")
     stages, _stage_map = _pipeline()
+    from stage_orchestrator import activate_stage_status
+    from harness_executor_state import validate_executor_state
     config = load_config()
     run_started = time.monotonic()
     existing_events = read_events(run_dir)
@@ -484,12 +493,15 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
                 return run
             continue
         readiness: list[str] = []
+        activate_stage_status(run_dir / "project", stage)
         for attempt in range(2):
             remaining_total = config["limits"]["max_total_minutes"] * 60 - (time.monotonic() - run_started)
             if remaining_total <= 0:
                 readiness = ["run exceeded total execution budget"]
                 break
             before = _file_snapshot(run_dir / "project")
+            state_path = run_dir / "project/status.json"
+            original_state = state_path.read_bytes()
             code, stdout, stderr = _run_stage_process(
                 run_dir, stage, command, readiness or None,
                 min(config["limits"]["max_stage_minutes"] * 60, remaining_total),
@@ -501,10 +513,11 @@ def run_active(run_dir: Path, command: list[str], until: str | None = None) -> d
             after = _file_snapshot(run_dir / "project")
             for target in sorted(name for name, value in after.items() if before.get(name) != value):
                 append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": target})
-            if code != 0:
-                readiness = [f"executor exited {code}: {(stderr or stdout).strip()[:1000]}"]
-            else:
-                readiness = stage_readiness_errors(run_dir, stage, ROOT)
+            readiness = validate_executor_state(
+                run_dir, stage, original_state, code, stdout, stderr,
+                [name for name in after if before.get(name) != after[name]],
+                lambda: stage_readiness_errors(run_dir, stage, ROOT),
+            )
             if not readiness:
                 break
             if any("artistic master confirmation is PENDING" in item for item in readiness):

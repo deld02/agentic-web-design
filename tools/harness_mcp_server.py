@@ -26,10 +26,12 @@ from validation_execution_receipt import execution_receipt_errors
 from validation_image_generation import generated_asset_targets
 from validation_user_authority import record_master_confirmation
 from stage_orchestrator import activate_stage_status, build_stage_packet, capability_guidance, complete_stage_status
+from harness_transition import transition_rollback, recover_transition, server_lock
 
 PROTOCOL_VERSION = "2025-06-18"
 RUNS_ROOT = (ROOT / ".harness" / "runs").resolve()
 MAX_TEXT_BYTES = 1_000_000
+MAX_REQUEST_BYTES = 18 * 1024 * 1024
 # One server process owns a runs directory. Serialize reads as well as writes so
 # clients cannot observe candidate state while its validation is in progress.
 _STATE_LOCK = RLock()
@@ -39,7 +41,8 @@ def _serialized(function):
     @wraps(function)
     def guarded(*args, **kwargs):
         with _STATE_LOCK:
-            return function(*args, **kwargs)
+            with server_lock(RUNS_ROOT):
+                return function(*args, **kwargs)
     return guarded
 
 STAGE_FILES: dict[str, set[str]] = {
@@ -53,7 +56,7 @@ STAGE_FILES: dict[str, set[str]] = {
     "design-review": set(),
     "technology-selection": {"technology-decision.md", "project.config.json"},
     "production-plan": {"production-plan.md"},
-    "implementation": set(),
+    "implementation": {"qa-release.md"},
     "build-review": set(),
     "release": {"qa-release.md", "decision-log.md"},
 }
@@ -76,6 +79,7 @@ def _run_dir(run_id: str) -> Path:
     candidate = (RUNS_ROOT / run_id).resolve()
     if not _inside(candidate, RUNS_ROOT) or not (candidate / "run.json").is_file():
         raise ValueError("managed run not found")
+    recover_transition(candidate)
     return candidate
 
 
@@ -115,9 +119,14 @@ def _bounded_project_file(project: Path, relative: str) -> Path:
 
 
 def _write_allowed(project: Path, stage: str, relative: str) -> Path:
+    from harness_review import revision_stage
+    stage = revision_stage(project, stage) or stage
     candidate = _bounded_project_file(project, relative)
     normalized = candidate.relative_to(project).as_posix()
     if normalized in STAGE_FILES.get(stage, set()):
+        return candidate
+    study_root = {"direction-divergence":"evidence/directions/", "visual-experience":"evidence/compositions/"}.get(stage)
+    if study_root and normalized.startswith(study_root) and candidate.suffix.lower() in TEXT_SUFFIXES:
         return candidate
     if stage in IMPLEMENTATION_STAGES:
         implementation = _implementation_root(project)
@@ -132,13 +141,14 @@ def start_landing(arguments: dict[str, Any]) -> dict[str, Any]:
     scenario = str(arguments.get("scenario", "")).strip() or None
     if not brief and not scenario:
         raise ValueError("brief or scenario is required")
+    from harness_operations import runtime_status
+    readiness = runtime_status(sys.modules[__name__], {})
+    if not readiness["ready_for_live_probe"]:
+        return {"status":"BLOCKED", "managed":False, "adapter_readiness":readiness,
+                "instruction":"Configure missing server capabilities before starting a landing. No run was created."}
     result = harness.start_chat_run(scenario, RUNS_ROOT, None, brief or None)
     result["managed"] = True
-    result["adapter_readiness"] = {
-        "end_to_end": False,
-        "missing": ["isolated_review_executor", "managed_build_render_delivery"],
-        "first_blocking_stage": "direction-review",
-    }
+    result["adapter_readiness"] = readiness
     return _with_stage_packet(result)
 
 
@@ -159,6 +169,15 @@ def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == stage_id)
     project = Path(status["project_dir"]).resolve()
+    from harness_review import revision_stage
+    correction_stage = revision_stage(project, stage_id)
+    if correction_stage:
+        stage = next(item for item in stages if item["id"] == correction_stage)
+        writable = STAGE_FILES.get(correction_stage, set())
+        status["stage_packet"] = build_stage_packet(ROOT, project, stage, writable)
+        status["stage_packet"]["revision_for"] = stage_id
+        status["stage_packet"]["completion_protocol"] = ["Correct only the independent findings, then call run_review again. The review stage stays open; do not approve it yourself."]
+        return status
     writable = STAGE_FILES.get(stage_id, set())
     status["stage_packet"] = build_stage_packet(ROOT, project, stage, writable)
     return status
@@ -190,9 +209,10 @@ def read_file(arguments: dict[str, Any]) -> dict[str, Any]:
 @_serialized
 def get_guidance(arguments: dict[str, Any]) -> dict[str, Any]:
     _run, status, _project = _project_and_stage(str(arguments.get("run_id", "")))
+    from harness_review import revision_stage
     return {"stage": status["stage"]} | capability_guidance(
         ROOT,
-        status["stage"],
+        revision_stage(_project, status["stage"]) or status["stage"],
         str(arguments.get("capability_id", "")).strip(),
     )
 
@@ -218,7 +238,11 @@ def write_file(arguments: dict[str, Any]) -> dict[str, Any]:
     candidate.parent.mkdir(parents=True, exist_ok=True)
     candidate.write_text(text, encoding="utf-8")
     target = candidate.relative_to(project).as_posix()
-    harness.append_event(run_dir, {"event": "artifact_write", "stage": status["stage"], "agent": status["agent"], "target": target})
+    from harness_review import revision_stage
+    owner_stage = revision_stage(project, status["stage"]) or status["stage"]
+    owner = next(item["agent"] for item in load_json(ROOT / "config/pipeline.json")["stages"] if item["id"] == owner_stage)
+    harness.append_event(run_dir, {"event": "artifact_write", "stage": owner_stage, "agent": owner, "target": target,
+                                  "review_for":status["stage"] if owner_stage != status["stage"] else None})
     return {"status": "WRITTEN", "stage": status["stage"], "path": target, "bytes": len(text.encode("utf-8"))}
 
 
@@ -248,7 +272,10 @@ def _image_output(run_dir: Path, stage: str, relative: str, asset_id: str | None
 
 
 def _openai_image(prompt: str, api_key: str, output_format: str = "png", opener: Callable[..., Any] = urllib.request.urlopen) -> bytes:
-    payload = json.dumps({"model": os.getenv("AGENTIC_IMAGE_MODEL", "gpt-image-2"), "prompt": prompt, "output_format": output_format}).encode("utf-8")
+    model = os.getenv("AGENTIC_IMAGE_MODEL")
+    if not model:
+        raise RuntimeError("AGENTIC_IMAGE_MODEL must be explicitly configured")
+    payload = json.dumps({"model": model, "prompt": prompt, "output_format": output_format}).encode("utf-8")
     request = urllib.request.Request(
         "https://api.openai.com/v1/images/generations",
         data=payload,
@@ -280,9 +307,11 @@ def generate_image(arguments: dict[str, Any]) -> dict[str, Any]:
     if not output_format:
         raise ValueError("direct image generation supports PNG, JPEG or WebP targets")
     raster = _openai_image(prompt, api_key, output_format)
+    from harness_media import inspect_raster, image_content
+    inspect_raster(raster, output.suffix)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(raster)
-    return harness.confirm_chat_image(run_dir, output, asset_id)
+    return harness.confirm_chat_image(run_dir, output, asset_id, observed_generation=True) | {"_images":[image_content(output)]}
 
 
 @_serialized
@@ -308,29 +337,26 @@ def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == active["stage"])
     if stage["agent"] == "07":
-        return {**active, "status": "BLOCKED", "findings": [
-            "INDEPENDENT_REVIEW_UNAVAILABLE: this adapter has no isolated reviewer executor. "
-            "A role switch or client-authored PASS cannot approve this stage."
-        ]}
+        from harness_review import review_record_errors
+        errors = review_record_errors(project, stage["id"])
+        if errors:
+            return {**active, "status":"BLOCKED", "findings":errors}
     evidence = [
         str(item.get("target")) for item in harness.read_events(run_dir)
         if item.get("event") == "artifact_write" and item.get("stage") == stage["id"] and item.get("target")
     ]
     state_path = project / "status.json"
     original = state_path.read_bytes()
-    accepted = False
-    try:
+    with transition_rollback(run_dir):
         complete_stage_status(project, stage, evidence)
         result = harness.advance_chat_run(run_dir)
-        accepted = result.get("status") not in {"FAILED", "REVISE", "NEEDS_USER", "BLOCKED"}
-    finally:
-        if not accepted:
+        if result.get("status") in {"FAILED", "REVISE", "NEEDS_USER", "BLOCKED"}:
             state_path.write_bytes(original)
-    if result.get("stage") and result.get("status") not in {"FAILED", "REVISE", "NEEDS_USER"}:
-        next_stage = next(item for item in stages if item["id"] == result["stage"])
-        activate_stage_status(project, next_stage)
-        result = harness.chat_status(run_dir)
-    return _with_stage_packet(result)
+        elif result.get("stage"):
+            next_stage = next(item for item in stages if item["id"] == result["stage"])
+            activate_stage_status(project, next_stage)
+            result = harness.chat_status(run_dir)
+        return _with_stage_packet(result)
 
 
 @_serialized
@@ -356,7 +382,7 @@ TOOLS: dict[str, tuple[str, dict[str, Any], Callable[[dict[str, Any]], dict[str,
     "get_guidance": ("Load one conditional design capability only when its trigger applies to the active stage.", _schema({"run_id": {"type": "string"}, "capability_id": {"type": "string"}}, ["run_id", "capability_id"]), get_guidance, {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
     "write_file": ("Write only the artifact owned by the active stage, or implementation code when allowed.", _schema({"run_id": {"type": "string"}, "path": {"type": "string"}, "text": {"type": "string"}}, ["run_id", "path", "text"]), write_file, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
     "generate_image": ("Make a paid OpenAI image-generation request and register the physical raster at the active image stage. Require user approval.", _schema({"run_id": {"type": "string"}, "prompt": {"type": "string"}, "path": {"type": "string"}, "asset_id": {"type": "string"}}, ["run_id", "prompt"]), generate_image, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": True}),
-    "register_image": ("Register an already generated physical raster; declarations, SVG and CSS are rejected.", _schema({"run_id": {"type": "string"}, "path": {"type": "string"}, "asset_id": {"type": "string"}}, ["run_id", "path"]), register_image, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
+    "register_image": ("Register a physical raster import; this is not observed generation. SVG and CSS are rejected.", _schema({"run_id": {"type": "string"}, "path": {"type": "string"}, "asset_id": {"type": "string"}}, ["run_id", "path"]), register_image, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
     "confirm_master": ("Record the user's sole artistic-master checkpoint signal.", _schema({"run_id": {"type": "string"}, "status": {"type": "string", "enum": ["APPROVED", "DELEGATED", "ADJUST"]}, "user_signal": {"type": "string"}}, ["run_id", "status", "user_signal"]), confirm_master, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
     "advance_stage": ("Validate physical evidence, close the active stage and open exactly one successor. Never skip stages.", _schema({"run_id": {"type": "string"}}, ["run_id"]), advance_stage, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": False}),
     "verify_run": ("Verify the final execution receipt. A landing is not harness-certified unless verified is true.", _schema({"run_id": {"type": "string"}}, ["run_id"]), verify_run, {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
@@ -364,7 +390,9 @@ TOOLS: dict[str, tuple[str, dict[str, Any], Callable[[dict[str, Any]], dict[str,
 
 
 def _result(value: dict[str, Any], error: bool = False) -> dict[str, Any]:
-    return {"content": [{"type": "text", "text": json.dumps(value, ensure_ascii=False)}], "structuredContent": value, "isError": error}
+    images = value.pop("_images", [])
+    resources = value.pop("_resources", [])
+    return {"content": [{"type": "text", "text": json.dumps(value, ensure_ascii=False)}, *images, *resources], "structuredContent": value, "isError": error}
 
 
 def dispatch(message: dict[str, Any]) -> dict[str, Any] | None:
@@ -449,7 +477,7 @@ def serve_http(host: str, port: int, origins: set[str], token: str | None) -> No
                 return
             try:
                 length = int(self.headers.get("Content-Length", "0"))
-                if length <= 0 or length > MAX_TEXT_BYTES:
+                if length <= 0 or length > MAX_REQUEST_BYTES:
                     raise ValueError("invalid request size")
                 response = dispatch(json.loads(self.rfile.read(length)))
                 if response is None:
@@ -487,6 +515,9 @@ def main() -> int:
     serve_http(args.host, args.port, origins, token)
     return 0
 
+
+from harness_operations import operation_specs
+TOOLS.update(operation_specs(sys.modules[__name__]))
 
 if __name__ == "__main__":
     raise SystemExit(main())

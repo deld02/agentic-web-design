@@ -33,9 +33,12 @@ class HarnessMcpServerTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.previous_root = mcp.RUNS_ROOT
         mcp.RUNS_ROOT = Path(self.temp.name).resolve()
+        self.readiness = patch("harness_operations.runtime_status", return_value={"ready_for_live_probe":True,"checks":{}})
+        self.readiness.start()
 
     def tearDown(self) -> None:
         mcp.RUNS_ROOT = self.previous_root
+        self.readiness.stop()
         self.temp.cleanup()
 
     def start(self) -> dict:
@@ -46,7 +49,7 @@ class HarnessMcpServerTests(unittest.TestCase):
         names = {item["name"] for item in response["result"]["tools"]}
         self.assertEqual(
             names,
-            {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "confirm_master", "advance_stage", "verify_run"},
+            {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "confirm_master", "advance_stage", "verify_run", "runtime_status", "read_image", "upload_image", "render_landing", "run_review", "prepare_delivery", "download_delivery"},
         )
 
     def test_initialize_places_pipeline_order_in_server_instructions(self):
@@ -90,6 +93,38 @@ class HarnessMcpServerTests(unittest.TestCase):
                 mcp.advance_stage({"run_id": started["run_id"]})
         self.assertEqual(state.read_bytes(), before)
 
+    def test_empty_research_cannot_advance_to_content(self):
+        self.test_orchestrator_advances_one_valid_stage_and_owns_state()
+        run = next(path for path in mcp.RUNS_ROOT.iterdir() if path.is_dir())
+        state = (run / "project" / "status.json").read_bytes()
+        result = mcp.advance_stage({"run_id": run.name})
+        self.assertEqual(result["status"], "REVISE")
+        self.assertEqual(result["stage"], "research-strategy")
+        self.assertEqual((run / "project" / "status.json").read_bytes(), state)
+
+    def test_late_transition_failure_restores_journal_and_state(self):
+        from harness_transition import TRANSITION_FILES
+        for failing_operation in ("snapshot", "activation", "packet"):
+            with self.subTest(operation=failing_operation):
+                started = self.start()
+                run = Path(started["run_dir"])
+                originals = {name: (run / name).read_bytes() if (run / name).is_file() else None
+                             for name in TRANSITION_FILES}
+                target, method = {
+                    "snapshot": (mcp.harness, "_save_chat_snapshot"),
+                    "activation": (mcp, "activate_stage_status"),
+                    "packet": (mcp, "_with_stage_packet"),
+                }[failing_operation]
+                # Bypass content checks only to reach the late transaction faults.
+                with patch.object(mcp.harness, "stage_readiness_errors", return_value=[]), \
+                     patch.object(target, method, side_effect=RuntimeError("late failure")):
+                    with self.assertRaisesRegex(RuntimeError, "late failure"):
+                        mcp.advance_stage({"run_id": run.name})
+                for name, before in originals.items():
+                    path = run / name
+                    self.assertEqual(path.read_bytes() if path.is_file() else None, before, name)
+                self.assertEqual(mcp.get_stage({"run_id": run.name})["stage"], "definition")
+
     def test_implementation_root_cannot_grant_state_access(self):
         started = self.start()
         project = Path(started["project_dir"])
@@ -124,7 +159,7 @@ class HarnessMcpServerTests(unittest.TestCase):
             with patch.object(mcp, "_project_and_stage", return_value=(Path(started["run_dir"]), active, project)):
                 result = mcp.advance_stage({"run_id": started["run_id"]})
                 self.assertEqual(result["status"], "BLOCKED")
-                self.assertIn("INDEPENDENT_REVIEW_UNAVAILABLE", result["findings"][0])
+                self.assertIn("INDEPENDENT_REVIEW_REQUIRED", result["findings"][0])
 
     def test_orchestrator_advances_one_valid_stage_and_owns_state(self):
         started = self.start()
@@ -173,7 +208,8 @@ class HarnessMcpServerTests(unittest.TestCase):
             mcp.read_file({"run_id": started["run_id"], "path": "../run.json"})
 
     def test_image_api_helper_requires_physical_base64_data(self):
-        raster = mcp._openai_image("A sufficiently specific project visual prompt", "secret", opener=lambda *_args, **_kwargs: _ImageResponse())
+        with patch.dict("os.environ", {"AGENTIC_IMAGE_MODEL":"test-image-model"}):
+            raster = mcp._openai_image("A sufficiently specific project visual prompt", "secret", opener=lambda *_args, **_kwargs: _ImageResponse())
         self.assertTrue(raster.startswith(b"\x89PNG"))
 
     def test_master_confirmation_only_changes_checkpoint_fields(self):

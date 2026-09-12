@@ -2,6 +2,10 @@
 
 No son prohibiciones universales. Son patrones que requieren justificación fuerte porque suelen generar soluciones genéricas o frágiles.
 
+Estado de evidencia: heurísticas derivadas de problemas comunicados, sin casos
+reproducibles enlazados en este catálogo. Verificar sobre el render del proyecto;
+la coincidencia con una receta visual no demuestra un fallo por sí sola.
+
 ## Hero formalmente completo pero plano
 
 **Fallo observado:** hay titular grande, paleta contenida, asset, CTA y un `FX-*` nominal, pero el resultado sigue siendo intercambiable. Suele aparecer como cluster: neutro cálido, grotesca pesada, etiquetas mono, contornos finos, acento brillante y sombra desplazada; el gráfico ocupa la segunda columna sin relación causal con el mensaje.

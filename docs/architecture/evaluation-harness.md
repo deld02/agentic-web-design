@@ -43,7 +43,7 @@ python tools/evaluation_harness.py chat-image --run-dir <run> --file <generated-
 python tools/evaluation_harness.py chat-next --run-dir <run>
 ```
 
-`chat-next` derives artifact writes from filesystem changes, validates the current owner, gate and checkpoint, and opens exactly one successor. It permits the same single correction and user checkpoint as `run`. `chat-image` works only during `creative-master`, requires a valid raster inside the managed project and records the generation receipt; without it, progression is blocked.
+`chat-next` derives artifact writes from filesystem changes, validates the current owner, gate and checkpoint, and opens exactly one successor. It permits the same single correction and user checkpoint as `run`. `chat-image` registers a physical import during master or production work; it does not prove generation. For server-observed generation and fresh review use the [managed runtime](managed-runtime.md). Starting this low-level CLI alone does not provide those capabilities.
 
 ## MCP adapter
 

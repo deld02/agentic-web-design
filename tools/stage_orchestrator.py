@@ -169,7 +169,10 @@ def build_stage_packet(
 def complete_stage_status(project: Path, stage: dict[str, Any], evidence: list[str]) -> None:
     """Apply the candidate transition as the harness-owned state writer."""
     if stage["id"] in {"direction-review", "design-review", "build-review"}:
-        raise ValueError("Independent review requires an isolated executor; automatic approval is forbidden")
+        from harness_review import review_record_errors
+        errors = review_record_errors(project, stage["id"])
+        if errors:
+            raise ValueError("Independent review requires an isolated executor: " + "; ".join(errors))
     path = project / "status.json"
     status = load_json(path)
     stage_id = stage["id"]
@@ -182,6 +185,11 @@ def complete_stage_status(project: Path, stage: dict[str, Any], evidence: list[s
     else:
         item = status["checkpoints"][stage_id]
     item.update(status=decision, evidence=sorted(set(evidence)), blockers=[], last_decision=f"{stage_id} validated by harness")
+    if stage["id"] in {"direction-review", "design-review", "build-review"}:
+        item["review_context"] = "ISOLATED"
+        reviewed_gate = {"design-review":"G3", "build-review":"G4"}.get(stage_id)
+        if reviewed_gate:
+            status["gates"][reviewed_gate].update(status="APPROVED", blockers=[])
     status["status"] = decision
     status["release"]["eligible"] = all(status["gates"][f"G{i}"]["status"] == "APPROVED" for i in range(5))
     status["release"]["reason"] = None if status["release"]["eligible"] else f"{stage_id} completed; pipeline continues"

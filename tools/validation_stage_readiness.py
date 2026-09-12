@@ -4,8 +4,8 @@
 from pathlib import Path
 
 from audit_state import audit as audit_state
-from project_validation import image_handoff_errors
-from validate_gate import validate_gate
+from project_validation import image_handoff_errors, direction_divergence_errors, project_quality_bar_errors
+from validate_gate import validate_gate, research_readiness_errors
 from validation_capability_activation import stage_activation_errors
 from validation_common import load_json
 from validation_image_generation import generated_asset_file_errors
@@ -18,6 +18,11 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
     stage_id = stage["id"]
     errors = list(audit_state(project_dir))
     errors.extend(stage_activation_errors(project_dir, root, stage_id))
+    if stage_id == "research-strategy":
+        errors.extend(research_readiness_errors(project_dir))
+    if stage_id == "direction-divergence":
+        errors.extend(direction_divergence_errors(project_dir, require_selection=False))
+        errors.extend(project_quality_bar_errors(project_dir))
     gate_id = stage.get("gate")
     if gate_id:
         allowed = {"APPROVED"}

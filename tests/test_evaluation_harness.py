@@ -146,12 +146,6 @@ brief=p/'brief.md'; text=brief.read_text(encoding='utf-8')
 text=text.replace('## Objective, audience and primary action\n', '## Objective, audience and primary action\n\nHelp local employers register for a factual public event.\n', 1)
 text=text.replace('## Project type and provisional scope\n', '## Project type and provisional scope\n\nOne responsive event landing with registration as primary action.\n', 1)
 brief.write_text(text,encoding='utf-8')
-status=json.loads((p/'status.json').read_text(encoding='utf-8'))
-status['gates']['G0'].update(status='APPROVED',evidence=['brief.md'],blockers=[],last_decision='fixture definition approved')
-status['checkpoints']['research-strategy']['status']='ACTIVE'
-status.update(active_stage='research-strategy',active_gate=None,active_agent='01',active_mode='research-strategy',status='ACTIVE')
-status['release']={'eligible':False,'reason':'G1 pending'}
-(p/'status.json').write_text(json.dumps(status,indent=2)+'\n',encoding='utf-8')
 """,
             encoding="utf-8",
         )
@@ -166,6 +160,15 @@ status['release']={'eligible':False,'reason':'G1 pending'}
         result = run_active(run_dir, ["executor-that-does-not-exist"], until="definition")
         self.assertEqual(result["status"], "FAILED")
         self.assertIn("executor could not start", " ".join(result["findings"]))
+
+    def test_active_runner_rejects_specialist_state_writes(self):
+        run_dir = self.new_run()
+        code = "from pathlib import Path; Path('status.json').write_text('{}')"
+        result = run_active(run_dir, [sys.executable, "-c", code], until="definition")
+        self.assertEqual(result["status"], "FAILED")
+        self.assertIn("modified official state", " ".join(result["findings"]))
+        state = json.loads((run_dir / "project/status.json").read_text(encoding="utf-8"))
+        self.assertNotEqual(state["gates"]["G0"]["status"], "APPROVED")
 
     def test_chat_start_opens_exactly_definition_without_external_cli(self):
         result = start_chat_run("institutional-event", self.runs_root, "chat-run")
@@ -218,6 +221,9 @@ status['release']={'eligible':False,'reason':'G1 pending'}
         result = confirm_chat_image(run_dir, image, "IMG-001")
         self.assertEqual(result["stage"], "production-plan")
         self.assertTrue(any(item.get("target") == "IMG-001" for item in read_events(run_dir)))
+        self.assertFalse(result["generation_observed"])
+        self.assertEqual(missing_generation_receipts(project, read_events(run_dir), {"CHATGPT_IMAGE"}), ["IMG-001"])
+        confirm_chat_image(run_dir, image, "IMG-001", observed_generation=True)
         self.assertEqual(missing_generation_receipts(project, read_events(run_dir), {"CHATGPT_IMAGE"}), [])
 
     def test_chat_image_rejects_undeclared_production_asset(self):

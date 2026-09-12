@@ -68,6 +68,19 @@ def require_sections(errors: list[str], text: str, gate: str, headings: tuple[st
             errors.append(f"{gate} missing substantive content under {heading}")
 
 
+def research_readiness_errors(project_dir: Path) -> list[str]:
+    """Validate research at its own exit, and reuse the same checks at G1."""
+    errors: list[str] = []
+    require_sections(errors, markdown(project_dir, "research-strategy.md"), "G1", (
+        "## Facts, assumptions and preferences", "## Desired perception and anti-attributes",
+        "## Opportunity, risks and open questions",
+    ))
+    errors.extend(reference_benchmark_errors(project_dir))
+    errors.extend(context_compiler_errors(project_dir))
+    errors.extend(identity_authority_errors(project_dir))
+    return errors
+
+
 def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
     errors: list[str] = []
     gates = {item["id"]: item for item in load_json(ROOT / "config" / "gates.json")["gates"]}
@@ -95,12 +108,8 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             errors.append("G0 project_type is undetermined")
 
     elif gate_id == "G1":
-        research = markdown(project_dir, "research-strategy.md")
         content = markdown(project_dir, "content-architecture.md")
-        require_sections(errors, research, "G1", (
-            "## Facts, assumptions and preferences", "## Desired perception and anti-attributes",
-            "## Opportunity, risks and open questions",
-        ))
+        errors.extend(research_readiness_errors(project_dir))
         require_sections(errors, content, "G1", (
             "## Primary journey and CTA", "## Sitemap / page or section outline",
             "## Content and copy", "## Media requirements",
@@ -108,9 +117,6 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         if len(table_rows(content, "## Narrative alternatives and decision evidence", "Candidate")) < 2:
             errors.append("G1 requires at least two narrative alternatives")
         errors.extend(claim_errors(project_dir))
-        errors.extend(reference_benchmark_errors(project_dir))
-        errors.extend(context_compiler_errors(project_dir))
-        errors.extend(identity_authority_errors(project_dir))
         errors.extend(structure_challenge_errors(project_dir))
         _primary_scenes, outline_errors = scene_outline(project_dir)
         errors.extend(outline_errors)

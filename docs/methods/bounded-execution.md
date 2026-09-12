@@ -1,6 +1,6 @@
 # Bounded execution
 
-This method prevents silent retry loops without lowering design quality or imposing a fixed total project duration.
+This method prevents silent retry loops without treating elapsed time as a measure of design quality. The executable evaluation harness additionally enforces the total and per-stage limits configured in `harness/scenarios.json`. Those limits bound an attempt, not the time a project must take to become good. Exhaustion is a blocked/failed attempt, never an artistic approval.
 
 ## Runtime budget
 

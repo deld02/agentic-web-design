@@ -427,7 +427,7 @@ def project_quality_bar_errors(project_dir: Path) -> list[str]:
     return errors
 
 
-def direction_divergence_errors(project_dir: Path) -> list[str]:
+def direction_divergence_errors(project_dir: Path, require_selection: bool = True) -> list[str]:
     """Require three physically evidenced and structurally distant territories."""
     text = markdown(project_dir, "creative-direction.md")
     rows = table_rows(text, "## Direction divergence", "Direction ID")
@@ -465,6 +465,8 @@ def direction_divergence_errors(project_dir: Path) -> list[str]:
                 errors.append(
                     f"G2 directions {left[0]} and {right[0]} differ in only {differences} dimensions; four are required"
                 )
+    if not require_selection:
+        return errors
     selected = _named_value(text, "## Direction selection handoff", "SELECTED_DIRECTION")
     if selected not in seen_ids:
         errors.append("G2 selected direction must match one divergent territory")

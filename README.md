@@ -33,7 +33,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 
 ## Roles
 
-The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 requires a genuinely separate execution context; the current MCP adapter cannot dispatch that context and blocks review stages instead of granting a false approval.
+The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 uses a fresh visual-review API request with physical evidence; a verdict written by the designing chat cannot approve a review.
 
 ## Technology
 
@@ -52,11 +52,12 @@ python -m unittest discover -s tests -v
 
 ## Ejecución gestionada
 
-El MCP del harness es un **adaptador parcial, no una ruta completa de producción
-para ChatGPT**. Expone el pipeline existente, pero todavía faltan un ejecutor
-de revisión aislada y operaciones gestionadas de build, render y entrega.
-Se detiene en la primera revisión independiente: no basta con que el propio chat
-escriba `PASS`. No lo uses para prometer una landing certificada de principio a fin.
+El MCP implementa generación/importación de imágenes, revisión visual en contexto
+separado, render de HTML estático/exportado y entrega verificada. El runtime se
+comprueba antes de abrir un proyecto. **La integración completa con ChatGPT y los
+proveedores debe probarse en un piloto real**; los tests locales no certifican
+calidad artística ni conectividad externa. Configuración y límites:
+[managed-runtime.md](docs/architecture/managed-runtime.md).
 
 ```bash
 # Codex/cliente local (stdio)
@@ -74,33 +75,35 @@ saliente; no exige publicar el ordenador. Mantén `tunnel-client run` activo mie
 se usa la app en ChatGPT. La alternativa pública sí requiere HTTPS, autenticación y
 un origen permitido; el servidor se niega a enlazar una interfaz no local sin token.
 
-Configura `OPENAI_API_KEY` para que `generate_image` produzca y registre el raster
-físico con `gpt-image-2`. La llamada puede tener coste y debe conservar la aprobación
-del cliente MCP. El ZIP o el conector de GitHub por sí solos no ejecutan nada: solo
-son una ruta válida cuando el chat dispone realmente de Python, inicia `chat-start`
-y muestra el preflight gestionado antes de investigar.
+Configura en el servidor `OPENAI_API_KEY`, `AGENTIC_IMAGE_MODEL` y
+`AGENTIC_REVIEW_MODEL`. Las llamadas de generación y revisión pueden tener coste
+y deben conservar la aprobación del cliente MCP. Un ZIP o el conector de GitHub
+por sí solos no ejecutan el sistema ni aportan el runtime.
 
 El flujo MCP es `start_landing` → ejecutar únicamente el `stage_packet` →
-`advance_stage`. Los especialistas no escriben `status.json`. `creative-master` no avanza sin `generate_image` o
-`register_image`; `production-plan` tampoco avanza si un `IMG-*` generado no ha
+`advance_stage`. Los especialistas no escriben `status.json`. `creative-master` exige generación observada mediante `generate_image`;
+`register_image` y `upload_image` acreditan archivos importados, no una llamada de generación. `production-plan` tampoco avanza si un `IMG-*` generado no ha
 vuelto físicamente. CSS, SVG, círculos, diagramas o iconos improvisados no cuentan
 como sustitutos de una imagen exigida. `verify_run` debe devolver `verified: true`
 antes de afirmar que el sistema se ejecutó por completo.
 
 En este adaptador, `implementation_root` debe ser `implementation`, una carpeta
 dedicada dentro del proyecto gestionado. La elección tecnológica sigue siendo libre;
-esta restricción protege el estado, no prescribe un framework. Ejecuta una sola
-instancia de servidor por directorio de runs. Las operaciones se serializan en ese
-proceso y una validación rechazada restaura el estado previo; esto no constituye
-aislamiento frente a otros procesos locales ni recuperación ante un corte del proceso.
+esta restricción protege el estado, no prescribe un framework. El render gestionado
+acepta HTML estático/exportado; no ejecuta comandos de build arbitrarios. Un bloqueo
+SQLite serializa los servidores cooperantes y un journal recupera transiciones
+interrumpidas al reabrir el run. No es aislamiento frente a procesos locales hostiles
+ni una garantía de durabilidad ante pérdida eléctrica.
 
-Leer el repositorio no equivale a ejecutar el sistema. Para un proyecto real dentro de ChatGPT existe un único arranque canónico:
+Leer el repositorio no equivale a ejecutar el sistema. Desde ChatGPT conectado al
+MCP, usa `start_landing`. La CLI siguiente es una entrada alternativa de bajo nivel
+para entornos que ya disponen de runtime, no un sustituto de los servicios necesarios:
 
 ```text
 python tools/evaluation_harness.py chat-start --brief-file <brief>
 ```
 
-La respuesta debe exponer `execution_mode`, `run_id`, `run_dir`, `project_dir`, `stage`, `agent` y `mode`. Completa exclusivamente esa etapa y avanza con `chat-next`. Durante `creative-master` y la producción de imágenes finales, registra cada raster real con `chat-image`.
+La respuesta debe exponer `execution_mode`, `run_id`, `run_dir`, `project_dir`, `stage`, `agent` y `mode`. Completa exclusivamente esa etapa y avanza con `chat-next`. `chat-image` registra una importación física; por sí solo no demuestra generación observada ni habilita una revisión independiente.
 
 Para un ejecutor headless, usa `doctor`, `init` y `run`; `record` es instrumentación de bajo nivel y nunca sustituye una ejecución gestionada. Los seis escenarios y sus límites viven en `harness/scenarios.json`.
 

@@ -1,4 +1,5 @@
 import json, shutil, subprocess, sys, tempfile, unittest
+from repo_fixture import copy_source_repo
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -9,7 +10,7 @@ def run(repo):
 class ResourceRegistryValidationTests(unittest.TestCase):
     def clone(self):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
-        shutil.copytree(ROOT,dst,ignore=shutil.ignore_patterns('.git','__pycache__'))
+        copy_source_repo(ROOT,dst)
         return td,dst
 
     def test_clean_registry_passes(self):

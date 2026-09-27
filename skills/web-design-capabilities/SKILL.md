@@ -23,6 +23,7 @@ For any material choice, follow `docs/methods/material-decisions.md` inside the 
 - Reference video or HTML interaction: read [references/interaction-reference.md](references/interaction-reference.md).
 - `GENERIC | FLAT | SAFE | OVERDESIGNED | WEAK_HIERARCHY | INTERCHANGEABLE` review finding: read [references/craft-correction.md](references/craft-correction.md).
 - GSAP already selected by technology decision: read [references/runtime-motion.md](references/runtime-motion.md).
+- Custom Blender authoring after real 3D was selected: read [references/blender-production.md](references/blender-production.md). Medium selection stays in the existing spatial method.
 
 Do not load every reference. Record each material use under `## Design capability log` in the artifact owned by the active stage.
 

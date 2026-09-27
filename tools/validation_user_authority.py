@@ -22,10 +22,16 @@ def record_master_confirmation(artifact: Path, status: str, user_signal: str) ->
     heading = "## Artistic master confirmation"
     if heading not in text:
         raise ValueError("artistic master confirmation section is missing")
-    before, section = text.split(heading, 1)
-    section = re.sub(r"(?m)^STATUS:\s*.*$", f"STATUS: {normalized}", section, count=1)
-    section = re.sub(r"(?m)^USER_SIGNAL:\s*.*$", f"USER_SIGNAL: {signal}", section, count=1)
-    artifact.write_text(before + heading + section, encoding="utf-8")
+    before, remainder = text.split(heading, 1)
+    boundary = re.search(r"(?m)^#{1,6}[ \t]+", remainder)
+    checkpoint = remainder[:boundary.start()] if boundary else remainder
+    after = remainder[boundary.start():] if boundary else ""
+    for key, value in (("STATUS", normalized), ("USER_SIGNAL", signal)):
+        pattern = rf"(?m)^{key}:[ \t]*[^\r\n]*$"
+        if not re.search(pattern, checkpoint):
+            raise ValueError(f"master checkpoint missing {key}")
+        checkpoint = re.sub(pattern, lambda _match: f"{key}: {value}", checkpoint, count=1)
+    artifact.write_text(before + heading + checkpoint + after, encoding="utf-8")
     return {"status": normalized, "user_signal": signal}
 
 

@@ -66,6 +66,32 @@ class RuntimeTests(unittest.TestCase):
         return name
 
     @unittest.skipUnless(importlib.util.find_spec("PIL"), "Pillow required")
+    def test_research_import_preserves_external_provenance_and_stage(self):
+        from harness_operations import upload_image
+        source = self.project / self._picture("evidence/source.png")
+        active = {"stage": "research-strategy", "agent": "01"}
+        args = {"run_id": self.run.name, "extension": ".png",
+                "data_base64": base64.b64encode(source.read_bytes()).decode("ascii")}
+        state_before = (self.project / "status.json").read_bytes()
+        with patch.object(mcp, "_project_and_stage", return_value=(self.run, active, self.project)):
+            result = upload_image(mcp, args)
+            with self.assertRaisesRegex(ValueError, "reference evidence"):
+                upload_image(mcp, {**args, "asset_id": "IMG-001"})
+        self.assertFalse(result["generation_observed"])
+        self.assertEqual((self.project / result["path"]).read_bytes(), source.read_bytes())
+        event = json.loads((self.run / "events.jsonl").read_text().splitlines()[-1])
+        self.assertEqual(event["provenance"], "EXTERNAL_IMPORT")
+        self.assertEqual(event["stage"], "research-strategy")
+        self.assertEqual(state_before, (self.project / "status.json").read_bytes())
+
+    def test_reference_import_still_rejects_definition_stage(self):
+        from harness_operations import upload_image
+        active = {"stage": "definition", "agent": "00"}
+        with patch.object(mcp, "_project_and_stage", return_value=(self.run, active, self.project)):
+            with self.assertRaisesRegex(ValueError, "unavailable"):
+                upload_image(mcp, {"run_id": self.run.name})
+
+    @unittest.skipUnless(importlib.util.find_spec("PIL"), "Pillow required")
     def test_fresh_review_uses_images_and_no_owner_conversation(self):
         images = [self._picture(f"evidence/board-{i}.png") for i in range(3)]
         direction = self.project / "creative-direction.md"
@@ -104,10 +130,16 @@ class RuntimeTests(unittest.TestCase):
         root = self.project / "implementation"
         root.mkdir(exist_ok=True)
         (root / "index.html").write_text('<!doctype html><meta name="viewport" content="width=device-width"><title>Runtime fixture</title><main data-scene-id="SCN-001"><h1>Runtime fixture, not a design benchmark</h1><button onclick="this.textContent=\'Clicked\'">Contact</button></main>', encoding="utf-8")
+        (root / "assets").mkdir()
+        (root / "assets/app.js").write_text("document.cookie='app=ok'; document.querySelector('h1').textContent += ' loaded-root-asset';", encoding="utf-8")
+        with (root / "index.html").open("a", encoding="utf-8") as page:
+            page.write('<script src="/assets/app.js"></script>')
         result = render_static(self.project, root, "index.html", ["SCN-001"], [{"type":"click","selector":"button"},{"type":"reduced-motion"}])
         self.assertEqual(len(result["captures"]), 8)
         observed = [capture["observed"] for capture in result["captures"] if capture["kind"] == "interaction"]
         self.assertTrue(all("Clicked" in capture["visibleText"] for capture in observed))
+        self.assertTrue(all("loaded-root-asset" in capture["visibleText"] for capture in observed))
+        self.assertTrue(all(capture["url"] == "/" for capture in observed))
         self.assertEqual(sum(capture["reducedMotion"] for capture in observed), 2)
         self.assertTrue(all((self.project / capture["file"]).is_file() for capture in result["captures"]))
         self.assertFalse(any(capture.get("errors") for capture in result["captures"]))

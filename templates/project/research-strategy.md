@@ -48,6 +48,8 @@ IDENTITY_STATUS: `EVALUATED | NO_EXISTING_IDENTITY`
 
 ### Live website benchmark
 
+At least three distinct original websites. Cover DIRECT or ADJACENT, FRONTIER and SIMPLE; record SATURATED as an observed risk. A website may appear in multiple rows for different lenses, but repeated URLs/captures do not count as extra websites.
+
 | Website | Role (`DIRECT | ADJACENT | FRONTIER | SIMPLE | SATURATED`) | Discovered via | Hero / flow / visual / CTA / motion observation | Fit and limitation | Use, change or ignore | Original URL | Checked (`YYYY-MM-DD`) | Physical capture relative to project |
 |---|---|---|---|---|---|---|---|---|
 

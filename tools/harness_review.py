@@ -1,5 +1,7 @@
 """Fresh-context visual reviews; the client cannot supply a verdict or receipt."""
 
+from __future__ import annotations
+
 import base64
 from hashlib import sha256
 import json
@@ -12,6 +14,7 @@ from harness_media import inspect_raster
 from stage_orchestrator import build_stage_packet, STAGE_INPUTS
 from validation_common import load_json, table_rows
 from validation_release_integrity import implementation_digest
+from harness_session import session_mode, subscription_review
 
 REVIEW_STAGES = {"direction-review", "design-review", "build-review"}
 
@@ -35,7 +38,7 @@ def review_record_errors(project: Path, stage_id: str) -> list[str]:
         return ["INDEPENDENT_REVIEW_REQUIRED: call run_review in a fresh server context"]
     try:
         record = load_json(path)
-        if record.get("stage") != stage_id or record.get("provider") != "OPENAI_RESPONSES" or not record.get("response_id"):
+        if record.get("stage") != stage_id or record.get("provider") not in {"OPENAI_RESPONSES", "CODEX_SUBSCRIPTION"} or not record.get("response_id"):
             return ["independent review has no server provider receipt"]
         if record.get("inputs") != _snapshot(project, stage_id, record["images"]):
             return ["independent review is stale; inputs changed"]
@@ -61,7 +64,8 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
     if stage["id"] not in REVIEW_STAGES:
         raise ValueError("review is only available at review stages")
     key, model = os.getenv("OPENAI_API_KEY"), os.getenv("AGENTIC_REVIEW_MODEL")
-    if not key or not model:
+    native = session_mode()
+    if not native and (not key or not model):
         raise RuntimeError("Configure OPENAI_API_KEY and AGENTIC_REVIEW_MODEL on the server")
     if not 2 <= len(images) <= 16 or len(images) != len(set(images)):
         raise ValueError("review needs 2–16 distinct physical images")
@@ -81,9 +85,17 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
         if prior.get("inputs") == before and prior.get("images") == images:
             return prior
     attempts_path = directory / f"{stage['id']}-attempts.json"
-    attempts = load_json(attempts_path).get("count", 0) if attempts_path.is_file() else 0
+    budget = load_json(attempts_path) if attempts_path.is_file() else {}
+    attempts = budget.get("count", 0)
+    calls = budget.get("calls", attempts)
+    if "calls" not in budget and not prior_path.is_file():
+        # Legacy counters charged failures as reviews. With no completed record,
+        # retain the infrastructure attempts but recover the artistic budget.
+        attempts = 0
     if attempts >= 2:
         raise ValueError("review correction budget exhausted; preserve work and request user direction")
+    if calls - attempts >= 3:
+        raise ValueError("review infrastructure retry budget exhausted; repair provider/authentication before operator recovery; no artistic verdict inferred")
     packet = build_stage_packet(root, project, stage, set())
     # No conversation, previous response, tools, run logs or owner reasoning.
     axes = load_json(root / "harness/scenarios.json")["visual_review_axes"] if stage["id"] == "build-review" else ["composition", "typography", "color", "media_integration", "project_fit"]
@@ -104,9 +116,14 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
         "text":{"format":{"type":"json_schema","name":"visual_review","strict":True,"schema":_schema(axes)}}}
     request = urllib.request.Request("https://api.openai.com/v1/responses", data=json.dumps(payload).encode(),
         headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"}, method="POST")
-    attempts_path.write_text(json.dumps({"count":attempts+1}), encoding="utf-8")
-    with urllib.request.urlopen(request, timeout=180) as response:
-        raw = json.loads(response.read())
+    # Reserve a bounded provider attempt before I/O. Failed calls never count as
+    # completed design reviews, including timeout, malformed output or stale input.
+    attempts_path.write_text(json.dumps({"count":attempts, "calls":calls+1}), encoding="utf-8")
+    if native:
+        raw = subscription_review(packet, [project / name for name in images], _schema(axes), images)
+    else:
+        with urllib.request.urlopen(request, timeout=180) as response:
+            raw = json.loads(response.read())
     if raw.get("status") != "completed" or not raw.get("id"):
         raise ValueError("review provider did not complete; no approval recorded")
     chunks = [part["text"] for item in raw.get("output", []) for part in item.get("content", []) if part.get("type") == "output_text"]
@@ -125,7 +142,8 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
             raise ValueError("review selected an unknown direction")
     if before != _snapshot(project, stage["id"], images):
         raise ValueError("review inputs changed during provider call")
-    record = {"stage":stage["id"], "provider":"OPENAI_RESPONSES", "response_id":raw["id"],
+    attempts_path.write_text(json.dumps({"count":attempts+1, "calls":calls+1}), encoding="utf-8")
+    record = {"stage":stage["id"], "provider":"CODEX_SUBSCRIPTION" if native else "OPENAI_RESPONSES", "response_id":raw["id"],
         "model":model, "images":images, "inputs":before, "result":result,
         "capabilities":[item["id"] for item in packet["capabilities"]["automatic"]]}
     (directory / f"{stage['id']}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")

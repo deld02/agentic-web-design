@@ -15,8 +15,8 @@ async function main() {
   const server = http.createServer((req, res) => {
     try {
       const url = new URL(req.url, 'http://localhost');
-      if (!url.pathname.startsWith(`/${token}/`)) {res.writeHead(403).end(); return;}
-      const relative = decodeURIComponent(url.pathname.slice(token.length + 2));
+      if (!(req.headers.cookie || '').split(';').some(value => value.trim() === `awd=${token}`)) {res.writeHead(403).end(); return;}
+      const relative = decodeURIComponent(url.pathname.startsWith(`/${token}/`) ? url.pathname.slice(token.length + 2) : url.pathname.slice(1));
       const target = fs.realpathSync(path.resolve(root, relative || 'index.html'));
       const rel = path.relative(root, target);
       if (rel.startsWith('..') || path.isAbsolute(rel) || !fs.statSync(target).isFile()) {
@@ -32,19 +32,31 @@ async function main() {
   try {
     browser = await chromium.launch({headless:true, ...(process.env.AGENTIC_BROWSER_CHANNEL ? {channel:process.env.AGENTIC_BROWSER_CHANNEL} : {})});
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const base = `${origin}/${token}/`;
     const captures = [];
     for (const [name, width, height] of [['desktop',1440,1000], ['mobile',390,844]]) {
       const context = await browser.newContext({viewport:{width,height}, serviceWorkers:'block', acceptDownloads:false});
+      await context.addCookies([{name:'awd',value:token,url:origin,httpOnly:true,sameSite:'Strict'}]);
       await context.route('**/*', route => {
         const url = route.request().url();
-        return url.startsWith(base) || url.startsWith('data:') ? route.continue() : route.abort();
+        return url.startsWith(origin + '/') || url.startsWith('data:') ? route.continue() : route.abort();
       });
       if (context.routeWebSocket) await context.routeWebSocket(/.*/, socket => socket.close());
       const page = await context.newPage();
       const errors = [];
+      const fetchedAssets = {};
+      const pendingAssets = [];
       page.on('pageerror', error => errors.push(error.message));
-      const response = await page.goto(base + request.entry, {waitUntil:'networkidle', timeout:20000});
+      page.on('requestfailed', request => errors.push(`Request failed: ${request.url()}`));
+      page.on('response', response => {if (response.status() >= 400) errors.push(`HTTP ${response.status()}: ${response.url()}`);});
+      page.on('response', response => {
+        const url = new URL(response.url());
+        if (url.origin === origin && response.ok() && /\.(glb|png|webp|jpg|jpeg|avif)$/i.test(url.pathname)) {
+          pendingAssets.push(response.body().then(bytes => {
+            fetchedAssets[decodeURIComponent(url.pathname).replace(/^\//, '')] = crypto.createHash('sha256').update(bytes).digest('hex');
+          }).catch(() => errors.push(`Asset body unavailable: ${url.pathname}`)));
+        }
+      });
+      const response = await page.goto(origin + '/' + (request.entry === 'index.html' ? '' : request.entry), {waitUntil:'networkidle', timeout:20000});
       if (!response || !response.ok()) throw new Error('Landing entry could not be loaded');
       await page.evaluate(() => document.fonts.ready);
       const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
@@ -59,7 +71,7 @@ async function main() {
         missingImages:[...document.images].filter(i=>!i.complete || !i.naturalWidth).map(i=>i.getAttribute('src')),
         headings:[...document.querySelectorAll('h1,h2')].map(e=>e.textContent),
       }));
-      captures.push({viewport:name, file:whole, kind:'whole-page', observations, errors});
+      captures.push({viewport:name, file:whole, kind:'whole-page', observations, errors, fetched_assets:fetchedAssets});
       for (const id of request.scenes) {
         const scene = page.locator(`[data-scene-id="${id}"]`);
         if (await scene.count() !== 1) throw new Error(`Expected exactly one data-scene-id=${id}`);
@@ -83,6 +95,7 @@ async function main() {
           visibleText:document.body.innerText.slice(0,4000), reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches}));
         captures.push({viewport:name, kind:'interaction', action, observed, file});
       }
+      await Promise.all(pendingAssets);
       await context.close();
     }
     process.stdout.write(JSON.stringify({captures, limitations:['Network blocked: use locally bundled dependencies.',

@@ -127,10 +127,16 @@ def build_stage_packet(
             "text": path.read_text(encoding="utf-8"),
         })
     current: dict[str, str] = {}
+    artifact_templates: dict[str, str] = {}
     for relative in sorted(writable_files):
         candidate = project / relative
         if candidate.is_file() and candidate.suffix.lower() in {".md", ".json"}:
             current[relative] = candidate.read_text(encoding="utf-8")
+        template = root / "templates" / "project" / relative
+        if template.is_file() and template.suffix.lower() in {".md", ".json"}:
+            template_text = template.read_text(encoding="utf-8")
+            if template_text != current.get(relative):
+                artifact_templates[relative] = template_text
     inputs: dict[str, str] = {}
     for relative in STAGE_INPUTS.get(stage["id"], []):
         candidate = project / relative
@@ -156,9 +162,11 @@ def build_stage_packet(
             "conditional_candidates": capabilities["conditional_candidates"],
         },
         "current_artifacts": current,
+        "artifact_templates": artifact_templates,
         "required_inputs": inputs,
         "completion_protocol": [
             "Edit only writable_files or the implementation root when explicitly allowed.",
+            "Preserve the field, heading and table formats in artifact_templates; current_artifacts hold your content, not the output schema.",
             "Create physical evidence required by the contract; a written claim is not evidence.",
             "Call advance_stage once. If it returns REVISE, correct only its findings once.",
             "Do not announce completion unless verify_run returns verified=true.",

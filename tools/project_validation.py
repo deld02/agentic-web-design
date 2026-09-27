@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from urllib.parse import urlsplit
 import json
 import re
 
@@ -139,14 +140,14 @@ def _physical_composition_error(project_dir: Path, reference: str, label: str) -
     return None
 
 
-def reference_benchmark_errors(project_dir: Path, minimum: int = 5) -> list[str]:
+def reference_benchmark_errors(project_dir: Path, minimum: int = 3) -> list[str]:
     """Require a current, balanced visual calibration against real inspected websites."""
     rows = table_rows(
         markdown(project_dir, "research-strategy.md"),
         "### Live website benchmark", "Website",
     )
     errors: list[str] = []
-    valid = 0
+    valid: set[str] = set()
     roles: set[str] = set()
     for index, row in enumerate(rows, start=1):
         if len(row) < 9 or not all(row[:9]):
@@ -174,12 +175,15 @@ def reference_benchmark_errors(project_dir: Path, minimum: int = 5) -> list[str]
         if physical_error:
             errors.append(physical_error)
             continue
-        valid += 1
+        parsed = urlsplit(re.search(r"https?://\S+", source).group(0).rstrip(")>"))
+        # Multiple lenses/captures of one website are not additional websites.
+        valid.add((parsed.hostname or "").lower().removeprefix("www."))
         roles.add(role)
-    if valid < minimum:
+    if len(valid) < minimum:
         errors.append(f"G1 requires {minimum} current website references with physical captures")
-    for role, label in (("DIRECT", "direct category"), ("ADJACENT", "adjacent"),
-                        ("FRONTIER", "current frontier"), ("SIMPLE", "strong simple"),
+    if roles and not roles.intersection({"DIRECT", "ADJACENT"}):
+        errors.append("G1 visual calibration lacks a direct category or adjacent reference")
+    for role, label in (("FRONTIER", "current frontier"), ("SIMPLE", "strong simple"),
                         ("SATURATED", "saturated-code")):
         if roles and role not in roles:
             errors.append(f"G1 visual calibration lacks a {label} reference")

@@ -85,6 +85,10 @@ def _run_dir(run_id: str) -> Path:
 
 def _project_and_stage(run_id: str) -> tuple[Path, dict[str, Any], Path]:
     run_dir = _run_dir(run_id)
+    from harness_session import session_mode
+    backend = load_json(run_dir / "run.json").get("ai_backend")
+    if backend and backend != ("session" if session_mode() else "api"):
+        raise ValueError("run backend differs from server configuration; no implicit provider switch")
     status = harness.chat_status(run_dir)
     return run_dir, status, (run_dir / "project").resolve()
 
@@ -129,6 +133,8 @@ def _write_allowed(project: Path, stage: str, relative: str) -> Path:
     if study_root and normalized.startswith(study_root) and candidate.suffix.lower() in TEXT_SUFFIXES:
         return candidate
     if stage in IMPLEMENTATION_STAGES:
+        if normalized.startswith("frontend/") and candidate.suffix.lower() in TEXT_SUFFIXES:
+            return candidate
         implementation = _implementation_root(project)
         if _inside(candidate, implementation):
             return candidate
@@ -147,6 +153,11 @@ def start_landing(arguments: dict[str, Any]) -> dict[str, Any]:
         return {"status":"BLOCKED", "managed":False, "adapter_readiness":readiness,
                 "instruction":"Configure missing server capabilities before starting a landing. No run was created."}
     result = harness.start_chat_run(scenario, RUNS_ROOT, None, brief or None)
+    from harness_session import session_mode
+    run_path = Path(result["run_dir"]) / "run.json"
+    run_metadata = load_json(run_path)
+    run_metadata["ai_backend"] = "session" if session_mode() else "api"
+    run_path.write_text(json.dumps(run_metadata, indent=2), encoding="utf-8")
     result["managed"] = True
     result["adapter_readiness"] = readiness
     return _with_stage_packet(result)
@@ -163,6 +174,10 @@ def get_stage(arguments: dict[str, Any]) -> dict[str, Any]:
 
 
 def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
+    from harness_session import session_mode
+    if session_mode():
+        status["execution_backend"] = "CODEX_SESSION_NO_API_KEY"
+        status["native_media_instruction"] = "At image stages use the session image-generation tool and return a physical raster with its actual tool result reference via register_session_image. Tool origin is client-attested. If no native image tool is available, stop for production; never substitute SVG or call an API. run_review launches a fresh subscription-authenticated Codex CLI review; missing login blocks review, not a fake PASS."
     stage_id = status.get("stage")
     if not stage_id or "project_dir" not in status or status.get("status") == "FAILED":
         return status
@@ -298,6 +313,11 @@ def generate_image(arguments: dict[str, Any]) -> dict[str, Any]:
     prompt = str(arguments.get("prompt", "")).strip()
     if len(prompt) < 40:
         raise ValueError("image prompt must describe a project-specific visual intention")
+    from harness_session import session_mode
+    if session_mode():
+        destination = _image_output(run_dir, status["stage"], str(arguments.get("path", "")), arguments.get("asset_id"))
+        return {"status": "NEEDS_NATIVE_IMAGE", "prompt": prompt, "output_path": str(destination),
+                "instruction": "Call the native session image-generation tool now. Save its actual raster in the project, then call register_session_image with its actual result reference. Do not draw a substitute SVG or invent a receipt. If unavailable, stop for image production; no API fallback."}
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("OPENAI_API_KEY is required for physical image generation")
@@ -367,7 +387,8 @@ def verify_run(arguments: dict[str, Any]) -> dict[str, Any]:
         report = harness.evaluate(run_dir)
         return {"verified": False, "status": report["status"], "findings": report["findings"]}
     errors = execution_receipt_errors(receipt, ROOT)
-    return {"verified": not errors, "receipt": str(receipt), "findings": errors}
+    return {"verified": not errors, "receipt": str(receipt), "findings": errors,
+            "image_provenance": "CLIENT_ATTESTED_NATIVE_TOOL" if load_json(run_dir / "run.json").get("ai_backend") == "session" else "SERVER_OBSERVED_API"}
 
 
 def _schema(properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
@@ -434,6 +455,11 @@ def dispatch(message: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def serve_stdio() -> None:
+    # MCP is UTF-8 regardless of the Windows console's legacy code page.
+    # Stage packets contain non-ASCII prose; ASCII-only health checks miss this.
+    for stream in (sys.stdin, sys.stdout):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="strict")
     for line in sys.stdin:
         try:
             message = json.loads(line)

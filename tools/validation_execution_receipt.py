@@ -49,7 +49,7 @@ def write_execution_receipt(run_dir: Path, repository_root: Path) -> Path:
     events = [json.loads(line) for line in events_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     expected_stages = [item["id"] for item in pipeline["stages"]]
     completed = _completed_stages(events)
-    master_generated = any(is_image_generation_event(item) and item.get("stage") == "creative-master" for item in events)
+    master_generated = any(is_image_generation_event(item, project_dir) and item.get("stage") == "creative-master" for item in events)
     mode = run.get("execution_mode")
     if mode not in {"CHAT_INTERACTIVE", "HEADLESS_MANAGED"}:
         raise ValueError("execution receipt requires a managed execution mode")
@@ -91,6 +91,7 @@ def write_execution_receipt(run_dir: Path, repository_root: Path) -> Path:
         "gates_approved": sorted(project_status["gates"]),
         "isolated_reviews": list(REVIEW_CHECKPOINTS),
         "artistic_master_generated": master_generated,
+        "image_provenance": "CLIENT_ATTESTED_NATIVE_TOOL" if run.get("ai_backend") == "session" else "RECORDED_GENERATION",
         "implementation_sha256": implementation_digest(implementation_root),
         "events_sha256": _sha(events_path),
         "report_sha256": _sha(run_dir / "report.json"),
@@ -140,8 +141,10 @@ def execution_receipt_errors(receipt_path: Path, repository_root: Path) -> list[
         errors.append("execution receipt does not prove all pipeline stages in order")
     if receipt.get("gates_approved") != sorted(project_status.get("gates", {})) or receipt.get("isolated_reviews") != list(REVIEW_CHECKPOINTS):
         errors.append("execution receipt approval inventory does not match the project")
-    if receipt.get("artistic_master_generated") is not True or not any(is_image_generation_event(item) and item.get("stage") == "creative-master" for item in events):
+    if receipt.get("artistic_master_generated") is not True or not any(is_image_generation_event(item, project_dir) and item.get("stage") == "creative-master" for item in events):
         errors.append("execution receipt lacks artistic-master generation proof")
+    if run.get("ai_backend") == "session" and receipt.get("image_provenance") != "CLIENT_ATTESTED_NATIVE_TOOL":
+        errors.append("session receipt must disclose client-attested native image provenance")
     if any(item.get("status") != "APPROVED" for item in project_status.get("gates", {}).values()):
         errors.append("execution receipt project gates are no longer approved")
     reviews = project_status.get("checkpoints", {})

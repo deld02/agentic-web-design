@@ -10,6 +10,14 @@ This is one conditional contract distributed across existing owners. It does not
 
 Select the least complex medium that preserves the gain. `INTERACTIVE_3D` is valid only when viewpoint, manipulation or continuous spatial state changes add meaning that a render or independent 2D layers cannot preserve. Record the decision once in `visual-system.md#Spatial modality decision`; later stages consume it without reopening it.
 
+Judge benefit for this audience, not the spectacle of a reference: inspecting a
+product, explaining an assembly or exploring light can justify spatial work;
+adding a floating object to unrelated copy cannot. Choose `RENDERED_3D` when
+authored geometry/materials help but visitor manipulation does not. Choose 2D
+when it communicates as well, production cannot preserve the approved direction,
+or the device/time budget fails. An existing licensed model can be better than
+custom modeling. Blender is a production candidate, never a default stack.
+
 07 reviews the comparison on physical evidence before G3 closes. It rejects a semantic justification without a visible advantage, generic spectacle, faux volume and a selected result whose simpler fallback is perceptually equivalent.
 
 ## B. Select technology after the medium
@@ -18,6 +26,19 @@ Select the least complex medium that preserves the gain. `INTERACTIVE_3D` is val
 
 Run one bounded risk spike before committing the architecture. Prove asset loading, one representative state, HTML legibility, mobile/low-power behavior and the static fallback. Antigravity, Codex, Cursor or another coding environment may execute and inspect the work; none is the shipped runtime or a project dependency merely because it orchestrates the work.
 
+A static export can run client-side 3D and animation; SSR or a database is not
+required merely because a scene uses WebGL. Choose the application framework for
+application needs. Three.js and React Three Fiber are alternative integration
+routes, not mandatory cumulative layers; shaders belong to the selected rendering
+route. Use custom shaders only for a demonstrated visual requirement.
+
+Choose one owner for each animated property and a coherent timing loop. GSAP,
+Motion, native animation and optional smooth scrolling are candidates, not a
+bundle to install. Do not add a second animation engine or scroll controller
+without a concrete unmet requirement. Keep native scrolling as a viable option.
+The implementation must demonstrate the selected behavior within its device
+budget; library names and material settings cannot approve its appearance.
+
 ## C. Produce the spatial contract in G4
 
 05 converts the selected modality into spatial states in `production-plan.md#Spatial experience contract`. Each `SPT-*` state owns one narrative change and specifies scene, input, camera, object/material/light, HTML relationship, transition, mobile/reduced-motion/failure fallback and intended evidence. Do not describe scroll percentages when a semantic trigger or state boundary is available.
@@ -25,6 +46,13 @@ Run one bounded risk spike before committing the architecture. Prove asset loadi
 Keep one asset/runtime budget and loading policy for the complete spatial mechanism. The existing `3D production provenance` table remains the sole source for authoring tool, real asset/runtime, rights, integration marker and fallback; do not duplicate those facts in the storyboard.
 
 CSS/SVG gradients, shadows, perspective and overlapping shapes remain 2D. When real 3D is selected, source or author real models/scenes through an identified external route. When it is not selected, resolve the idea confidently in 2D instead of imitating inexpensive 3D.
+
+For custom Blender authoring, activate `blender-asset-production` and read
+`skills/web-design-capabilities/references/blender-production.md`. Record the
+route only in the existing provenance table; the returned handoff is required
+before leaving production. Do not activate it for a purchased model merely
+because its original author used Blender. Missing tools mean a production
+blocker or an explicitly reviewed alternative, not silently choosing no media.
 
 ## D. Integrate without flattening the landing
 

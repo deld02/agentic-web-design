@@ -39,6 +39,8 @@ Mark material as `FINAL | PROVISIONAL | MISSING`.
 
 ## Content lock
 
+Use unique content IDs in the format `CNT-001`, `CNT-002`, etc.
+
 Freeze the exact strings whose later drift would change the approved proposition, action or truth. `REQUIRED` must appear verbatim in implementation source; `OMIT` must not reappear. Ordinary body copy may remain outside this compact lock.
 
 | Content ID | Role (`HERO_THESIS | PRIMARY_CTA | NAVIGATION | CLAIM | PROOF | BODY | LEGAL`) | Exact approved text | Build requirement (`REQUIRED | OPTIONAL | OMIT`) | Intended scene / use |

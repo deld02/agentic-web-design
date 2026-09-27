@@ -55,6 +55,25 @@ Inspect the original, licensing and mobile behavior. Transfer a principle; do no
 
 ## 6. Integrate and prove
 
+Before repeating a defining or technically uncertain mechanism across the landing,
+prove it in one representative scene using the existing `Prototype evidence` cell.
+Reuse the spatial risk spike when applicable; do not create a second prototype.
+G3 may compare storyboard/keyframes to select intent. In G4, a complex behavior
+needs a running prototype before broad integration, not another still image.
+
+Specify initial state, input, response, interruption/reversal and exit into the
+next section. Inspect actual behavior with real text and representative assets:
+forward/backward scroll, pointer where relevant, touch/mobile, resize, reduced
+motion and loading failure. Record which cases were exercised and what remained
+unverified in the existing prototype/risk section. A screenshot proves appearance,
+not fluidity, timing or reversibility. Review the running prototype or temporal
+evidence; unsupported testing is a limitation, never an invented PASS.
+
+Proceed when the scene preserves legibility, the intended visual relationship
+and the next section's continuity. Otherwise use the normal bounded correction
+or a simpler faithful mechanism; do not propagate the failed treatment. This is
+an owner acceptance condition inside existing stages, not another user checkpoint.
+
 The selected mechanism must use real content, media and responsive layouts. It receives a static or reduced-motion fallback. Production records either:
 
 - `FINAL` with `source/file#marker`, which the validator can locate; or

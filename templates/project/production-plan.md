@@ -82,6 +82,10 @@ Complete only for a selected `RENDERED_3D` or `INTERACTIVE_3D` mechanism. CSS/SV
 | FX ID | Medium | External source / authoring tool | Asset / runtime | License or rights | Integration proof (`source/file#marker`) | Static / reduced-motion fallback |
 |---|---|---|---|---|---|---|
 
+For custom authoring use `Blender / CUSTOM` in the tool column (licensed existing assets use `EXISTING_ASSET`). Only the custom route needs the returned manifest below; leave it empty otherwise. Its schema is in the conditional Blender capability, not another project plan.
+
+BLENDER_HANDOFF:
+
 ### Spatial experience contract (conditional)
 
 Complete only when G3 selected `RENDERED_3D` or `INTERACTIVE_3D`. Consume that decision without comparing the media again. Follow `docs/methods/spatial-experience.md`.
@@ -96,6 +100,12 @@ FAILURE_FALLBACK:
 |---|---|---|---|---|---|---|---|---|---|
 
 ## Creative mechanisms and risk prototypes
+
+Reference the existing FX prototype evidence here; do not create a second register.
+For a defining/uncertain mechanism, record the representative scene, observable
+state changes, tested inputs/reversal/fallbacks, observed result and limitations.
+An approved still is not proof of motion. Reuse the spatial spike when present;
+prove one scene before spreading the mechanism across the page.
 
 ## Loading, performance and fallbacks
 

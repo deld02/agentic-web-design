@@ -33,7 +33,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 
 ## Roles
 
-The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 uses a fresh visual-review API request with physical evidence; a verdict written by the designing chat cannot approve a review.
+The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 uses a fresh visual-review request (API or subscription-backed Codex) with physical evidence; a verdict written by the designing chat cannot approve a review.
 
 ## Technology
 
@@ -59,13 +59,27 @@ proveedores debe probarse en un piloto real**; los tests locales no certifican
 calidad artística ni conectividad externa. Configuración y límites:
 [managed-runtime.md](docs/architecture/managed-runtime.md).
 
-```bash
-# Codex/cliente local (stdio)
-python tools/harness_mcp_server.py --transport stdio
+### Local con suscripción, sin clave API
 
-# Desarrollo HTTP local
-python tools/harness_mcp_server.py --transport http --host 127.0.0.1 --port 8765
+```powershell
+./tools/start-local.ps1 -Mode doctor
+./tools/start-local.ps1 -Mode stdio
 ```
+
+El lanzador usa `AGENTIC_AI_BACKEND=session`. En este PC ya está registrado el
+MCP `agentic-web-design` en Codex por stdio: no usa túnel. Recarga los MCP o abre
+una nueva sesión para que aparezca. La revisión automática necesita `codex login`
+con tu cuenta ChatGPT; la sesión de la aplicación no implica una sesión CLI.
+Consume los límites de la suscripción, no llamadas con una clave API propia.
+Las imágenes se crean con la herramienta nativa de la sesión y se registran con
+`register_session_image`, archivo real y referencia del resultado. El servidor
+verifica el raster y su hash, pero declara esa procedencia como `CLIENT_ATTESTED`,
+no como generación observada. Sin herramienta de imagen, se pausa la producción.
+La revisión se ejecuta en una conversación nueva de Codex, no como autocrítica
+del diseñador. No hay fallback silencioso a la API. Detalles y límites en
+[managed-runtime.md](docs/architecture/managed-runtime.md).
+
+### Alternativa API y ChatGPT web
 
 El endpoint HTTP es `http://127.0.0.1:8765/mcp`. Para ChatGPT en developer mode,
 la opción preferente es **Secure MCP Tunnel**: crea el túnel en OpenAI Platform y
@@ -75,13 +89,13 @@ saliente; no exige publicar el ordenador. Mantén `tunnel-client run` activo mie
 se usa la app en ChatGPT. La alternativa pública sí requiere HTTPS, autenticación y
 un origen permitido; el servidor se niega a enlazar una interfaz no local sin token.
 
-Configura en el servidor `OPENAI_API_KEY`, `AGENTIC_IMAGE_MODEL` y
+Solo en esta alternativa, usa `-AIBackend api` y configura `OPENAI_API_KEY`, `AGENTIC_IMAGE_MODEL` y
 `AGENTIC_REVIEW_MODEL`. Las llamadas de generación y revisión pueden tener coste
 y deben conservar la aprobación del cliente MCP. Un ZIP o el conector de GitHub
 por sí solos no ejecutan el sistema ni aportan el runtime.
 
 El flujo MCP es `start_landing` → ejecutar únicamente el `stage_packet` →
-`advance_stage`. Los especialistas no escriben `status.json`. `creative-master` exige generación observada mediante `generate_image`;
+`advance_stage`. Los especialistas no escriben `status.json`. En modo API, `creative-master` exige generación observada mediante `generate_image`; en modo sesión exige el resultado nativo físico registrado con su procedencia declarada.
 `register_image` y `upload_image` acreditan archivos importados, no una llamada de generación. `production-plan` tampoco avanza si un `IMG-*` generado no ha
 vuelto físicamente. CSS, SVG, círculos, diagramas o iconos improvisados no cuentan
 como sustitutos de una imagen exigida. `verify_run` debe devolver `verified: true`
@@ -90,7 +104,16 @@ antes de afirmar que el sistema se ejecutó por completo.
 En este adaptador, `implementation_root` debe ser `implementation`, una carpeta
 dedicada dentro del proyecto gestionado. La elección tecnológica sigue siendo libre;
 esta restricción protege el estado, no prescribe un framework. El render gestionado
-acepta HTML estático/exportado; no ejecuta comandos de build arbitrarios. Un bloqueo
+acepta HTML estático/exportado; `build_frontend` permite Docker aislado o Node/npm
+local sin Docker, con aprobación del código por el operador. La vía local no es
+un sandbox. Configuración en `docs/architecture/managed-runtime.md`.
+No soporta SSR ni servicios externos.
+En el PC preparado, `./tools/start-local.ps1 -Mode doctor` comprueba el runtime
+sin Docker. `./tools/connect-chatgpt.ps1` prepara la conexión privada cuando el
+operador aporta su túnel, modelos y credenciales mediante entrada local oculta.
+No incluye esos datos ni los binarios descargados en Git, y no equivale a una
+conexión ChatGPT validada hasta probarla con la cuenta de destino.
+`check_technology` expone esa compatibilidad antes de seleccionar. Un bloqueo
 SQLite serializa los servidores cooperantes y un journal recupera transiciones
 interrumpidas al reabrir el run. No es aislamiento frente a procesos locales hostiles
 ni una garantía de durabilidad ante pérdida eléctrica.

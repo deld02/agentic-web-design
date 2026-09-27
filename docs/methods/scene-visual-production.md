@@ -50,6 +50,19 @@ Every selected scene comp maps explicitly to production:
 
 `CMP → semantic HTML/content + CSS/layout + IMG-* outputs + FX-* behavior`
 
+Make that decomposition implementable without turning it into a stack prescription.
+In the existing scene and effect rows, name the focal subject, framing/scale,
+material/light, relationship to readable HTML, independently moving parts and the
+transition to the next scene. An approved composition establishes appearance;
+it does not prove that the interaction works. Use `effect-selection.md` for that
+behavioral proof rather than creating another storyboard or approval checkpoint.
+
+Precise engineering parameters are hypotheses to tune against the reference, not
+evidence of quality. Metalness, fragment count, particles or shader complexity do
+not establish project fit. Specify observable results before numerical settings;
+for example, actual separated fragments with coherent surfaces, not duplicated
+whole geometry described as a fracture. A supplied example is not a default style.
+
 Examples of valid `IMG-*` outputs include a background with safe negative space, foreground cutout, texture, mask, depth layer, lighting variant, mobile recomposition or static fallback. Do not flatten elements that need independent responsive placement or behavior.
 
 Design the mechanism before requesting assets:

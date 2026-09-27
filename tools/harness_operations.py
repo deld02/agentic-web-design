@@ -21,6 +21,32 @@ from harness_render import render_static
 from harness_review import run_visual_review, revision_stage
 from validation_common import table_rows
 from validation_release_integrity import implementation_digest, write_manifest
+from harness_frontend_build import build_capability, build_export
+from harness_session import session_mode, codex_status, register_session_image
+
+
+def check_technology(api, arguments):
+    profile = arguments["profile"]
+    services = arguments.get("required_services", [])
+    capability = build_capability()
+    supported = profile in {"static-html", "npm-static-export"} and not services
+    ready = supported and (profile == "static-html" or capability["available"])
+    return {"status":"AVAILABLE_FOR_PROBE" if ready else "BLOCKED", "profile":profile,
+            "build_runtime":capability, "required_services":services,
+            "reason":"No automatic stack substitution. SSR and external services need a separate verified adapter; hosting is not deployment authorization."}
+
+
+def build_frontend(api, arguments):
+    run, active, project = api._project_and_stage(arguments["run_id"])
+    stage = revision_stage(project, active["stage"]) or active["stage"]
+    if stage not in {"technology-selection", "implementation"}:
+        raise ValueError("frontend build is only available to the frontend owner")
+    api._implementation_root(project)
+    api._bounded_project_file(project, "frontend")
+    result = build_export(project, arguments["output"])
+    api.harness.append_event(run, {"event":"artifact_write", "stage":stage, "agent":"06",
+                                  "target":"evidence/frontend-build.json"})
+    return result
 
 
 def runtime_status(api, arguments):
@@ -37,8 +63,21 @@ def runtime_status(api, arguments):
             checks["browser_runtime_available"] = probe.returncode == 0
         except (OSError, subprocess.TimeoutExpired):
             pass
+    native = session_mode()
+    if native:
+        for name in ("api_key_configured", "review_model_configured", "image_model_configured"):
+            checks.pop(name)
+    review = codex_status() if native else {"provider": "OPENAI_RESPONSES"}
+    if native:
+        checks["subscription_reviewer_ready"] = bool(review.get("available") and review.get("chatgpt_login"))
+    from harness_blender import blender_capability
     return {"checks":checks, "ready_for_live_probe":all(checks.values()),
-            "supported_build":"static HTML or pre-exported static landing; no arbitrary shell execution",
+            "ai_backend": "session" if native else "api",
+            "review_readiness": review,
+            "blender": blender_capability(),
+            "image_workflow": "Use native session image tool, then register_session_image; no automatic API fallback" if native else "API generation",
+            "supported_build":"static HTML or npm static export through opt-in Docker or explicitly approved trusted local builds",
+            "frontend_build":build_capability(),
             "limitations":["Configuration presence does not verify credentials, model access or browser launch.",
                             "Run render_landing and run_review to test those capabilities. API operations may incur costs."]}
 
@@ -53,12 +92,14 @@ def read_image(api, arguments):
 def upload_image(api, arguments):
     run, active, project = api._project_and_stage(arguments["run_id"])
     stage = revision_stage(project, active["stage"]) or active["stage"]
-    if stage not in {"direction-divergence", "creative-master", "visual-experience", "production-plan"}:
+    if stage not in {"research-strategy", "direction-divergence", "creative-master", "visual-experience", "production-plan"}:
         raise ValueError("image import is unavailable at this stage")
     data = base64.b64decode(arguments["data_base64"], validate=True)
     suffix = arguments["extension"].lower()
     metadata = inspect_raster(data, suffix)
     asset_id = arguments.get("asset_id")
+    if stage == "research-strategy" and asset_id:
+        raise ValueError("research captures are reference evidence, not production assets")
     if stage == "production-plan":
         targets = api.generated_asset_targets(project)
         if not asset_id or asset_id not in targets:
@@ -174,14 +215,20 @@ def download_delivery(api, arguments):
 
 def operation_specs(api):
     from functools import partial
+    from harness_blender import import_blender_file, inspect_blender_asset
     string = {"type":"string"}
     run = {"run_id":string}
     specs = [
+        ("import_blender_file", "Import one declared custom Blender file, at most 12 MiB. Builder is archived, never executed. No client inspection receipts accepted.", {**run,"fx_id":string,"role":{"type":"string","enum":["scene","builder","preview","export"]},"data_base64":string}, ["run_id","fx_id","role","data_base64"], import_blender_file, False, False),
+        ("inspect_blender_asset", "Open the returned scene and GLB in fresh Blender processes with autoexec disabled. Server-owned inspector, 60 seconds per process; copy verified asset into implementation. Not artistic approval.", {**run,"fx_id":string}, ["run_id","fx_id"], inspect_blender_asset, False, False),
+        ("check_technology", "Check execution compatibility before selecting a stack; does not approve design or deploy.", {"profile":{"type":"string","enum":["static-html","npm-static-export","server-runtime"]},"required_services":{"type":"array","items":string}}, ["profile"], check_technology, True, False),
         ("runtime_status", "Check local runtime configuration before starting design.", {}, [], runtime_status, True, False),
+        ("build_frontend", "Build a static export using the operator-selected backend. Docker is isolated; local executes trusted code with host permissions and requires source-digest approval. Preserves old export; no deployment.", {**run,"output":{"type":"string","enum":["dist","out"]}}, ["run_id","output"], build_frontend, False, True),
         ("read_image", "View a real project raster, including after run completion.", {**run,"path":string}, ["run_id","path"], read_image, True, False),
-        ("upload_image", "Import a decoded raster. This is not observed image generation.", {**run,"data_base64":string,"extension":{"type":"string","enum":[".png",".jpg",".jpeg",".webp"]},"asset_id":string}, ["run_id","data_base64","extension"], upload_image, False, False),
+        ("register_session_image", "Register a native session image tool result. Requires physical raster and actual tool result reference; provenance is client-attested, not server-observed generation.", {**run,"path":string,"asset_id":string,"tool_call_reference":string}, ["run_id","path","tool_call_reference"], register_session_image, False, False),
+        ("upload_image", "Import a decoded raster, including reference captures during research-strategy. Research captures must omit asset_id. This is not observed image generation.", {**run,"data_base64":string,"extension":{"type":"string","enum":[".png",".jpg",".jpeg",".webp"]},"asset_id":string}, ["run_id","data_base64","extension"], upload_image, False, False),
         ("render_landing", "Capture static/exported HTML and optional click/hover/tab/reduced-motion states. No shell build; external network blocked.", {**run,"entry":string,"actions":{"type":"array","items":{"type":"object","properties":{"type":{"type":"string","enum":["click","hover","tab","reduced-motion"]},"selector":string},"required":["type"],"additionalProperties":False}}}, ["run_id"], render_landing, False, False),
-        ("run_review", "Paid fresh-context visual review with OpenAI. Send physical evidence; never a client-authored verdict. Requires user approval.", {**run,"images":{"type":"array","items":string}}, ["run_id","images"], run_review, False, True),
+        ("run_review", "Fresh-context visual review using configured API or Codex subscription backend. Consumes the selected provider's allowance. Never accepts a client-authored verdict.", {**run,"images":{"type":"array","items":string}}, ["run_id","images"], run_review, False, True),
         ("prepare_delivery", "Package static landing and integrity manifest. Does not approve delivery.", run, ["run_id"], prepare_delivery, False, False),
         ("download_delivery", "Return a verified ZIP as an MCP binary resource; client display support varies.", run, ["run_id"], download_delivery, True, False),
     ]

@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 
 from validation_common import table_rows
+from validation_blender import blender_rows
 
 
 STAGE_ARTIFACT = {
@@ -76,7 +77,7 @@ def stage_activation_errors(project_dir: Path, root: Path, stage_id: str) -> lis
         record_path = project_dir / ".reviews" / f"{stage_id}.json"
         if record_path.is_file():
             record = json.loads(record_path.read_text(encoding="utf-8"))
-            if record.get("stage") == stage_id and record.get("provider") == "OPENAI_RESPONSES" and record.get("response_id"):
+            if record.get("stage") == stage_id and record.get("provider") in {"OPENAI_RESPONSES", "CODEX_SUBSCRIPTION"} and record.get("response_id"):
                 logged.update((name, stage_id) for name in record.get("capabilities", []))
     errors = [
         f"{stage_id} must log automatic capability {item['id']} with Mode={stage_id}"
@@ -86,6 +87,11 @@ def stage_activation_errors(project_dir: Path, root: Path, stage_id: str) -> lis
     if stage_id == "production-plan" and _has_material_motion(project_dir):
         if ("emil-motion-craft", stage_id) not in logged:
             errors.append("production-plan material motion must log emil-motion-craft with Mode=production-plan")
+    if stage_id == "production-plan":
+        plan = project_dir / "production-plan.md"
+        if plan.is_file() and blender_rows(plan.read_text(encoding="utf-8")):
+            if ("blender-asset-production", stage_id) not in logged:
+                errors.append("production-plan custom Blender authoring must log blender-asset-production")
     path = project_dir / artifact
     text = path.read_text(encoding="utf-8") if path.is_file() else ""
     if stage_id in {"visual-experience", "design-review", "build-review"} and re.search(

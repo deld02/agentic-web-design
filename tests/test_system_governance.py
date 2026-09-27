@@ -1,4 +1,5 @@
 import json, shutil, subprocess, sys, tempfile, unittest
+from repo_fixture import copy_source_repo
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -11,7 +12,7 @@ def run(repo,*args):
 class SystemGovernanceTests(unittest.TestCase):
     def clone(self,project=False):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
-        shutil.copytree(ROOT,dst,ignore=shutil.ignore_patterns('.git','__pycache__'))
+        copy_source_repo(ROOT,dst)
         if project:
             result=run(dst,'tools/new_project.py','test-project')
             self.assertEqual(result.returncode,0,result.stdout+result.stderr)

@@ -50,6 +50,9 @@ class ChatGPTPackTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            adapter = subprocess.run([sys.executable, "-c", "import sys; sys.path.insert(0,'tools'); import harness_mcp_server"],
+                                     cwd=pack, capture_output=True, text=True, check=False)
+            self.assertEqual(0, adapter.returncode, adapter.stdout + adapter.stderr)
 
 
 if __name__ == "__main__":

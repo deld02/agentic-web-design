@@ -1,4 +1,5 @@
 import json, shutil, subprocess, sys, tempfile, unittest
+from repo_fixture import copy_source_repo
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -9,7 +10,7 @@ def run(repo):
 class DesignCapabilityTests(unittest.TestCase):
     def clone(self):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
-        shutil.copytree(ROOT,dst,ignore=shutil.ignore_patterns('.git','__pycache__'))
+        copy_source_repo(ROOT,dst)
         return td,dst
 
     def mutate(self,repo,fn):
@@ -23,7 +24,7 @@ class DesignCapabilityTests(unittest.TestCase):
         td,repo=self.clone()
         try:
             def change(d):
-                extra=dict(d['capabilities'][0]); extra['id']='second-primary'; d['capabilities'].append(extra)
+                extra=dict(next(c for c in d['capabilities'] if c['slot']=='direction-primary')); extra['id']='second-primary'; d['capabilities'].append(extra)
             self.mutate(repo,change); result=run(repo)
             self.assertNotEqual(result.returncode,0); self.assertIn('direction-primary',result.stdout)
         finally: td.cleanup()

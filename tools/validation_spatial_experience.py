@@ -8,6 +8,7 @@ import re
 
 from validation_common import section, table_rows, valid_signature
 from validation_release_integrity import implementation_digest
+from validation_blender import blender_handoff_errors
 
 
 SPATIAL_MODES = {"FLAT_2D", "LAYERED_2D", "RENDERED_3D", "INTERACTIVE_3D"}
@@ -158,11 +159,11 @@ def spatial_plan_errors(project_dir: Path) -> list[str]:
     """Production plan: require semantic states and one bounded resource policy."""
     project_dir = Path(project_dir)
     mode = selected_spatial_mode(project_dir)
+    errors = blender_handoff_errors(project_dir)
     if mode not in {"RENDERED_3D", "INTERACTIVE_3D"}:
-        return []
+        return errors
     plan = _text(project_dir, "production-plan.md")
     heading = "### Spatial experience contract (conditional)"
-    errors: list[str] = []
     for field in ("ASSET_BUDGET", "RUNTIME_BUDGET", "LOADING_STRATEGY", "LOW_POWER_POLICY", "FAILURE_FALLBACK"):
         if _named_value(plan, heading, field).upper() in PLACEHOLDERS:
             errors.append(f"G4 spatial experience missing {field}")

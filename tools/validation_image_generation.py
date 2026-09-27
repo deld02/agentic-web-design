@@ -11,7 +11,10 @@ from validation_project_paths import implementation_root_for
 IMAGE_TOOLS = {"CHATGPT_GENERATE", "IMAGE_GEN", "IMAGEGEN", "CHATGPT_IMAGE"}
 
 
-def is_image_generation_event(item: dict) -> bool:
+def is_image_generation_event(item: dict, project_dir: Path = None) -> bool:
+    if item.get("tool") == "SESSION_IMAGE_RESULT":
+        from harness_session import native_image_valid
+        return project_dir is not None and native_image_valid(project_dir, item)
     tool = re.sub(r"[^A-Z0-9]+", "_", str(item.get("tool", "")).upper()).strip("_")
     return item.get("event") == "tool_call" and tool in IMAGE_TOOLS
 
@@ -57,6 +60,7 @@ def missing_generation_receipts(project_dir: Path, events: list[dict], image_too
     recorded = {
         item.get("target") for item in events
         if item.get("event") == "tool_call" and item.get("stage") == "production-plan"
-        and re.sub(r"[^A-Z0-9]+", "_", str(item.get("tool", "")).upper()).strip("_") in image_tools
+        and (re.sub(r"[^A-Z0-9]+", "_", str(item.get("tool", "")).upper()).strip("_") in image_tools
+             or is_image_generation_event(item, project_dir))
     }
     return sorted(required - recorded)

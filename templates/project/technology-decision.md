@@ -38,6 +38,14 @@ SPATIAL_KILL_CRITERION:
 
 ## Selected architecture and rationale
 
+EXECUTION_PROFILE: UNDETERMINED
+REQUIRED_EXTERNAL_SERVICES: UNDETERMINED
+
+Separate frontend, necessary backend/services, and intended hosting. Record the
+execution profile, capability check, actual build/render evidence and unsupported
+requirements. A successful frontend export does not verify an external service
+or authorize deployment. Never silently replace a blocked architecture.
+
 ## Structural build handoff
 
 This checkpoint is not approved until the selected stack has produced the complete structural landing with real content and representative renders.

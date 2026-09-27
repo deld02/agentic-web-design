@@ -10,6 +10,7 @@ from validation_capability_activation import stage_activation_errors
 from validation_common import load_json
 from validation_image_generation import generated_asset_file_errors
 from validation_spatial_experience import spatial_plan_errors, spatial_technology_errors
+from harness_frontend_build import technology_execution_errors
 
 
 def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
@@ -45,6 +46,8 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
             errors.extend(validate_gate(project_dir, review_gate))
     if stage_id == "technology-selection":
         errors.extend(spatial_technology_errors(project_dir))
+    if stage_id in {"technology-selection", "implementation", "build-review", "release"}:
+        errors.extend(technology_execution_errors(project_dir))
     if stage_id == "production-plan":
         errors.extend(image_handoff_errors(project_dir))
         errors.extend(spatial_plan_errors(project_dir))

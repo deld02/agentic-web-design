@@ -1,5 +1,7 @@
 """Render a static/exported landing without running project shell commands."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import json
 import os
@@ -33,7 +35,7 @@ def render_static(project: Path, implementation: Path, entry: str, scenes: list[
     if not node:
         raise RuntimeError("Node.js is required for managed rendering")
     result = subprocess.run([node, str(Path(__file__).with_name("render_landing.cjs"))],
-        input=json.dumps(request), capture_output=True, text=True, env=env, timeout=90, check=False)
+        input=json.dumps(request), capture_output=True, text=True, encoding="utf-8", env=env, timeout=90, check=False)
     if result.returncode:
         raise RuntimeError("Render failed: " + result.stderr[:2000])
     report = json.loads(result.stdout)

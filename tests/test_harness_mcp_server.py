@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import json
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -29,6 +31,23 @@ class _ImageResponse:
 
 
 class HarnessMcpServerTests(unittest.TestCase):
+    def test_stdio_uses_utf8_even_with_legacy_windows_encoding(self):
+        name = "iluminación → 日本語"
+        request = {"jsonrpc": "2.0", "id": 41, "method": "tools/call",
+                   "params": {"name": name, "arguments": {}}}
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "tools" / "harness_mcp_server.py"),
+             "--transport", "stdio"],
+            input=(json.dumps(request, ensure_ascii=False) + "\n").encode("utf-8"),
+            capture_output=True, timeout=15,
+            env={**os.environ, "PYTHONIOENCODING": "cp1252"},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        response = json.loads(result.stdout.decode("utf-8"))
+        self.assertEqual(response["id"], 41)
+        self.assertTrue(response["result"]["isError"])
+        self.assertIn(name, response["result"]["structuredContent"]["error"])
+
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
         self.previous_root = mcp.RUNS_ROOT
@@ -49,7 +68,7 @@ class HarnessMcpServerTests(unittest.TestCase):
         names = {item["name"] for item in response["result"]["tools"]}
         self.assertEqual(
             names,
-            {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "confirm_master", "advance_stage", "verify_run", "runtime_status", "read_image", "upload_image", "render_landing", "run_review", "prepare_delivery", "download_delivery"},
+            {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "register_session_image", "confirm_master", "advance_stage", "verify_run", "runtime_status", "read_image", "upload_image", "render_landing", "run_review", "prepare_delivery", "download_delivery", "check_technology", "build_frontend", "import_blender_file", "inspect_blender_asset"},
         )
 
     def test_initialize_places_pipeline_order_in_server_instructions(self):

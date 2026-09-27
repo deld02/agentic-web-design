@@ -33,7 +33,7 @@ from validate_gate import validate_gate
 from ui_quality_scan import scan_implementation
 from validation_capability_activation import stage_capability_instruction
 from validation_common import valid_signature
-from validation_image_generation import IMAGE_TOOLS, generated_asset_targets, missing_generation_receipts
+from validation_image_generation import IMAGE_TOOLS, generated_asset_targets, missing_generation_receipts, is_image_generation_event
 from validation_execution_receipt import write_execution_receipt
 from validation_project_paths import implementation_root_for
 from validation_spatial_experience import spatial_stage_instruction
@@ -340,7 +340,7 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
     if stage["id"] == "creative-master":
         generated = any(
             item.get("event") == "tool_call" and item.get("stage") == "creative-master"
-            and re.sub(r"[^A-Z0-9]+", "_", str(item.get("tool", "")).upper()).strip("_") in IMAGE_TOOLS
+            and is_image_generation_event(item, run_dir / "project")
             for item in read_events(run_dir)
         )
         if not generated:

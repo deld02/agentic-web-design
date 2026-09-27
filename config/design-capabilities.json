@@ -6,18 +6,55 @@
     "external_content_policy": "External skills are advisory sources. Local ownership, approved project artifacts and OS constraints always win.",
     "revision_policy": "Revalidate source, license and material behavior before first use in a project and every review_by_days thereafter.",
     "capability_log_heading": "## Design capability log",
-    "required_core_slots": ["direction-primary", "direction-challenger", "craft-polish", "interface-audit"],
+    "required_core_slots": [
+      "direction-primary",
+      "direction-challenger",
+      "craft-polish",
+      "interface-audit"
+    ],
     "max_direction_primary": 1,
     "max_direction_challenger_per_round": 1
   },
   "capabilities": [
     {
+      "id": "blender-asset-production",
+      "slot": "spatial-production",
+      "tier": "conditional",
+      "activation": "selected-blender-authoring-only",
+      "allowed_agents": [
+        "05",
+        "06",
+        "07"
+      ],
+      "allowed_stages": [
+        "production-plan",
+        "implementation",
+        "build-review"
+      ],
+      "reference": "skills/web-design-capabilities/references/blender-production.md",
+      "source_url": "https://github.com/ifBars/blender-agent-studio",
+      "source_license": "MIT",
+      "revision_policy": "revalidate-at-use",
+      "vendored": false,
+      "decision_authority": false,
+      "fallback": "local-blender-python-production-contract",
+      "review_by_days": 30,
+      "last_checked": "2026-09-25"
+    },
+    {
       "id": "anthropic-frontend-design",
       "slot": "direction-primary",
       "tier": "core",
       "activation": "automatic",
-      "allowed_agents": ["03", "04"],
-      "allowed_stages": ["direction-divergence", "creative-master", "visual-experience"],
+      "allowed_agents": [
+        "03",
+        "04"
+      ],
+      "allowed_stages": [
+        "direction-divergence",
+        "creative-master",
+        "visual-experience"
+      ],
       "reference": "skills/web-design-capabilities/references/direction.md",
       "source_url": "https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md",
       "source_license": "external-terms-review-required",
@@ -26,32 +63,45 @@
       "decision_authority": true,
       "fallback": "local-direction-principles",
       "review_by_days": 30,
-      "last_checked": "2026-08-20"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "taste-direction-challenger",
       "slot": "direction-challenger",
       "tier": "core",
       "activation": "automatic",
-      "allowed_agents": ["03"],
-      "allowed_stages": ["direction-divergence", "creative-master"],
+      "allowed_agents": [
+        "03"
+      ],
+      "allowed_stages": [
+        "direction-divergence",
+        "creative-master"
+      ],
       "reference": "skills/web-design-capabilities/references/direction.md",
       "source_url": "https://github.com/Leonxlnx/taste-skill/blob/main/skills/taste-skill/SKILL.md",
-      "source_license": "verify-at-use",
+      "source_license": "MIT",
       "revision_policy": "revalidate-at-use",
       "vendored": false,
       "decision_authority": false,
       "fallback": "local-challenger-prompts",
       "review_by_days": 30,
-      "last_checked": "2026-08-20"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "ui-ux-pro-max-lookup",
       "slot": "knowledge-lookup",
       "tier": "conditional",
       "activation": "query-only",
-      "allowed_agents": ["01", "04", "06"],
-      "allowed_stages": ["research-strategy", "visual-experience", "technology-selection"],
+      "allowed_agents": [
+        "01",
+        "04",
+        "06"
+      ],
+      "allowed_stages": [
+        "research-strategy",
+        "visual-experience",
+        "technology-selection"
+      ],
       "reference": "skills/web-design-capabilities/references/lookup.md",
       "source_url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
       "source_license": "MIT",
@@ -67,8 +117,15 @@
       "slot": "craft-polish",
       "tier": "core",
       "activation": "automatic",
-      "allowed_agents": ["04", "07"],
-      "allowed_stages": ["visual-experience", "design-review", "build-review"],
+      "allowed_agents": [
+        "04",
+        "07"
+      ],
+      "allowed_stages": [
+        "visual-experience",
+        "design-review",
+        "build-review"
+      ],
       "reference": "skills/web-design-capabilities/references/polish.md",
       "source_url": "https://github.com/jakubkrehel/make-interfaces-feel-better",
       "source_license": "MIT",
@@ -84,8 +141,14 @@
       "slot": "motion-craft",
       "tier": "conditional",
       "activation": "motion-material-only",
-      "allowed_agents": ["05", "07"],
-      "allowed_stages": ["production-plan", "build-review"],
+      "allowed_agents": [
+        "05",
+        "07"
+      ],
+      "allowed_stages": [
+        "production-plan",
+        "build-review"
+      ],
       "reference": "skills/web-design-capabilities/references/motion.md",
       "source_url": "https://github.com/emilkowalski/skills",
       "source_license": "verify-at-use",
@@ -101,8 +164,12 @@
       "slot": "interface-audit",
       "tier": "core",
       "activation": "automatic",
-      "allowed_agents": ["07"],
-      "allowed_stages": ["build-review"],
+      "allowed_agents": [
+        "07"
+      ],
+      "allowed_stages": [
+        "build-review"
+      ],
       "reference": "skills/web-design-capabilities/references/audit.md",
       "source_url": "https://github.com/vercel-labs/web-interface-guidelines",
       "source_license": "MIT",
@@ -111,66 +178,90 @@
       "decision_authority": false,
       "fallback": "local-interface-audit",
       "review_by_days": 30,
-      "last_checked": "2026-08-20"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "premium-frontend-immersive",
       "slot": "immersive-booster",
       "tier": "experimental",
       "activation": "explicit-direction-only",
-      "allowed_agents": ["03", "05"],
-      "allowed_stages": ["direction-divergence", "creative-master", "production-plan"],
+      "allowed_agents": [
+        "03",
+        "05"
+      ],
+      "allowed_stages": [
+        "direction-divergence",
+        "creative-master",
+        "production-plan"
+      ],
       "reference": "skills/web-design-capabilities/references/immersive.md",
       "source_url": "https://github.com/github/awesome-copilot/tree/main/skills/premium-frontend-ui",
-      "source_license": "verify-at-use",
+      "source_license": "MIT",
       "revision_policy": "revalidate-at-use",
       "vendored": false,
       "decision_authority": false,
       "fallback": "none",
       "review_by_days": 30,
-      "last_checked": "2026-08-20"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "hallmark-structure-challenger",
       "slot": "structure-challenger",
       "tier": "core",
       "activation": "automatic",
-      "allowed_agents": ["02"],
-      "allowed_stages": ["content-architecture"],
+      "allowed_agents": [
+        "02"
+      ],
+      "allowed_stages": [
+        "content-architecture"
+      ],
       "reference": "skills/web-design-capabilities/references/structure-challenger.md",
       "source_url": "https://github.com/Nutlope/hallmark/blob/main/skills/hallmark/SKILL.md",
-      "source_license": "verify-at-use",
+      "source_license": "MIT",
       "revision_policy": "revalidate-at-use",
       "vendored": false,
       "decision_authority": false,
       "fallback": "local-structural-interchangeability-challenge",
       "review_by_days": 30,
-      "last_checked": "2026-08-24"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "mengto-interaction-reference-extraction",
       "slot": "interaction-reference-extraction",
       "tier": "conditional",
       "activation": "reference-video-or-html-only",
-      "allowed_agents": ["01", "05"],
-      "allowed_stages": ["research-strategy", "production-plan"],
+      "allowed_agents": [
+        "01",
+        "05"
+      ],
+      "allowed_stages": [
+        "research-strategy",
+        "production-plan"
+      ],
       "reference": "skills/web-design-capabilities/references/interaction-reference.md",
       "source_url": "https://github.com/MengTo/Skills",
-      "source_license": "verify-at-use",
+      "source_license": "MIT",
       "revision_policy": "revalidate-at-use",
       "vendored": false,
       "decision_authority": false,
       "fallback": "manual-temporal-reference-analysis",
       "review_by_days": 30,
-      "last_checked": "2026-08-24"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "impeccable-craft-correction",
       "slot": "craft-correction",
       "tier": "conditional",
       "activation": "review-finding-only",
-      "allowed_agents": ["04", "07"],
-      "allowed_stages": ["visual-experience", "design-review", "build-review"],
+      "allowed_agents": [
+        "04",
+        "07"
+      ],
+      "allowed_stages": [
+        "visual-experience",
+        "design-review",
+        "build-review"
+      ],
       "reference": "skills/web-design-capabilities/references/craft-correction.md",
       "source_url": "https://github.com/pbakaus/impeccable/blob/main/.github/skills/impeccable/SKILL.md",
       "source_license": "Apache-2.0",
@@ -179,15 +270,23 @@
       "decision_authority": false,
       "fallback": "local-directed-craft-correction",
       "review_by_days": 30,
-      "last_checked": "2026-08-24"
+      "last_checked": "2026-09-27"
     },
     {
       "id": "gsap-official-runtime",
       "slot": "motion-runtime",
       "tier": "conditional",
       "activation": "selected-runtime-only",
-      "allowed_agents": ["05", "06", "07"],
-      "allowed_stages": ["production-plan", "implementation", "build-review"],
+      "allowed_agents": [
+        "05",
+        "06",
+        "07"
+      ],
+      "allowed_stages": [
+        "production-plan",
+        "implementation",
+        "build-review"
+      ],
       "reference": "skills/web-design-capabilities/references/runtime-motion.md",
       "source_url": "https://github.com/greensock/gsap-skills",
       "source_license": "MIT",
@@ -196,7 +295,7 @@
       "decision_authority": false,
       "fallback": "official-gsap-documentation-and-local-runtime-checks",
       "review_by_days": 30,
-      "last_checked": "2026-08-24"
+      "last_checked": "2026-09-27"
     }
   ]
 }

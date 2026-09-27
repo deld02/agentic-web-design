@@ -98,6 +98,8 @@ def validate_delivery(project_dir, implementation_root):
     if errors: return errors, 0
 
     text = plan.read_text(encoding='utf-8')
+    from validation_blender import blender_delivery_errors
+    errors.extend(blender_delivery_errors(project_dir, implementation_root))
     if explicit_text_only_authorized(project_dir):
         rows = []
     else:

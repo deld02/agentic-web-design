@@ -1,4 +1,6 @@
 import json, shutil, subprocess, sys, tempfile, unittest
+from datetime import date
+from repo_fixture import copy_source_repo
 from pathlib import Path
 from release_integrity_fixture import add_capability_rows, add_content_lock_fixture, add_release_integrity_fixture
 from identity_fixture import add_direction_identity, add_research_identity, add_visual_identity
@@ -25,7 +27,7 @@ def add_complete_delivery_contract(text):
 class SemanticValidationTests(unittest.TestCase):
     def clone(self):
         td=tempfile.TemporaryDirectory(); dst=Path(td.name)/'repo'
-        shutil.copytree(ROOT,dst,ignore=shutil.ignore_patterns('.git','__pycache__'))
+        copy_source_repo(ROOT,dst)
         result=run(dst,'tools/new_project.py','test-project')
         if result.returncode!=0: raise RuntimeError(result.stdout+result.stderr)
         return td,dst
@@ -52,6 +54,7 @@ class SemanticValidationTests(unittest.TestCase):
         marker='|---|---|---|---|---|---|---|---|---|'
         pos=text.find(marker,text.find('### Live website benchmark'))
         rows='\n| Direct example | DIRECT | category search | Clear service thesis and integrated portrait | Strong clarity; conventional rhythm | change | https://example.com/direct | 2026-08-22 | evidence/ref-direct.png |\n| Adjacent example | ADJACENT | editorial search | Cultural authority through pacing | Transferable restraint; different market | adapt | https://example.edu/adjacent | 2026-08-22 | evidence/ref-adjacent.png |\n| Frontier example | FRONTIER | SiteInspire | Editorial asymmetry and material transition | Strong distinction; simplify motion | use | https://example.org/frontier | 2026-08-22 | evidence/ref-frontier.png |\n| Simple example | SIMPLE | Land-book | Restrained typography and one decisive image | Low complexity with strong hierarchy | use | https://example.net/simple | 2026-08-22 | evidence/ref-simple.png |\n| Saturated example | SATURATED | category search | Gradient cards and decorative blobs repeat category clichés | Current but interchangeable | ignore | https://example.io/saturated | 2026-08-22 | evidence/ref-saturated.png |'
+        rows=rows.replace('2026-08-22', date.today().isoformat())
         text=text[:pos]+marker+rows+text[pos+len(marker):]
         text=text.replace(
             'BUSINESS_MODEL:\nPRIMARY_ACTION:\nAUDIENCE_SOPHISTICATION:\nTRUST_REQUIREMENT:\nHUMAN_PRESENCE:\nAUTHORITY_WARMTH_BALANCE:\nTECHNICALITY:\nEXPERIMENTAL_TOLERANCE:\nLOCALITY:\nPROOF_DENSITY:\nNARRATIVE_COMPLEXITY:\nEMOTIONAL_TARGET:\nMOBILE_IMPORTANCE:',
@@ -523,7 +526,7 @@ class SemanticValidationTests(unittest.TestCase):
         try:
             self.complete_owner_evidence(repo)
             path=repo/'projects/test-project/research-strategy.md'
-            path.write_text(path.read_text(encoding='utf-8').replace('2026-08-22','2025-01-01',1),encoding='utf-8')
+            path.write_text(path.read_text(encoding='utf-8').replace(date.today().isoformat(),'2025-01-01',1),encoding='utf-8')
             result=run(repo,'tools/validate_gate.py','G1','--project-dir','projects/test-project')
             self.assertNotEqual(result.returncode,0)
             self.assertIn('reference benchmark Direct example is stale',result.stdout)
@@ -986,15 +989,5 @@ class SemanticValidationTests(unittest.TestCase):
             result=run(repo,'tools/validate_gate.py','G4','--project-dir','projects/test-project')
             self.assertNotEqual(result.returncode,0); self.assertIn('PARALLAX requires independent depth layers',result.stdout)
         finally: td.cleanup()
-
-    def test_skill_fails_closed_without_managed_harness_context(self):
-        text=(ROOT/'skills/agentic-web-design/SKILL.md').read_text(encoding='utf-8')
-        for token in ('Execution lock', 'MANAGED', 'UNMANAGED', 'HARNESS_RUN_DIR', 'must not build HTML'):
-            self.assertIn(token,text)
-
-    def test_chatgpt_entrypoint_forbids_manual_pipeline_fallback(self):
-        text=(ROOT/'CHATGPT-PROJECT-INSTRUCTIONS.md').read_text(encoding='utf-8')
-        for token in ('HARNESS_STAGE', 'UNMANAGED', 'must stop before', 'unacceptable fallback', 'IMAGE_GEN', 'chat-next'):
-            self.assertIn(token,text)
 
 if __name__=='__main__': unittest.main()

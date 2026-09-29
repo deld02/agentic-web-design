@@ -19,6 +19,25 @@ from harness_session import session_mode, subscription_review
 REVIEW_STAGES = {"direction-review", "design-review", "build-review"}
 
 
+def design_preflight_errors(project: Path) -> list[str]:
+    """Cheap owner-contract checks; never consume an artistic review attempt."""
+    from project_validation import scene_visual_errors
+    from validation_spatial_experience import spatial_selection_errors
+    from validation_landing_blueprint import blueprint_errors
+    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project)
+
+
+def review_axes(root: Path, project: Path, stage_id: str) -> list[str]:
+    if stage_id == "build-review":
+        return load_json(root / "harness/scenarios.json")["visual_review_axes"]
+    axes = ["composition", "typography", "color", "media_integration", "project_fit"]
+    if stage_id == "design-review":
+        from validation_spatial_experience import selected_spatial_mode
+        if selected_spatial_mode(project) in {"LAYERED_2D", "RENDERED_3D", "INTERACTIVE_3D"}:
+            axes.append("spatial_modality")
+    return axes
+
+
 def _snapshot(project: Path, stage_id: str, images: list[str]) -> dict:
     names = set(STAGE_INPUTS[stage_id]) | set(images)
     result = {}
@@ -60,7 +79,7 @@ def _schema(axes: list[str]) -> dict:
     return {"type":"object","properties":properties,"required":list(properties),"additionalProperties":False}
 
 
-def run_visual_review(root: Path, project: Path, stage: dict, images: list[str]) -> dict:
+def run_visual_review(root: Path, project: Path, stage: dict, images: list[str], *, operator_authorization: str | None = None) -> dict:
     if stage["id"] not in REVIEW_STAGES:
         raise ValueError("review is only available at review stages")
     key, model = os.getenv("OPENAI_API_KEY"), os.getenv("AGENTIC_REVIEW_MODEL")
@@ -77,12 +96,24 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
     elif not any("desktop" in name.lower() for name in images) or not any("mobile" in name.lower() for name in images):
         raise ValueError("include physical desktop and mobile compositions/renders")
     before = _snapshot(project, stage["id"], images)
+    if stage["id"] == "design-review":
+        preflight = design_preflight_errors(project)
+        if preflight:
+            raise ValueError("DESIGN_PREFLIGHT: correct owner artifacts before visual review: " + "; ".join(preflight))
+        from validation_landing_blueprint import complete_landing_flow
+        if complete_landing_flow(project):
+            visual = (project / 'visual-system.md').read_text(encoding='utf-8')
+            pages = [re.search(rf'(?m)^{key}:\s*([^\r\n]+)', visual)[1].strip() for key in ('PAGE_DESKTOP','PAGE_MOBILE')]
+            if not set(pages).issubset(images):
+                raise ValueError('Complete proposal review must include both declared full-page images')
     directory = project / ".reviews"
     directory.mkdir(exist_ok=True)
     prior_path = directory / f"{stage['id']}.json"
+    axes = review_axes(root, project, stage["id"])
     if prior_path.is_file():
         prior = load_json(prior_path)
-        if prior.get("inputs") == before and prior.get("images") == images:
+        if (prior.get("inputs") == before and prior.get("images") == images
+                and set(prior.get("result", {}).get("axes", {})) == set(axes)):
             return prior
     attempts_path = directory / f"{stage['id']}-attempts.json"
     budget = load_json(attempts_path) if attempts_path.is_file() else {}
@@ -92,13 +123,15 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
         # Legacy counters charged failures as reviews. With no completed record,
         # retain the infrastructure attempts but recover the artistic budget.
         attempts = 0
-    if attempts >= 2:
+    # Explicit operator recovery only; project artifacts cannot increase this
+    # allowance. Grant one extra review without resetting prior attempts.
+    extra_review = bool(operator_authorization and operator_authorization.strip())
+    if attempts >= (3 if extra_review else 2):
         raise ValueError("review correction budget exhausted; preserve work and request user direction")
     if calls - attempts >= 3:
         raise ValueError("review infrastructure retry budget exhausted; repair provider/authentication before operator recovery; no artistic verdict inferred")
     packet = build_stage_packet(root, project, stage, set())
     # No conversation, previous response, tools, run logs or owner reasoning.
-    axes = load_json(root / "harness/scenarios.json")["visual_review_axes"] if stage["id"] == "build-review" else ["composition", "typography", "color", "media_integration", "project_fit"]
     content = [{"type":"input_text", "text":json.dumps(packet, ensure_ascii=False)}]
     total_bytes = 0
     for name in images:
@@ -146,6 +179,12 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str])
     record = {"stage":stage["id"], "provider":"CODEX_SUBSCRIPTION" if native else "OPENAI_RESPONSES", "response_id":raw["id"],
         "model":model, "images":images, "inputs":before, "result":result,
         "capabilities":[item["id"] for item in packet["capabilities"]["automatic"]]}
+    if extra_review:
+        record["operator_authorization"] = operator_authorization
+    if prior_path.is_file():
+        archive = directory / f"{stage['id']}-review-{attempts}.json"
+        if not archive.exists():
+            archive.write_bytes(prior_path.read_bytes())
     (directory / f"{stage['id']}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
     if stage["id"] == "build-review":
         review = {"reviewer":"07", "context":"ISOLATED", "verdict":result["verdict"],
@@ -159,6 +198,12 @@ def revision_stage(project: Path, stage_id: str) -> str | None:
     if not owner_stage:
         return None
     record = project / ".reviews" / f"{stage_id}.json"
+    budget_path = project / ".reviews" / f"{stage_id}-attempts.json"
+    if budget_path.is_file() and load_json(budget_path).get("count", 0) >= 2:
+        return None
+    approval = project / '.reviews/design-approval.json'
+    if stage_id == 'design-review' and approval.is_file() and load_json(approval).get('status') == 'ADJUST':
+        return owner_stage
     if record.is_file() and load_json(record).get("result", {}).get("verdict") == "REVISE":
         return owner_stage
     return None

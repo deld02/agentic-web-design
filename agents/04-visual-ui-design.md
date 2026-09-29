@@ -28,11 +28,11 @@ G2 aprobado, dirección seleccionada, contenido realista, assets y requisitos de
 2. Consume el genome de G2 y la Experience Spine de G1; compone para cada escena dominante, contrapunto, tensión, señal, descanso, transición y adaptación capaces de producir el cambio perceptivo definido. No convierte el master en una colección de componentes repetidos.
 3. Extrae de esas relaciones los patrones comunes, hereda los `IDN-*` de G1/G2 y desarrolla la dirección usando `docs/methods/typography-spacing.md`, `color-direction.md` y `scene-visual-production.md` solo cuando corresponda.
 4. Tras seleccionar la dirección cromática, asigna a cada `SCN-*` modo, roles reales de fondo/texto/acento/superficie, entrada/salida, invariantes y resultado de contraste mediante `scene-color-system.md`. Una paleta puede ganar por composición solo si además respeta la autoridad de identidad; una ruptura deliberada exige que G1 la hubiese clasificado `OPEN_TO_REPLACE`.
-5. Compone desktop y mobile como pareja; prueba el hero y al menos una transición significativa con contenido real.
+5. Diseña primero la landing completa desktop/mobile con contenido real y todas las SCN del outline. Guarda ambas vistas completas y las composiciones de cada escena en visual-system.md, el plano único de construcción. Prueba de forma acotada cualquier interacción técnicamente arriesgada antes de aprobar la propuesta; no construyas aún la landing de producción.
 6. Si objeto, material, transformación, lugar o punto de vista hacen creíble una solución espacial, sigue la fase G3 de `docs/methods/spatial-experience.md`: compara los medios sobre el mismo trabajo narrativo y cierra la modalidad antes de tecnología. “Premium” por sí solo no activa esta comparación.
 7. Revisa el ritmo completo: intensidad, descanso, densidad, repetición y continuidad hero/cuerpo.
 8. Resuelve jerarquía, lectura, contraste, estados, overflow y recomposición; no maquilla fallos con efectos.
-9. Registra solo reglas y componentes descubiertos en las escenas, evitando un design system mayor que la landing.
+9. Registra solo reglas y componentes descubiertos en las escenas, evitando un design system mayor que la landing. La tabla Scene visual opportunities será la cola ordenada de construcción: composición, recursos, comportamiento y móvil por sección. Tras la revisión independiente, 00 muestra la propuesta completa y registra una única aprobación; no solicita otra para el master.
 
 ## OUTPUTS OBLIGATORIOS
 

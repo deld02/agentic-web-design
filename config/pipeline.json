@@ -1,6 +1,7 @@
 {
   "version": "6.8.0",
   "owner_of_state": "00",
+  "user_checkpoint": "complete-landing",
   "stages": [
     {"id":"definition","agent":"00","mode":"definition","gate":"G0","depends_on":[],"entry_requires":{"gates":{},"checkpoints":{}}},
     {"id":"research-strategy","agent":"01","mode":"research-strategy","gate":null,"depends_on":["definition"],"entry_requires":{"gates":{"G0":["APPROVED"]},"checkpoints":{}}},

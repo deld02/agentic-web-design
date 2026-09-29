@@ -211,7 +211,7 @@ download presentation must be tested; larger archives remain on the server.
 1. Run local unit tests and the optional real-browser smoke test.
 2. Connect the intended ChatGPT client; test tool calls, physical generation,
    viewing images, one fresh provider review and delivery retrieval.
-3. Complete one real landing through all stages, including master approval and
+3. Complete one real landing through all stages, including complete-proposal approval and
    final render comparison. Record latency, actual costs and any manual recovery.
 4. Repeat with a distinct brief. Judge visual quality against the selected
    references, not the number of gates passed.

@@ -191,6 +191,10 @@ def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
         writable = STAGE_FILES.get(correction_stage, set())
         status["stage_packet"] = build_stage_packet(ROOT, project, stage, writable)
         status["stage_packet"]["revision_for"] = stage_id
+        status["stage_packet"]["findings"] = load_json(project / ".reviews" / f"{stage_id}.json")["result"]["findings"]
+        approval = project / '.reviews/design-approval.json'
+        if stage_id == 'design-review' and approval.is_file() and load_json(approval).get('status') == 'ADJUST':
+            status["stage_packet"]["findings"] = [load_json(approval)['user_signal']]
         status["stage_packet"]["completion_protocol"] = ["Correct only the independent findings, then call run_review again. The review stage stays open; do not approve it yourself."]
         return status
     writable = STAGE_FILES.get(stage_id, set())
@@ -337,6 +341,9 @@ def generate_image(arguments: dict[str, Any]) -> dict[str, Any]:
 @_serialized
 def confirm_master(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
+    from validation_landing_blueprint import complete_landing_flow
+    if complete_landing_flow(project):
+        raise ValueError("This run approves the complete landing once at design-review; use confirm_design, not confirm_master")
     if active["stage"] != "creative-master":
         raise ValueError("master confirmation is valid only during creative-master")
     result = record_master_confirmation(
@@ -352,15 +359,40 @@ def confirm_master(arguments: dict[str, Any]) -> dict[str, Any]:
 
 
 @_serialized
+def confirm_design(arguments: dict[str, Any]) -> dict[str, Any]:
+    run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
+    from validation_landing_blueprint import complete_landing_flow, record_design_approval
+    if active["stage"] != "design-review" or not complete_landing_flow(project):
+        raise ValueError("Complete landing approval is available only at design-review in the new flow")
+    result = record_design_approval(project, str(arguments.get("status", "")), str(arguments.get("user_signal", "")))
+    harness.append_event(run_dir, {"event":"tool_call", "stage":"design-review", "agent":"07", "tool":"USER_DESIGN_CONFIRMATION", "target":result['review_id'], **result})
+    return result
+
+
+@_serialized
 def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == active["stage"])
+    if stage["id"] == "visual-experience":
+        from harness_review import design_preflight_errors
+        errors = design_preflight_errors(project)
+        if errors:
+            # Keep ownership with 04; do not hand malformed work to 07.
+            return _with_stage_packet({**active, "status":"REVISE", "findings":errors})
     if stage["agent"] == "07":
-        from harness_review import review_record_errors
+        from harness_review import review_record_errors, revision_stage
         errors = review_record_errors(project, stage["id"])
         if errors:
+            if revision_stage(project, stage["id"]):
+                return _with_stage_packet({**active, "status":"REVISE", "findings":errors})
             return {**active, "status":"BLOCKED", "findings":errors}
+    if stage["id"] == "design-review":
+        from validation_landing_blueprint import design_approval_errors
+        errors = design_approval_errors(project)
+        if errors:
+            return {**active, "status":"NEEDS_USER", "findings":errors,
+                    "instruction":"Show the complete desktop/mobile proposal. Record the actual user signal with confirm_design. Do not build yet."}
     evidence = [
         str(item.get("target")) for item in harness.read_events(run_dir)
         if item.get("event") == "artifact_write" and item.get("stage") == stage["id"] and item.get("target")
@@ -396,6 +428,7 @@ def _schema(properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
 
 
 TOOLS: dict[str, tuple[str, dict[str, Any], Callable[[dict[str, Any]], dict[str, Any]], dict[str, bool]]] = {
+    "confirm_design": ("Record the single user approval of the complete reviewed desktop/mobile landing proposal before construction.", _schema({"run_id":{"type":"string"}, "status":{"type":"string","enum":["APPROVED","DELEGATED","ADJUST"]}, "user_signal":{"type":"string"}}, ["run_id","status","user_signal"]), confirm_design, {"readOnlyHint":False,"destructiveHint":False,"idempotentHint":False,"openWorldHint":False}),
     "start_landing": ("Start the only valid managed landing run. Call this before designing or coding.", _schema({"brief": {"type": "string"}, "scenario": {"type": "string"}}, []), start_landing, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": False}),
     "get_stage": ("Read the single active stage plus its complete specialist contract, linked guidance, capabilities and current artifacts.", _schema({"run_id": {"type": "string"}}, ["run_id"]), get_stage, {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),
     "list_files": ("List physical files in one managed landing project.", _schema({"run_id": {"type": "string"}}, ["run_id"]), list_files, {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),

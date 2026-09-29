@@ -6,6 +6,8 @@ This is one conditional contract distributed across existing owners. It does not
 
 ## A. Select the medium in G3
 
+In managed execution the independent design-review receipt owns approval. Selected LAYERED_2D, RENDERED_3D and INTERACTIVE_3D require its image-backed `spatial_modality` axis; an owner-written PASS cannot replace it. FLAT_2D is covered by normal composition/media review, without another spatial verdict. Comparison and conflicting-3D-claim checks still apply. Structural checks run before the visual review to avoid spending review attempts on malformed artifacts.
+
 04 compares the same narrative job and composition as `FLAT_2D`, `LAYERED_2D`, `RENDERED_3D` and `INTERACTIVE_3D`. Rendered 3D may omit the interactive candidate only when interaction has no plausible relationship to the job. Compare observable gain, need for viewpoint/manipulation, mobile and performance cost, and fallback equivalence.
 
 Select the least complex medium that preserves the gain. `INTERACTIVE_3D` is valid only when viewpoint, manipulation or continuous spatial state changes add meaning that a render or independent 2D layers cannot preserve. Record the decision once in `visual-system.md#Spatial modality decision`; later stages consume it without reopening it.

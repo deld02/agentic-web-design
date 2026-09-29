@@ -46,7 +46,10 @@ class RuntimeRepairTests(unittest.TestCase):
             verdict = {"verdict":"PASS", "summary":"fixture", "selected_direction":"", "findings":[],
                        "axes":{a:{"status":"PASS","evidence":"desktop.png: visible fixture"} for a in axes}}
             response = {"status":"completed", "id":"test-thread", "output":[{"content":[{"type":"output_text", "text":json.dumps(verdict)}]}]}
-            with patch.dict(os.environ, {"AGENTIC_AI_BACKEND":"session"}), \
+            with patch("validation_landing_blueprint.complete_landing_flow", return_value=False), \
+                 patch("project_validation.scene_visual_errors", return_value=[]), \
+                 patch("validation_spatial_experience.spatial_selection_errors", return_value=[]), \
+                 patch.dict(os.environ, {"AGENTIC_AI_BACKEND":"session"}), \
                  patch("harness_review.subscription_review", side_effect=[RuntimeError("offline"), RuntimeError("timeout"), response]):
                 for _ in range(2):
                     with self.assertRaises(RuntimeError):

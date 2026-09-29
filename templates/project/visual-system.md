@@ -1,5 +1,14 @@
 # Visual Experience
 
+## Complete landing blueprint
+
+This is the single design/build plan, not another artifact. Compose every scene in the outline before production. The scene opportunities table below is the ordered build queue: each row points to composition, media, effects and mobile behavior. Reuse the grammar/color/type tables instead of copying their values. Include whole-page desktop/mobile evidence so rhythm and transitions can be reviewed together. Prototype only technically risky interactions before approval; link the spike in the existing effect map.
+
+PAGE_DESKTOP:
+PAGE_MOBILE:
+
+In new managed runs, show this complete proposal after independent design-review, then call confirm_design with the actual user signal. The artistic master is an internal reference, not another approval. No production implementation before this checkpoint. Legacy runs retain their recorded checkpoint policy.
+
 ## Scene strategy
 
 Challenge every scene from `content-architecture.md` before finalizing foundations. Ask what art direction, visual production or interaction could make this section worth a high-end bespoke budget, then separate real value from expensive noise and select the simplest form that preserves the gain. `UTILITY` scenes receive the same question briefly and may correctly choose the direct baseline.
@@ -77,7 +86,7 @@ Every scene from the G1 outline receives an explicit assignment. A `UTILITY` sce
 
 ### Scene visual opportunities
 
-Use `docs/methods/scene-visual-production.md` for distinct scenes, not every repeated component. `CMP-*` is reference evidence and must decompose into semantic HTML/CSS plus final `IMG-*` and `FX-*` outputs.
+Use `docs/methods/scene-visual-production.md` for distinct scenes, not every repeated component. `CMP-*` is reference evidence. Decompose each scene into semantic HTML/CSS, an `IMG-*` reference or `NO_IMAGE`, and an `FX-*` reference or `NO_EFFECT`. These are decisions, not image/effect quotas. Identify the hero through the section outline or the `OPENING` scene in the experience spine.
 
 For `focused`, resolve the selected hero in desktop/mobile and reuse its selected G2 desktop comp; add body scenes only when their visual job is materially different. `standard` and `extended` resolve hero plus one distinct body scene. This table also records visual integration; do not duplicate it elsewhere.
 

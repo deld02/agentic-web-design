@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from validation_common import load_json
+from validation_landing_blueprint import complete_landing_flow
 
 
 STAGE_GUIDANCE: dict[str, list[str]] = {
@@ -152,6 +153,11 @@ def build_stage_packet(
         "depends_on": stage.get("depends_on", []),
         "writable_files": sorted(writable_files),
         "state_owner": "HARNESS_ORCHESTRATOR",
+        "user_checkpoint_policy": (
+            "Complete landing flow: master is an internal art reference, no user stop at G2. Compose all scenes and full desktop/mobile page in visual-system.md. After independent design-review, show the complete proposal and call confirm_design once. Build its scenes in order inside one page; finish with global review."
+            if complete_landing_flow(project)
+            else "Legacy run: retain its artistic-master checkpoint; do not silently migrate an active run."
+        ),
         "contract": {
             "path": contract_path.relative_to(root).as_posix(),
             "text": contract,

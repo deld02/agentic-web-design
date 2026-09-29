@@ -161,6 +161,7 @@ def create_run(
         "run_id": run_id,
         "scenario": scenario_id,
         "created_at": utc_now(),
+        "user_checkpoint": load_json(ROOT / "config/pipeline.json").get("user_checkpoint", "artistic-master"),
         "project_dir": str(project_dir),
         "status": "READY",
     })
@@ -349,7 +350,7 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
         for generated_id in missing_generation_receipts(run_dir / "project", read_events(run_dir), IMAGE_TOOLS):
             readiness.append(f"production-plan generated asset {generated_id} lacks a real image-generation receipt")
     if readiness:
-        if any("artistic master confirmation is PENDING" in item for item in readiness):
+        if any("artistic master confirmation is PENDING" in item or "LANDING_APPROVAL_" in item for item in readiness):
             run.update(status="NEEDS_USER", active_stage=stage["id"], findings=readiness)
             write_json(run_dir / "run.json", run)
             _save_chat_snapshot(run_dir)
@@ -520,7 +521,7 @@ def _run_active(run_dir: Path, command: list[str], until: str | None = None) -> 
             )
             if not readiness:
                 break
-            if any("artistic master confirmation is PENDING" in item for item in readiness):
+            if any("artistic master confirmation is PENDING" in item or "LANDING_APPROVAL_" in item for item in readiness):
                 run = load_json(run_dir / "run.json")
                 run.update(status="NEEDS_USER", active_stage=stage["id"], findings=readiness)
                 write_json(run_dir / "run.json", run)

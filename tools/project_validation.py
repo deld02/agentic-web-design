@@ -484,6 +484,9 @@ def direction_divergence_errors(project_dir: Path, require_selection: bool = Tru
 
 def creative_master_confirmation_errors(project_dir: Path) -> list[str]:
     """Validate the single user-facing artistic-master checkpoint inside G2."""
+    from validation_landing_blueprint import complete_landing_flow
+    if complete_landing_flow(project_dir):
+        return []  # Single user checkpoint moves to the complete G3 proposal.
     text = markdown(project_dir, "creative-direction.md")
     heading = "## Artistic master confirmation"
     status = _named_value(text, heading, "STATUS")
@@ -895,14 +898,29 @@ def scene_visual_errors(project_dir: Path, profile: str = "focused") -> list[str
             if physical_error:
                 errors.append(physical_error)
                 row_complete = False
-        if not all(token in decomposition for token in ("HTML/CSS", "IMG-", "FX-")):
-            errors.append(f"G3 {scene_name or 'scene'} lacks HTML/CSS + IMG-* + FX-* decomposition")
+        # Media and motion are conditional, not quotas for every scene.
+        has_image = bool(re.search(r"IMG-[0-9]{3,}", decomposition))
+        has_effect = bool(re.search(r"FX-[0-9]{3,}", decomposition))
+        no_image = bool(re.search(r"NO_IMAGE|sin imagen|no image", decomposition, re.I))
+        no_effect = bool(re.search(r"NO_EFFECT|sin FX|sin efectos|no effect", decomposition, re.I))
+        if ("HTML/CSS" not in decomposition or not (has_image or no_image)
+                or not (has_effect or no_effect)
+                or (mode == "EXTERNAL_IMAGE_LOOP" and not has_image)):
+            errors.append(f"G3 {scene_name or 'scene'} needs HTML/CSS, IMG-ID or NO_IMAGE, and FX-ID or NO_EFFECT; external image production requires IMG-ID")
             row_complete = False
         if row_complete:
             complete_scenes.append(scene_name)
-    if not any("HERO" in name.upper() for name in complete_scenes):
+    outline = table_rows(markdown(project_dir, "content-architecture.md"),
+                         "## Sitemap / page or section outline", "Scene ID")
+    hero_ids = {row[0] for row in outline if len(row) >= 2 and re.search(r"\bhero\b", row[1], re.I)}
+    spine = table_rows(markdown(project_dir, "content-architecture.md"),
+                       "## Experience spine", "Scene ID")
+    hero_ids.update(row[0] for row in spine if len(row) >= 8 and row[7] == "OPENING")
+    def is_hero(name: str) -> bool:
+        return name in hero_ids or bool(re.search(r"\bhero\b", name, re.I))
+    if not any(is_hero(name) for name in complete_scenes):
         errors.append("G3 requires a composed hero scene")
-    if profile in {"standard", "extended"} and not any("HERO" not in name.upper() for name in complete_scenes):
+    if profile in {"standard", "extended"} and not any(not is_hero(name) for name in complete_scenes):
         errors.append("G3 requires one distinct composed body scene")
     return errors
 

@@ -66,6 +66,8 @@ class HarnessMcpServerTests(unittest.TestCase):
     def test_mcp_lists_the_managed_pipeline_tools(self):
         response = mcp.dispatch({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
         names = {item["name"] for item in response["result"]["tools"]}
+        self.assertIn('confirm_design', names)
+        names.remove('confirm_design')
         self.assertEqual(
             names,
             {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "register_session_image", "confirm_master", "advance_stage", "verify_run", "runtime_status", "read_image", "upload_image", "render_landing", "run_review", "prepare_delivery", "download_delivery", "check_technology", "build_frontend", "import_blender_file", "inspect_blender_asset"},
@@ -103,6 +105,31 @@ class HarnessMcpServerTests(unittest.TestCase):
         self.assertEqual(state.read_bytes(), before)
         self.assertEqual(mcp.get_stage({"run_id": started["run_id"]})["status"], "FAILED")
 
+    def test_review_revision_returns_owner_once_without_advancing(self):
+        started = self.start()
+        project = Path(started["project_dir"])
+        reviews = project / ".reviews"
+        reviews.mkdir()
+        record = reviews / "direction-review.json"
+        budget = reviews / "direction-review-attempts.json"
+        record.write_text(json.dumps({"result": {"verdict": "REVISE", "findings": ["Add type specimen"]}}))
+        budget.write_text(json.dumps({"count": 1}))
+        active = {**started, "stage": "direction-review", "agent": "07", "mode": "direction-review"}
+        state = (project / "status.json").read_bytes()
+        with patch.object(mcp, "_project_and_stage", return_value=(Path(started["run_dir"]), active, project)), \
+             patch("harness_review.review_record_errors", return_value=["revision required"]), \
+             patch.object(mcp, "build_stage_packet", return_value={"specialist": "03"}):
+            result = mcp.advance_stage({"run_id": started["run_id"]})
+            self.assertEqual(result["status"], "REVISE")
+            self.assertEqual(result["stage_packet"]["specialist"], "03")
+            self.assertEqual(result["stage_packet"]["findings"], ["Add type specimen"])
+            self.assertEqual((project / "status.json").read_bytes(), state)
+            budget.write_text(json.dumps({"count": 2}))
+            self.assertEqual(mcp.advance_stage({"run_id": started["run_id"]})["status"], "BLOCKED")
+        from harness_review import revision_stage
+        record.write_text(json.dumps({"result": {"verdict": "PASS", "findings": []}}))
+        self.assertIsNone(revision_stage(project, "direction-review"))
+
     def test_validation_exception_restores_state(self):
         started = self.start()
         state = Path(started["project_dir"]) / "status.json"
@@ -111,6 +138,39 @@ class HarnessMcpServerTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "validator crashed"):
                 mcp.advance_stage({"run_id": started["run_id"]})
         self.assertEqual(state.read_bytes(), before)
+
+    def test_design_preflight_keeps_owner_and_state(self):
+        started = self.start()
+        project = Path(started["project_dir"])
+        active = {**started, "stage":"visual-experience", "agent":"04", "mode":"visual-experience"}
+        before = (project / "status.json").read_bytes()
+        with patch.object(mcp, "_project_and_stage", return_value=(Path(started["run_dir"]), active, project)), \
+             patch("harness_review.design_preflight_errors", return_value=["missing media decision"]), \
+             patch.object(mcp.harness, "advance_chat_run") as advance:
+            result = mcp.advance_stage({"run_id":started["run_id"]})
+        self.assertEqual("REVISE", result["status"])
+        self.assertEqual("04", result["stage_packet"]["specialist"])
+        self.assertEqual(before, (project / "status.json").read_bytes())
+        advance.assert_not_called()
+
+    def test_complete_design_waits_for_user_without_advancing(self):
+        started = self.start()
+        project = Path(started['project_dir'])
+        active = {**started, 'stage':'design-review', 'agent':'07', 'mode':'design-review'}
+        before = (project / 'status.json').read_bytes()
+        with patch.object(mcp, '_project_and_stage', return_value=(Path(started['run_dir']), active, project)), \
+             patch('harness_review.review_record_errors', return_value=[]), \
+             patch.object(mcp, 'complete_stage_status') as complete:
+            result = mcp.advance_stage({'run_id':started['run_id']})
+        self.assertEqual('NEEDS_USER', result['status'])
+        self.assertIn('confirm_design', result['instruction'])
+        self.assertEqual(before, (project / 'status.json').read_bytes())
+        complete.assert_not_called()
+
+    def test_new_flow_rejects_early_master_approval(self):
+        started = self.start()
+        with self.assertRaisesRegex(ValueError, 'complete landing'):
+            mcp.confirm_master({'run_id':started['run_id'], 'status':'APPROVED', 'user_signal':'yes'})
 
     def test_empty_research_cannot_advance_to_content(self):
         self.test_orchestrator_advances_one_valid_stage_and_owns_state()

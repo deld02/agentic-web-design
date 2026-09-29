@@ -82,7 +82,10 @@ class SessionBackendTests(unittest.TestCase):
         response = {"status":"completed","id":"codex-thread-test",
                     "output":[{"content":[{"type":"output_text","text":json.dumps(verdict)}]}]}
         stage = next(s for s in mcp.load_json(mcp.ROOT / "config/pipeline.json")["stages"] if s["id"]=="design-review")
-        with patch("harness_review.subscription_review",return_value=response) as native, \
+        with patch("validation_landing_blueprint.complete_landing_flow", return_value=False), \
+             patch("project_validation.scene_visual_errors", return_value=[]), \
+             patch("validation_spatial_experience.spatial_selection_errors", return_value=[]), \
+             patch("harness_review.subscription_review",return_value=response) as native, \
              patch("urllib.request.urlopen") as api:
             record = run_visual_review(mcp.ROOT,project,stage,images)
         self.assertEqual("CODEX_SUBSCRIPTION",record["provider"])

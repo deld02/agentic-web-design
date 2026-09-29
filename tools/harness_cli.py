@@ -51,6 +51,10 @@ def _parser(event_types: set[str]) -> argparse.ArgumentParser:
     chat_image.add_argument("--run-dir", required=True, type=Path)
     chat_image.add_argument("--file", required=True, type=Path)
     chat_image.add_argument("--asset-id")
+    approval = sub.add_parser("chat-design-approval")
+    approval.add_argument("--run-dir", required=True, type=Path)
+    approval.add_argument("--status", required=True, choices=["APPROVED", "DELEGATED", "ADJUST"])
+    approval.add_argument("--user-signal", required=True)
     return parser
 
 
@@ -110,6 +114,16 @@ def run_cli(api: ModuleType) -> int:
         result = api.advance_chat_run(args.run_dir)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 0 if result["status"] != "FAILED" else 1
+    if args.command == "chat-design-approval":
+        from validation_landing_blueprint import complete_landing_flow, record_design_approval
+        api._require_chat_run(args.run_dir)
+        project = args.run_dir / 'project'
+        if api._current_open_stage(args.run_dir)['id'] != 'design-review' or not complete_landing_flow(project):
+            raise ValueError('Complete proposal approval requires design-review in the new flow')
+        result = record_design_approval(project, args.status, args.user_signal)
+        api.append_event(args.run_dir, {'event':'tool_call', 'stage':'design-review', 'agent':'07', 'tool':'USER_DESIGN_CONFIRMATION', 'target':result['review_id'], **result})
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
     if args.command == "run":
         result = api.run_active(args.run_dir, _executor(args), args.until)
         print(json.dumps(result, indent=2, ensure_ascii=False))

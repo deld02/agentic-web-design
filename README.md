@@ -14,10 +14,10 @@ Ask one open question: what should be created, for whom and what should it achie
 2. Research the category, audience, existing identity and current references.
 3. Compare content structures.
 4. Define what premium means for this project, then generate one artistic master before composing the webpage.
-5. Confirm that visual world once, then challenge every section for high-end value and translate the selected forms responsively.
-6. Define the visual system and review it independently. When spatial treatment is credible, compare 2D/layers/rendered/interactive media here and freeze the least complex winner before technology.
+5. Design the complete landing, not just the hero. Save whole-page desktop/mobile compositions and every section in visual-system.md as one construction blueprint; prototype only risky interactions.
+6. Review the complete proposal independently, then obtain one user approval with confirm_design before construction. The master is an internal reference, not another stop. When spatial treatment is credible, compare media here before technology.
 7. Choose the simplest suitable technology and build the complete structural landing.
-8. Render desktop/mobile, decide image presence and role per scene, send `IH-*` briefs to the separate image loop, then validate/integrate its returned files and review the final build.
+8. Produce the planned assets through the separate image loop and integrate sections one at a time inside the shared page. Finish with a whole-page review of continuity, spacing, transitions, responsive behavior and fidelity. Existing runs retain their original checkpoint policy; do not silently migrate them.
 
 The executable order and dependencies live only in [config/pipeline.json](config/pipeline.json). The runtime entry point is [skills/agentic-web-design/SKILL.md](skills/agentic-web-design/SKILL.md).
 

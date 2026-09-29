@@ -51,7 +51,7 @@ The single row must use `CHATGPT_GENERATE` and point to a physical raster file i
 
 ## Artistic master confirmation
 
-Show this image once before G3. Ask only whether to approve it, request one concrete adjustment or delegate. `ADJUST` allows one regeneration/edit and returns to this same checkpoint.
+Legacy runs only: show this image once before G3 and record approve/adjust/delegate. New complete-landing runs leave this historical section unused: the sole approval is the whole-page proposal after design-review. Never fabricate a signal to close this legacy field.
 
 CHECKPOINT: artistic master confirmation
 STATUS: PENDING

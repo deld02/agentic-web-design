@@ -140,6 +140,9 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(creative_master_errors(project_dir))
 
     elif gate_id == "G3":
+        from validation_landing_blueprint import blueprint_errors, design_approval_errors
+        errors.extend(blueprint_errors(project_dir))
+        errors.extend(design_approval_errors(project_dir))
         text = markdown(project_dir, "visual-system.md")
         if len(table_rows(text, "## Foundation alternatives and decision evidence", "Candidate system")) < 2 \
                 and "ONLY_VIABLE:" not in section(text, "## Foundation alternatives and decision evidence"):

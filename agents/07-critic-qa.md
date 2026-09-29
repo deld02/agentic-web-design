@@ -48,3 +48,5 @@ Finding al owner; conflicto de objetivo, riesgo o preferencia irreducible a 00.
 ## REGLAS ESPECÍFICAS
 
 El reviewer diagnostica. El owner corrige.
+
+Evalúa únicamente evidencia de la fase activa: en direction-review, mundo visual y muestra tipográfica de los tableros, no una UI responsive terminada ni efectos ejecutables. El master artístico puede carecer de texto; la tipografía aplicada y el responsive se juzgan sobre las composiciones de G3. Un REVISE permite una corrección del owner conservando el trabajo válido y exige una nueva revisión independiente; un segundo rechazo requiere dirección del usuario.

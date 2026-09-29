@@ -6,7 +6,7 @@ Crear territorios visuales realmente distintos y convertir la selección indepen
 
 ## OWNERSHIP
 
-Dirección divergente, tesis visual, evidencia `DIR-*`, master artístico generado, design genome y una confirmación del usuario.
+Dirección divergente, tesis visual, evidencia `DIR-*`, master artístico generado y design genome. La aprobación de la propuesta completa la registra 00 después de G3.
 
 ## NO PUEDE
 
@@ -28,7 +28,7 @@ G1 aprobado, contenido, research, material existente y restricciones de producci
 2. En `direction-divergence`, traduce la Experience Spine de G1 y responde qué significa excelencia aquí; crea exactamente tres territorios `DIR-*` físicamente visibles y conceptualmente distantes. Deben diferir en al menos cuatro de: tipografía, composición, media, materialidad, profundidad, motion, presencia humana y metáfora.
 3. No selecciona por color o gusto: documenta qué percepción, ventaja y riesgo tiene cada territorio y responde en los tres a todos los `IDN-*` de G1. Una contradicción `BINDING` o un cambio fuera de `EVOLVE_WITHIN_LIMITS` invalida el territorio. 07 los compara en contexto aislado y 00 registra una selección o `REVISE`.
 4. En `creative-master`, consume únicamente el territorio seleccionado, invoca generación y guarda un único `AM-*` artístico. No reabre las tres rutas.
-5. Muestra ese master una sola vez: aprobar, ajustar una vez o delegar.
+5. En el flujo complete-landing, el master es referencia interna para componer toda la página; no pide aprobación aquí. Solo los runs legacy conservan aprobar/ajustar/delegar el master. Consulta la política del packet.
 6. Hereda explícitamente los `IDN-*` aplicables y extrae `INVARIANTS`, `FLEX` y `CONTEXTUAL`, además de una gramática de relaciones y un mecanismo distintivo derivado del significado. El contexto puede modificar materialidad o atmósfera; no puede redefinir silenciosamente una identidad vinculante.
 7. Puede proponer una metáfora espacial cuando nace del concepto, pero no selecciona modalidad, runtime ni stack; esa comparación pertenece a G3 y tecnología.
 
@@ -38,7 +38,7 @@ G1 aprobado, contenido, research, material existente y restricciones de producci
 
 ## GATE / CRITERIO
 
-El checkpoint de divergencia requiere tres territorios físicos; G2 requiere selección independiente previa, un master artístico físico, confirmación y genome completo.
+El checkpoint de divergencia requiere tres territorios físicos; G2 requiere selección independiente previa, un master artístico físico y genome completo. La confirmación del usuario ocurre sobre la propuesta completa en G3; solo los runs legacy conservan confirmación en G2.
 
 ## ESCALADO
 

@@ -54,7 +54,7 @@ def _spatial_claims(project_dir: Path) -> set[str]:
     return claims
 
 
-def spatial_selection_errors(project_dir: Path) -> list[str]:
+def spatial_selection_errors(project_dir: Path, *, require_review: bool = True) -> list[str]:
     """G3: select a medium on physical comparison before technology."""
     project_dir = Path(project_dir)
     visual = _text(project_dir, "visual-system.md")
@@ -115,8 +115,19 @@ def spatial_selection_errors(project_dir: Path) -> list[str]:
         errors.append(f"G3 spatial modality comparison missing {missing}")
     if selected != [mode]:
         errors.append("G3 spatial modality must select exactly the declared SPATIAL_MODE")
-    if _named_value(visual, heading, "SPATIAL_REVIEW") != "PASS":
-        errors.append("G3 spatial modality needs independent SPATIAL_REVIEW PASS")
+    # A flat design is covered by the normal composition/media review. Do not
+    # demand an additional spatial verdict for a medium that was not selected.
+    if require_review and mode != "FLAT_2D":
+        if (project_dir / ".reviews").is_dir():
+            from harness_review import review_record_errors
+            from validation_common import load_json
+            receipt = project_dir / ".reviews/design-review.json"
+            if review_record_errors(project_dir, "design-review"):
+                errors.append("G3 spatial modality needs current independent SPATIAL_REVIEW PASS")
+            elif load_json(receipt).get("result", {}).get("axes", {}).get("spatial_modality", {}).get("status") != "PASS":
+                errors.append("G3 spatial modality needs independent SPATIAL_REVIEW PASS (spatial_modality axis)")
+        elif _named_value(visual, heading, "SPATIAL_REVIEW") != "PASS":
+            errors.append("G3 spatial modality needs independent SPATIAL_REVIEW PASS")
     evidence = _named_value(visual, heading, "SPATIAL_REVIEW_EVIDENCE")
     candidate = (project_dir / evidence).resolve() if evidence else project_dir
     if not evidence or not candidate.is_file() or not valid_signature(candidate):

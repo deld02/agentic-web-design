@@ -18,6 +18,8 @@ The review result has one root `correction_kind`: `NONE` for PASS; otherwise `CR
 
 Evaluate the complete composition, not literal exclusivity of an image. Nonliteral media may communicate through identity, content, framing and behavior; depicting the category is neither necessary nor sufficient. Interchangeability must be demonstrated at that relationship level. Compare craft where audience, action, trust and available proof/media make it transferable. A studio portfolio is not a requirement to invent a portfolio for a consultant. An irrelevant benchmark returns REFERENCE, not a demand for decoration.
 
+Separate communication choice from execution quality within the existing project_fit and artistic_authority axes. Compare the candidates' focal subjects against the objective, audience, available identity/proof and primary action. Check whether plausible alternatives were actually represented, rather than only restyling one metaphor. If a potentially stronger authentic subject was omitted without evaluation, do not infer that abstraction was the best choice: return CONCEPT for a missing relationship comparison, or REFERENCE when the source evidence is insufficient. Name the omitted evidence and expected communication gain; do not prescribe a portrait, product or aesthetic universally. A PASS means the supplied alternatives support the decision, not that unseen alternatives or the user's unexpressed taste have been exhausted.
+
 The protected review checkpoints in `status.json` use `review_context`:
 
 - `PENDING` before the isolated execution;

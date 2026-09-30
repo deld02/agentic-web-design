@@ -14,6 +14,16 @@ A `CMP-*` may contain approximate interface/text for evaluation. It must never b
 
 ## 2. G2 divergence and artistic master
 
+### Choose the communication anchor before its style
+
+Use the existing research findings and direction-table cells; add no gate, register or asset quota. Ask what the visitor must understand, trust or desire to take the primary action, and which available subject can establish that most convincingly: person/team, product/result, actual work/process, place/community, information/interface or conceptual imagery. These are candidates, not mandatory routes. Record the strongest credible anchor and the main uncertainty in research's existing opportunity section. Availability alone does not make a subject the winner; missing authentic evidence must remain a production constraint, never fabricated proof.
+
+Search references for that communication relationship as well as for craft. A personal expert may benefit from a person-led reference; a product may need material or use evidence; neither is a universal prescription. Name what transfers and what does not. When relevant identity-bearing material exists, evaluate its potential as a protagonist, not only as a later supporting section. Reject unsuitable material explicitly rather than overlooking it.
+
+Before making the DIR boards, test the strongest direct/evidence-led expression against a genuinely different plausible hypothesis where uncertainty remains. Different fonts, colors and materials around the same abstract object do not test a different communication anchor. In the existing concept/media/human-presence cells explain the gain and sacrifice of each route in comprehension, trust, desired perception and action. A conceptual route may win, but must show what it contributes beyond the strongest credible direct route. Originality, abstraction, restraint or production expense cannot decide this alone. Do not force a portrait, metaphor or a fixed number of image-led routes on every project.
+
+07 reviews both the anchor selection and its visible execution. A beautifully executed weaker relationship is still a concept finding, not a polish task. Selection remains provisional until the complete-page user checkpoint; a new user reference may reveal a preference that research could not infer. Treat that as new evidence, not proof that the reviewer can predict individual taste.
+
 After G1 research and before prompting, 03 writes the compact project-specific quality bar in `creative-direction.md`: what premium means here, which category baseline must be exceeded, what requires authorship, what would make the result generic, what the master must prove and what the final landing must preserve. These answers come from the compiled project context and five-lens current references; generic adjectives do not close the bar.
 
 Before territories, 03 states CREATIVE_IDEA, PROJECT_SOURCE_IDS, WHY_THIS_PROJECT and OBSERVABLE_CONSEQUENCE in the existing Creative idea section. Ground the relationship in SRC-* research items and Experience Spine. A style list is not an idea; design references improve expression, not project truth. The idea may be precise direct communication rather than a metaphor. 03 creates two to four physical DIR-* territories with the same content specimen and four distinct dimensions. 07 selects or rejects independently.

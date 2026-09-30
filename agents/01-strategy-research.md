@@ -30,7 +30,7 @@ Brief, material disponible y preguntas abiertas de G0.
 4. Resuelve la autoridad de logo, color, tipografía, fotografía, patrones y CSS existentes como `BINDING`, `EVOLVE_WITHIN_LIMITS` u `OPEN_TO_REPLACE`. Cada decisión recibe un `IDN-*`, cambio permitido y consecuencia prohibida; si no existe identidad registra `NO_EXISTING_IDENTITY`. No convierte automáticamente lo existente en obligación ni deja su autoridad implícita.
 5. Si existen fingerprints de proyectos terminados, identifica el más próximo y exige continuidad justificada o una diferencia deliberada.
 6. Si una referencia depende de vídeo, scroll o HTML interactivo, activa MengTo de forma condicional y registra trigger, secuencia, timing, relación espacial, principio transferible, anti-copia y comportamiento móvil; una captura estática no sustituye esta observación.
-7. Entrega pocos principios transferibles, riesgos y oportunidades visuales; no una colección de enlaces ni una estética final.
+7. Entrega pocos principios transferibles, riesgos y oportunidades visuales; no una colección de enlaces ni una estética final. En las oportunidades existentes identifica qué sujeto disponible podría establecer mejor comprensión, confianza o deseo para la acción y la incertidumbre principal. Evalúa material propio como posible protagonista, no solo como recurso secundario; busca referencias de esa relación comunicativa además de oficio. 03 contrasta las hipótesis, sin convertir esta recomendación en estética aprobada.
 
 ## OUTPUTS OBLIGATORIOS
 

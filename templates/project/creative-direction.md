@@ -26,6 +26,8 @@ Create two to four physically visible territories according to uncertainty. They
 
 Before producing each study, resolve the joint content/media relationship in the existing concept, composition and media cells: intended perception, contribution beyond text, framing/reading space and attention change. Produce media for that relationship; do not choose an attractive asset and attach a headline afterward. Test the composition as a whole, not whether its image literally depicts the category.
 
+Use these same cells to contrast the strongest credible communication anchor from research with a materially different plausible hypothesis when uncertain. State each route's gain and sacrifice for comprehension, trust, desired perception and action. Different styling of one metaphor is not sufficient evidence for selecting that metaphor. Follow the anchor-selection guidance in `scene-visual-production.md`; no subject or aesthetic is the default winner.
+
 | Direction ID | Concept / perception | Typography | Composition | Media / materiality | Depth / motion | Human presence / metaphor | Physical board relative to project |
 |---|---|---|---|---|---|---|---|
 

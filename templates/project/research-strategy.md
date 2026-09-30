@@ -83,6 +83,8 @@ JUSTIFICATION_OR_DEPARTURE: first recorded project
 
 ## Opportunity, risks and open questions
 
+Briefly identify the strongest available communication anchor and its uncertainty: what subject could best establish understanding, trust or desire for the primary action? Evaluate material that could carry identity or proof as a protagonist as well as a supporting asset. Link sources and suitable reference relationships; do not prescribe the final aesthetic. 03 compares viable hypotheses using its existing direction table.
+
 ## Sources, dates, confidence and limitations
 
 For every material reference: URL, access date, observation, transferable principle and what must not be copied.

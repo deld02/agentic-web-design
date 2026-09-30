@@ -62,6 +62,13 @@ class ArtisticBenchmarkTests(unittest.TestCase):
         self.assertIn('Nonliteral imagery is valid', REVIEW_INSTRUCTIONS)
         self.assertIn('audience, action, trust', REVIEW_INSTRUCTIONS)
 
+    def test_review_checks_anchor_choice_without_a_default_aesthetic(self):
+        # Wiring regression only: this does not prove a model's artistic judgment.
+        self.assertIn('communication-anchor selection from execution', REVIEW_INSTRUCTIONS)
+        self.assertIn('strongest credible direct/evidence-led alternative', REVIEW_INSTRUCTIONS)
+        self.assertIn('CONCEPT', REVIEW_INSTRUCTIONS)
+        self.assertIn('Do not prefer portraits, abstraction or any aesthetic universally', REVIEW_INSTRUCTIONS)
+
     def test_context_reference_is_attached_without_duplicate_images(self):
         with tempfile.TemporaryDirectory() as directory:
             project = Path(directory)

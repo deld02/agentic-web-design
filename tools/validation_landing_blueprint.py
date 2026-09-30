@@ -11,6 +11,43 @@ def complete_landing_flow(project: Path) -> bool:
     return run.is_file() and json.loads(run.read_text(encoding='utf-8')).get('user_checkpoint') == 'complete-landing'
 
 
+def scene_design_loop_errors(project: Path) -> list[str]:
+    """Check bounded owner iteration evidence, not aesthetic quality or tool use."""
+    if not complete_landing_flow(project):
+        return []
+    project = Path(project).resolve()
+    errors = []
+    try:
+        visual = (project / 'visual-system.md').read_text(encoding='utf-8')
+        content = (project / 'content-architecture.md').read_text(encoding='utf-8')
+    except OSError:
+        return ['G3 scene design loop requires visual-system and content architecture']
+    scenes = [r[0] for r in table_rows(content, '## Sitemap / page or section outline', 'Scene ID')
+              if r and re.fullmatch(r'SCN-\d{3,}', r[0])]
+    rows = table_rows(visual, '### Section design loop', 'Scene')
+    cursor, attempt = 0, 1
+    for row in rows:
+        if len(row) != 6 or cursor >= len(scenes) or row[0] != scenes[cursor] or row[1] != str(attempt):
+            errors.append('G3 scene design loop must follow outline order with attempts 1 then optionally 2')
+            return errors
+        for value in row[2:4]:
+            path = (project / value).resolve()
+            if not path.is_relative_to(project) or not path.is_file() or not valid_signature(path) or path.suffix.lower() not in {'.png', '.jpg', '.jpeg', '.webp', '.avif'}:
+                errors.append(f'G3 {row[0]} attempt {attempt} requires physical desktop/mobile raster evidence')
+        if not row[4] or row[4].upper() in {'PASS', 'NONE', 'TODO', 'PENDING'}:
+            errors.append(f'G3 {row[0]} requires an observable diagnosis, not a bare verdict')
+        if row[5] == 'PASS':
+            cursor, attempt = cursor + 1, 1
+        elif row[5] == 'REVISE' and attempt == 1:
+            attempt = 2
+        else:
+            errors.append(f'G3 {row[0]} is unresolved; second rejection requires escalation')
+            return errors
+    if not scenes or cursor != len(scenes) or attempt != 1:
+        errors.append('G3 scene design loop must resolve every section before global review')
+    return errors
+
+
 def blueprint_errors(project: Path) -> list[str]:
     if not complete_landing_flow(project):
         return []
@@ -20,7 +57,7 @@ def blueprint_errors(project: Path) -> list[str]:
     scenes = [r[0] for r in table_rows(content, '## Sitemap / page or section outline', 'Scene ID') if re.fullmatch(r'SCN-\d{3,}', r[0])]
     rows = table_rows(visual, '### Scene visual opportunities', 'Scene')
     declared = [r[0] for r in rows]
-    errors = []
+    errors = scene_design_loop_errors(project)
     if not scenes or sorted(declared) != sorted(scenes):
         errors.append('G3 complete proposal must compose every architecture scene exactly once')
     for key in ('PAGE_DESKTOP', 'PAGE_MOBILE'):

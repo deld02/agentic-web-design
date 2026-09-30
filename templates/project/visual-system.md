@@ -9,6 +9,15 @@ PAGE_MOBILE:
 
 In new managed runs, show this complete proposal after independent design-review, then call confirm_design with the actual user signal. The artistic master is an internal reference, not another approval. No production implementation before this checkpoint. Legacy runs retain their recorded checkpoint policy.
 
+### Section design loop
+
+In outline order, compose one section, inspect desktop/mobile against its selected reference principles and diagnose the result before moving on. Decide composition/spacing, type, color, image/background intent, behavior, transitions and mobile together in the existing tables below. This log links evidence, not another specification or independent approval. A first PASS is valid; do not manufacture revisions. REVISE permits one directed correction; preserve both attempts and their distinct renders. A second rejection stops for escalation. Final image production remains in G4's external loop.
+
+| Scene | Attempt | Desktop evidence path | Mobile evidence path | Observable diagnosis / correction and reference comparison | Result |
+|---|---|---|---|---|---|
+
+After all sections pass owner inspection, inspect the full scroll and correct only affected sections before isolated 07 review. Owner PASS is not independent approval. If a global finding reopens a section, replace its current log with the new bounded cycle and retain the old cycle as history below the table; recapture affected scenes and whole-page views. The independent review and user approval must be renewed when their evidence changes.
+
 ## Scene strategy
 
 Challenge every scene from `content-architecture.md` before finalizing foundations. Ask what art direction, visual production or interaction could make this section worth a high-end bespoke budget, then separate real value from expensive noise and select the simplest form that preserves the gain. `UTILITY` scenes receive the same question briefly and may correctly choose the direct baseline.

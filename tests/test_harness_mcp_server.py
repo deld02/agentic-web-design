@@ -112,7 +112,7 @@ class HarnessMcpServerTests(unittest.TestCase):
         reviews.mkdir()
         record = reviews / "direction-review.json"
         budget = reviews / "direction-review-attempts.json"
-        record.write_text(json.dumps({"result": {"verdict": "REVISE", "findings": ["Add type specimen"]}}))
+        record.write_text(json.dumps({"result": {"verdict": "REVISE", "correction_kind":"CRAFT", "findings": ["Add type specimen"]}}))
         budget.write_text(json.dumps({"count": 1}))
         active = {**started, "stage": "direction-review", "agent": "07", "mode": "direction-review"}
         state = (project / "status.json").read_bytes()
@@ -123,6 +123,7 @@ class HarnessMcpServerTests(unittest.TestCase):
             self.assertEqual(result["status"], "REVISE")
             self.assertEqual(result["stage_packet"]["specialist"], "03")
             self.assertEqual(result["stage_packet"]["findings"], ["Add type specimen"])
+            self.assertEqual(result['stage_packet']['correction_kind'], 'CRAFT')
             self.assertEqual((project / "status.json").read_bytes(), state)
             budget.write_text(json.dumps({"count": 2}))
             self.assertEqual(mcp.advance_stage({"run_id": started["run_id"]})["status"], "BLOCKED")
@@ -138,6 +139,18 @@ class HarnessMcpServerTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "validator crashed"):
                 mcp.advance_stage({"run_id": started["run_id"]})
         self.assertEqual(state.read_bytes(), before)
+
+    def test_reference_failure_packet_has_no_owner_write_authority(self):
+        started = self.start()
+        project = Path(started['project_dir'])
+        (project / '.reviews').mkdir()
+        (project / '.reviews/direction-review.json').write_text(json.dumps({'result':{
+            'verdict':'REVISE','correction_kind':'REFERENCE','findings':['Benchmark does not fit available proof']}}))
+        active = {**started,'stage':'direction-review'}
+        packet = mcp._with_stage_packet(active)['stage_packet']
+        self.assertEqual([], packet['writable_files'])
+        self.assertEqual('REFERENCE', packet['correction_kind'])
+        self.assertIn('Escalate', packet['completion_protocol'][0])
 
     def test_design_preflight_keeps_owner_and_state(self):
         started = self.start()

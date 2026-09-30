@@ -192,13 +192,26 @@ def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
         status["stage_packet"] = build_stage_packet(ROOT, project, stage, writable)
         status["stage_packet"]["revision_for"] = stage_id
         status["stage_packet"]["findings"] = load_json(project / ".reviews" / f"{stage_id}.json")["result"]["findings"]
+        status["stage_packet"]["correction_kind"] = load_json(project / ".reviews" / f"{stage_id}.json")["result"].get('correction_kind')
         approval = project / '.reviews/design-approval.json'
         if stage_id == 'design-review' and approval.is_file() and load_json(approval).get('status') == 'ADJUST':
             status["stage_packet"]["findings"] = [load_json(approval)['user_signal']]
-        status["stage_packet"]["completion_protocol"] = ["Correct only the independent findings, then call run_review again. The review stage stays open; do not approve it yourself."]
+        status["stage_packet"]["completion_protocol"] = [
+            "Correct only the independent findings, then call run_review again. The review stage stays open; do not approve it yourself.",
+            "CRAFT: preserve the viable thesis and repair execution. CONCEPT: replace the failed relationship within the owner stage, preserve constraints and valid upstream content; do not merely reposition assets. REFERENCE: stop for orchestrator escalation to research, never compensate with extra effects or silently edit upstream evidence. Missing diagnosis requires a fresh review, not an assumed correction. Keep the existing one-correction budget.",
+        ]
         return status
     writable = STAGE_FILES.get(stage_id, set())
     status["stage_packet"] = build_stage_packet(ROOT, project, stage, writable)
+    review_path = project / '.reviews' / f'{stage_id}.json'
+    if review_path.is_file():
+        review_result = load_json(review_path).get('result', {})
+        if review_result.get('verdict') == 'REVISE' and review_result.get('correction_kind') == 'REFERENCE':
+            status['stage_packet']['correction_kind'] = 'REFERENCE'
+            status['stage_packet']['writable_files'] = []
+            status['stage_packet']['completion_protocol'] = [
+                'Escalate inadequate references to 00; preserve work and request upstream recovery. Do not edit research or downstream design from this review stage. No automatic retry or new budget.'
+            ]
     return status
 
 

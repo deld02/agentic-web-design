@@ -42,11 +42,13 @@ class RuntimeRepairTests(unittest.TestCase):
             for name in images:
                 Image.new("RGB", (32,32)).save(project / name)
             stage = next(s for s in mcp.load_json(ROOT / "config/pipeline.json")["stages"] if s["id"] == "design-review")
-            axes = ["composition", "typography", "color", "media_integration", "project_fit"]
+            axes = ["composition", "typography", "color", "media_integration", "project_fit", "reference_calibration", "artistic_authority"]
             verdict = {"verdict":"PASS", "summary":"fixture", "selected_direction":"", "findings":[],
-                       "axes":{a:{"status":"PASS","evidence":"desktop.png: visible fixture"} for a in axes}}
+                       "correction_kind":"NONE",
+                       "axes":{a:{"status":"PASS","evidence":"desktop.png versus mobile.png: visible fixture"} for a in axes}}
             response = {"status":"completed", "id":"test-thread", "output":[{"content":[{"type":"output_text", "text":json.dumps(verdict)}]}]}
             with patch("validation_landing_blueprint.complete_landing_flow", return_value=False), \
+                 patch("harness_review.benchmark_images", return_value=[images[1]]), \
                  patch("project_validation.scene_visual_errors", return_value=[]), \
                  patch("validation_spatial_experience.spatial_selection_errors", return_value=[]), \
                  patch.dict(os.environ, {"AGENTIC_AI_BACKEND":"session"}), \

@@ -57,6 +57,14 @@ El mínimo operativo son tres webs originales: realidad directa o adyacente, fro
 
 La devolución al usuario es una selección corta, normalmente de dos o tres territorios contrastados, para que pueda reaccionar con `me atrae | no me atrae | exploraría`. No se le exige conocer terminología de diseño.
 
+La fecha de una captura no demuestra excelencia. Inspecciona la web original completa: hero, al menos una escena de cuerpo y su transición, y móvil cuando esté disponible. Si se adopta un comportamiento, obsérvalo funcionando. Una portada de galería o un screenshot antiguo puede orientar la búsqueda, pero no sustenta una decisión sobre ritmo o interacción. Si el acceso falla, sustituye la referencia o declara exactamente lo que no se pudo observar; no la presentes como inspeccionada.
+
+Dentro de las observaciones existentes, vincula cada principio seleccionado con una decisión concreta y su escena de destino: qué relación visual aporta, qué se conserva y qué no se copia. No añadas un registro separado. Una referencia directa mediocre sirve para comprender la categoría, no para fijar el techo de calidad. La referencia SIMPLE solo cuenta como excelente cuando muestra oficio visible en composición, tipografía y media; tener pocos elementos no basta.
+
+## Equivalencia antes de inspiración
+
+Prioriza referencias que resuelven un problema comparable de audiencia, acción, confianza y contenido/media disponibles; no solo el mismo sector o las más premiadas. En `Fit and limitation` de la tabla existente identifica esa equivalencia y la diferencia que no se transfiere. DIRECT/ADJACENT calibran el trabajo real; FRONTIER/SIMPLE, el oficio transferible. Un portfolio excepcional puede aportar encuadre o tipografía, pero sus obras no son una exigencia para una landing sin casos. Si las referencias no sostienen ambas comparaciones, sustitúyelas dentro del presupuesto de investigación; no explores indefinidamente ni rebajes el umbral.
+
 ## Traducción de lenguaje ambiguo
 
 Palabras como “moderno”, “premium”, “limpio” o “impactante” son señales, no una dirección. El sistema propone interpretaciones contrastadas en lenguaje perceptivo —por ejemplo sobrio/expresivo, cálido/preciso, editorial/tecnológico o calmado/energético— y valida la diferencia con referencias visibles.

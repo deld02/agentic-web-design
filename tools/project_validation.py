@@ -554,8 +554,8 @@ def structural_build_errors(project_dir: Path) -> list[str]:
         configured = load_json(config_path).get("implementation_root") if config_path.is_file() else ""
         if implementation_root != configured:
             errors.append("technology-selection structural IMPLEMENTATION_ROOT does not match project.config.json")
-        root = Path(implementation_root)
-        root = root.resolve() if root.is_absolute() else (ROOT / root).resolve()
+        from validation_project_paths import implementation_root_for
+        root = implementation_root_for(project_dir, ROOT, implementation_root)
         if not root.is_dir():
             errors.append("technology-selection structural implementation root does not exist")
         elif not any(

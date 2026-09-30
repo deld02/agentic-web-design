@@ -46,6 +46,7 @@ class DesignContractRepairs(unittest.TestCase):
 
     def test_preflight_failure_does_not_spend_provider_attempt(self):
         with patch.dict(os.environ, {'AGENTIC_AI_BACKEND': 'session'}), \
+             patch('harness_review.benchmark_images', return_value=[]), \
              patch('harness_review._snapshot', return_value={}), \
              patch('project_validation.scene_visual_errors', return_value=['missing composition']), \
              patch('validation_spatial_experience.spatial_selection_errors', return_value=[]), \

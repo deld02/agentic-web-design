@@ -40,11 +40,11 @@ STAGE_INPUTS: dict[str, list[str]] = {
     "direction-review": ["brief.md", "research-strategy.md", "content-architecture.md", "creative-direction.md"],
     "creative-master": ["creative-direction.md", "content-architecture.md", "research-strategy.md"],
     "visual-experience": ["creative-direction.md", "content-architecture.md", "research-strategy.md"],
-    "design-review": ["creative-direction.md", "content-architecture.md", "visual-system.md"],
+    "design-review": ["research-strategy.md", "creative-direction.md", "content-architecture.md", "visual-system.md"],
     "technology-selection": ["project.config.json", "visual-system.md"],
     "production-plan": ["creative-direction.md", "content-architecture.md", "visual-system.md", "technology-decision.md"],
     "implementation": ["content-architecture.md", "visual-system.md", "technology-decision.md", "production-plan.md"],
-    "build-review": ["content-architecture.md", "visual-system.md", "technology-decision.md", "production-plan.md", "qa-release.md"],
+    "build-review": ["research-strategy.md", "content-architecture.md", "visual-system.md", "technology-decision.md", "production-plan.md", "qa-release.md"],
     "release": ["project.config.json", "decision-log.md", "qa-release.md"],
 }
 

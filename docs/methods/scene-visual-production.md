@@ -20,15 +20,27 @@ After G1 research and before prompting, 03 writes the compact project-specific q
 
 03 then invokes `CHATGPT_GENERATE` from only that route and saves exactly one physical `AM-*`, with `SOURCE_DIRECTION` matching the reviewed selection. It defines the desired world—atmosphere, materiality, light, palette, depth, geometry and compositional tension—before any landing layout exists. It may imagine a defining scene or hero atmosphere, but must not be a webpage screenshot, UI mockup, wireframe, stock-photo layout or asset presented as documentary truth. A prompt, HTML/SVG/CSS output or generated text alone is invalid.
 
-Show the image once and ask for `APPROVED | ADJUST | DELEGATED`. One concrete adjustment may edit/regenerate the same thesis; it does not reopen divergence. Extract `INVARIANTS | FLEX | CONTEXTUAL`, a relational grammar and one signature mechanism. G2 does not call the result premium merely because the fields exist and does not design the landing.
+Extract `INVARIANTS | FLEX | CONTEXTUAL`, a relational grammar and one signature mechanism. In the current complete-landing flow the master is internal: user approval happens once on the complete G3 proposal. Only legacy runs ask `APPROVED | ADJUST | DELEGATED` here, according to their stage packet. G2 does not call the result premium merely because the fields exist and does not design the landing.
 
 ## 3. G3 scene opportunity
+
+### Relationship before asset
+
+Before generating a direction study or final scene asset, resolve its visual relationship in the existing direction concept/composition/media cells or scene rows: what the visitor should perceive; what text and proof establish it; what the image contributes that text cannot; framing, scale, reading space and intended change of attention. Specify the image from that relationship, not as a standalone attractive object to decorate later. A board tests the relationship jointly with real typeset content. Literal sector symbolism is optional; generic semantic equations (green means sustainable, glass means clarity) are not evidence that the composition works. Compare the visible whole against a credible simpler treatment. If the relationship fails, a concept correction replaces it; local polish does not disguise it. Preserve valid content, identity constraints and stage boundaries.
+
+### Bounded section design loop
+
+04 executes one section at a time in architecture order within visual-experience, not as new pipeline stages. Resolve its narrative job and selected reference principles, then jointly choose composition/spacing, typography, color, image/background intent, interaction, entry/exit transition and mobile recomposition in the existing blueprint tables. Render desktop/mobile, inspect the observable gain against the references, and record an owner diagnosis in `### Section design loop`. PASS opens the next section; REVISE permits one directed correction with retained before/after evidence. A second rejection stops for escalation, not automatic retries. This is owner inspection; 07 still reviews independently after the complete page exists.
+
+After the sections, inspect the complete scroll for continuity, repetition and rhythm. Reopen only affected sections with a new bounded cycle, preserving earlier history, then refresh page evidence and obtain a fresh independent review and user checkpoint if their inputs changed. Final image production stays in the external G4 loop; G3 defines what each visual must represent and how it will fit. The harness checks ordered coverage, bounded attempts and physical evidence, not whether a self-reported PASS is beautiful.
 
 Start from every scene declared in content architecture. Before choosing shared foundations, give each one a compact Scene Strategy: compare a credible direct baseline with the most valuable high-end opportunity derived from the confirmed `AM-*`. Ask what could justify a €10K bespoke treatment in this section because it would create a specific, memorable and difficult-to-replicate gain—not merely technical expense.
 
 For each scene separate `HIGH_VALUE`, a simpler implementation that preserves it (`SIMPLIFY`) and complexity that only raises cost (`EXPENSIVE_NOISE`). Select the simplest faithful form. `UTILITY` scenes receive the same challenge briefly and may correctly keep the baseline; they do not need produced alternatives unless the opportunity survives the value test.
 
 Only after those selections, extract the recurring typography, color, grid, spacing and component rules. Then review the complete page for peaks, rests, repetition and hero-to-body continuity. This preserves one pipeline: scene decisions create the system; the system does not predetermine every scene.
+
+Use the selected live-reference principles as working comparisons while composing, not as retrospective justifications. In the existing Scene visual opportunities rows, identify the observable gain preserved by the selected form. A simpler implementation is valid only when its render preserves that gain; asset presence, a huge headline or a basic state selector alone do not prove it. Apply the visual selection criterion in `docs/standards/landing-quality.md` before handing the complete proposal to review. Do not create extra stages, documents or obligatory effects.
 
 Review each visually distinct scene, not every repeated component. Ask:
 

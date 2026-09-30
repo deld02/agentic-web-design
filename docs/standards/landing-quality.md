@@ -13,6 +13,18 @@ Este baseline cubre exclusivamente la creación de una landing. Se aplica con pr
 7. **Functional delivery** — navegación, CTA, enlaces y formularios incluidos en el alcance funcionan.
 8. **Accessibility and performance** — se comprueban proporcionalmente semántica, contraste, foco, media, carga y estabilidad visual.
 
+## Criterio de selección visual
+
+La conformidad técnica y documental es necesaria, pero no constituye aprobación estética. En direction-review y design-review, 07 debe poder elegir **ninguna** de las propuestas: ser la mejor de tres soluciones débiles no convierte a una en buena.
+
+Juzga sobre imágenes visibles, junto a las referencias originales inspeccionadas, no sobre la persuasión del texto del owner. En el finding existente señala la escena y la relación observable que sostiene el veredicto: composición y tensión, oficio tipográfico, autoridad de la media, ritmo/continuidad y adecuación al público. No exige copiar una referencia ni superarla en todos los ejes, pero sí demostrar el nivel elegido en los rasgos relevantes para este proyecto. Si falta evidencia de comparación, pide evidencia; si la evidencia muestra una solución débil, devuelve REVISE al owner.
+
+Una foto oscura con titular enorme, un color acento, bloques alternos o un selector básico no prueban autoría por sí solos. Pregunta si al sustituir nombre y texto el resultado seguiría funcionando igual para otros proyectos. Cuando esa intercambiabilidad domina las escenas principales, clasifica el fallo correspondiente y no apruebes por orden, honestidad, contraste o archivos completos.
+
+La simplicidad gana solo si conserva la ganancia perceptiva definida y la demuestra en el render. No es obligatorio añadir 3D, animaciones, imágenes adicionales ni varias fuentes: tampoco se permite rebajar la intención a la opción más fácil de programar. Los descansos y escenas utilitarias pueden ser sencillos; el conjunto debe conservar una presencia específica y un recorrido diseñado. Si el prototipo no demuestra un efecto todavía, juzga únicamente lo observado, no su promesa.
+
+Estas decisiones son juicio visual independiente, no una puntuación automática de belleza. Los scripts verifican evidencia y procedencia; nunca certifican por sí solos que la landing sea premium.
+
 ## Evidence status
 
 Cada área termina en `COMPLETE | NOT_APPLICABLE | ACCEPTED_RISK`. Las dos últimas requieren razón y owner. `PENDING | MISSING | UNTESTED | UNKNOWN` bloquean release.

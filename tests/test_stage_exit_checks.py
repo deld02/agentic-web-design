@@ -10,9 +10,35 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import project_validation as validation
+from validation_stage_readiness import stage_readiness_errors
+import json
 
 
 class DirectionExitTests(unittest.TestCase):
+    def test_structural_relative_root_is_resolved_inside_managed_project(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project = Path(temporary)
+            (project / 'implementation').mkdir()
+            (project / 'implementation/index.html').write_text('<h1>Test</h1>', encoding='utf-8')
+            (project / 'project.config.json').write_text(json.dumps({'implementation_root':'implementation'}), encoding='utf-8')
+            (project / 'technology-decision.md').write_text('## Structural build handoff\nSTRUCTURAL_BUILD_STATUS: READY\nIMPLEMENTATION_ROOT: implementation\nSTRUCTURAL_RENDER_DESKTOP: desktop.png\nSTRUCTURAL_RENDER_MOBILE: mobile.png\n', encoding='utf-8')
+            with patch.object(validation, '_physical_composition_error', return_value=None):
+                self.assertEqual(validation.structural_build_errors(project), [])
+
+    def test_technology_exit_checks_structure_before_production(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            run = Path(temporary)
+            (run / 'project').mkdir()
+            (run / 'project/status.json').write_text(json.dumps({'checkpoints':{'technology-selection':{'status':'APPROVED'}}}), encoding='utf-8')
+            with patch('validation_stage_readiness.audit_state', return_value=[]), \
+                 patch('validation_stage_readiness.stage_activation_errors', return_value=[]), \
+                 patch('validation_stage_readiness.spatial_technology_errors', return_value=[]), \
+                 patch('validation_stage_readiness.technology_execution_errors', return_value=[]), \
+                 patch('validation_stage_readiness.structural_build_errors', return_value=['missing structural evidence']) as check:
+                errors = stage_readiness_errors(run, {'id':'technology-selection'}, ROOT)
+                self.assertIn('missing structural evidence', errors)
+                check.assert_called_once_with(run / 'project')
+
     def test_divergence_requires_boards_without_premature_reviewer_selection(self):
         with tempfile.TemporaryDirectory() as temporary:
             project = Path(temporary)

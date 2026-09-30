@@ -103,9 +103,10 @@ class RuntimeTests(unittest.TestCase):
         begin = text.index(heading)
         end = text.index("### Identity constraint fit", begin)
         direction.write_text(text[:begin]+heading+rows+"\n\n"+text[end:], encoding="utf-8")
-        axes = ["composition","typography","color","media_integration","project_fit"]
+        axes = ["composition","typography","color","media_integration","project_fit","reference_calibration","artistic_authority"]
         result = {"verdict":"PASS","summary":"Simulated reviewer, not an aesthetic claim", "selected_direction":"DIR-001", "findings":[],
-                  "axes":{axis:{"status":"PASS","evidence":images[0]+": fixture observation"} for axis in axes}}
+                  "correction_kind":"NONE",
+                  "axes":{axis:{"status":"PASS","evidence":images[0]+" versus "+images[1]+": fixture observation"} for axis in axes}}
         response = {"id":"simulated-response", "status":"completed", "output":[{"content":[{"type":"output_text","text":json.dumps(result)}]}]}
         class Response:
             def __enter__(self): return self
@@ -113,6 +114,7 @@ class RuntimeTests(unittest.TestCase):
             def read(self): return json.dumps(response).encode()
         stage = next(s for s in mcp.load_json(ROOT / "config/pipeline.json")["stages"] if s["id"] == "direction-review")
         with patch.dict(os.environ, {"OPENAI_API_KEY":"test-only", "AGENTIC_REVIEW_MODEL":"test-only"}), \
+             patch("harness_review.benchmark_images", return_value=[images[1]]), \
              patch("urllib.request.urlopen", return_value=Response()) as call:
             run_visual_review(ROOT, self.project, stage, images)
         payload = json.loads(call.call_args.args[0].data)

@@ -39,13 +39,15 @@ Checkpoint con contexto aislado, veredicto, evidencia y findings priorizados.
 
 ## GATE / CRITERIO
 
-No aprueba con fallos bloqueantes ni evidencia ausente. La belleza no la valida Python: la juzga 07 sobre renders.
+No aprueba con fallos bloqueantes ni evidencia ausente. Aplica el criterio de selección visual de `docs/standards/landing-quality.md`: puede rechazar las tres rutas y no confunde la opción menos mala con excelencia. La belleza no la valida Python: la juzga 07 sobre renders.
 
 ## ESCALADO
 
 Finding al owner; conflicto de objetivo, riesgo o preferencia irreducible a 00.
 
 ## REGLAS ESPECÍFICAS
+
+Antes de juzgar candidatos, calibra el criterio sobre las capturas FRONTIER, SIMPLE y SATURATED adjuntas por el harness. Aplica la comparación observable de `review-isolation.md`; no transforma los roles de referencia ni sus etiquetas en prueba de excelencia. Si las referencias no muestran oficio suficiente, señala la carencia en vez de bajar el umbral. Rechazar todas las rutas es válido. Esta calibración por proyecto no equivale a haber validado empíricamente el gusto del crítico.
 
 El reviewer diagnostica. El owner corrige.
 

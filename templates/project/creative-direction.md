@@ -15,6 +15,8 @@ LANDING_MUST_PRESERVE:
 
 Create exactly three physically visible territories before the master. They must answer the same project and content, but differ in at least four dimensions. They are art-direction boards, not three color swaps or three nearly identical UI mockups.
 
+Before producing each study, resolve the joint content/media relationship in the existing concept, composition and media cells: intended perception, contribution beyond text, framing/reading space and attention change. Produce media for that relationship; do not choose an attractive asset and attach a headline afterward. Test the composition as a whole, not whether its image literally depicts the category.
+
 | Direction ID | Concept / perception | Typography | Composition | Media / materiality | Depth / motion | Human presence / metaphor | Physical board relative to project |
 |---|---|---|---|---|---|---|---|
 

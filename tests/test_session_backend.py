@@ -76,13 +76,15 @@ class SessionBackendTests(unittest.TestCase):
         images = ["evidence/desktop.png","evidence/mobile.png"]
         for name in images:
             self.picture(project,name)
-        axes = ["composition","typography","color","media_integration","project_fit"]
+        axes = ["composition","typography","color","media_integration","project_fit","reference_calibration","artistic_authority"]
         verdict = {"verdict":"PASS","summary":"test only","selected_direction":"","findings":[],
-                   "axes":{axis:{"status":"PASS","evidence":images[0]+": visible fixture"} for axis in axes}}
+                   "correction_kind":"NONE",
+                   "axes":{axis:{"status":"PASS","evidence":images[0]+" versus "+images[1]+": visible fixture"} for axis in axes}}
         response = {"status":"completed","id":"codex-thread-test",
                     "output":[{"content":[{"type":"output_text","text":json.dumps(verdict)}]}]}
         stage = next(s for s in mcp.load_json(mcp.ROOT / "config/pipeline.json")["stages"] if s["id"]=="design-review")
         with patch("validation_landing_blueprint.complete_landing_flow", return_value=False), \
+             patch("harness_review.benchmark_images", return_value=[images[1]]), \
              patch("project_validation.scene_visual_errors", return_value=[]), \
              patch("validation_spatial_experience.spatial_selection_errors", return_value=[]), \
              patch("harness_review.subscription_review",return_value=response) as native, \

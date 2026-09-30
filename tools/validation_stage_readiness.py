@@ -4,13 +4,14 @@
 from pathlib import Path
 
 from audit_state import audit as audit_state
-from project_validation import image_handoff_errors, direction_divergence_errors, project_quality_bar_errors
+from project_validation import image_handoff_errors, direction_divergence_errors, project_quality_bar_errors, structural_build_errors
 from validate_gate import validate_gate, research_readiness_errors
 from validation_capability_activation import stage_activation_errors
 from validation_common import load_json
 from validation_image_generation import generated_asset_file_errors
 from validation_spatial_experience import spatial_plan_errors, spatial_technology_errors
 from harness_frontend_build import technology_execution_errors
+from validation_landing_blueprint import scene_design_loop_errors
 
 
 def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
@@ -19,6 +20,8 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
     stage_id = stage["id"]
     errors = list(audit_state(project_dir))
     errors.extend(stage_activation_errors(project_dir, root, stage_id))
+    if stage_id == "visual-experience":
+        errors.extend(scene_design_loop_errors(project_dir))
     if stage_id == "research-strategy":
         errors.extend(research_readiness_errors(project_dir))
     if stage_id == "direction-divergence":
@@ -45,6 +48,7 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
         else:
             errors.extend(validate_gate(project_dir, review_gate))
     if stage_id == "technology-selection":
+        errors.extend(structural_build_errors(project_dir))
         errors.extend(spatial_technology_errors(project_dir))
     if stage_id in {"technology-selection", "implementation", "build-review", "release"}:
         errors.extend(technology_execution_errors(project_dir))

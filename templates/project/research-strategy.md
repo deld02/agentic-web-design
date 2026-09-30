@@ -55,6 +55,10 @@ At least three distinct original websites. Cover DIRECT or ADJACENT, FRONTIER an
 
 `SATURATED` records a current, overused category or AI-design code to avoid; it is evidence, not inspiration.
 
+In `Fit and limitation`, record equivalence in audience/action/trust/available proof or media and the material difference not transferable. Category similarity or reputation alone is not fit. A DIRECT/ADJACENT reference must address the actual communication job; exceptional craft may come from another context without importing its business model or unavailable evidence.
+
+FRONTIER and SIMPLE must demonstrate observable craft, not merely category fit or minimalism. Record the visible relationships to transfer and their destination scenes in the existing observations. The independent reviewer receives these physical captures plus SATURATED as a counterexample; weak benchmark choices cannot justify a premium verdict. Capture the relevant body/transition as well as the hero when the intended principle depends on the page journey.
+
 ## Design memory comparison
 
 Compare against prior completed projects when they exist. Similarity is a prompt for deliberate departure, not a mathematical score.

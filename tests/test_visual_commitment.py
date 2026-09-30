@@ -72,7 +72,7 @@ class VisualCommitmentTests(unittest.TestCase):
             )
             (project / "production-plan.md").write_text(plan, encoding="utf-8")
             errors = motion_payload_errors(project)
-            self.assertTrue(any("non-static" in error for error in errors))
+            self.assertTrue(any("independent motion_value" in error for error in errors))
         finally:
             td.cleanup()
 

@@ -13,7 +13,7 @@ LANDING_MUST_PRESERVE:
 
 ## Direction divergence
 
-Create exactly three physically visible territories before the master. They must answer the same project and content, but differ in at least four dimensions. They are art-direction boards, not three color swaps or three nearly identical UI mockups.
+Create two to four physically visible territories according to uncertainty. They answer the same project/content and differ in at least four dimensions. Do not invent an extra route to meet a quota; these are boards, not color swaps.
 
 Before producing each study, resolve the joint content/media relationship in the existing concept, composition and media cells: intended perception, contribution beyond text, framing/reading space and attention change. Produce media for that relationship; do not choose an attractive asset and attach a headline afterward. Test the composition as a whole, not whether its image literally depicts the category.
 
@@ -22,14 +22,14 @@ Before producing each study, resolve the joint content/media relationship in the
 
 ### Identity constraint fit
 
-Evaluate all three territories against the `IDN-*` contract from G1. `OPEN_TO_REPLACE` permits departure but still requires an explicit response. A territory that contradicts `BINDING` or exceeds `EVOLVE_WITHIN_LIMITS` is invalid, however original it appears.
+Evaluate every territory against IDN-* authority. OPEN_TO_REPLACE still needs an explicit response; BINDING contradictions or changes outside permitted evolution invalidate the route.
 
 | Direction ID | Identity IDs addressed | Preserve / evolve / replace response | Observable evidence and risk | Verdict (`PASS | FAIL`) |
 |---|---|---|---|---|
 
 ## Direction selection handoff
 
-07 reviews the three boards in isolated context before 03 creates the master. The rejected directions must remain visibly different alternatives.
+07 reviews all declared boards in isolated context before master generation. Rejected routes remain visibly different alternatives.
 
 SELECTED_DIRECTION: DIR-___
 DIRECTION_REVIEW_CHECKPOINT: direction-review
@@ -62,7 +62,7 @@ USER_SIGNAL:
 
 ## Creative master handoff
 
-The selected physical composition becomes the binding creative reference for G3 and G4. Record its transferable logic, not a request to rasterize it.
+The AM records exploratory visual evidence. Its genome is a translation hypothesis, not a binding web system. G3 tests opening, explanation/proof and action/closure before extracting principles. The approved webpage CMPs, content and identity govern G4; no rasterized master ships.
 
 CREATIVE_MASTER: AM-___
 SOURCE_DIRECTION: DIR-___

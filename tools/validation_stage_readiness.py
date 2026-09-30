@@ -22,6 +22,13 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
     errors.extend(stage_activation_errors(project_dir, root, stage_id))
     if stage_id == "visual-experience":
         errors.extend(scene_design_loop_errors(project_dir))
+        from validation_release_integrity import semantic_resolution_errors
+        from harness_review import representative_images
+        errors.extend(semantic_resolution_errors(project_dir))
+        try:
+            representative_images(project_dir)
+        except ValueError as exc:
+            errors.append(str(exc))
     if stage_id == "research-strategy":
         errors.extend(research_readiness_errors(project_dir))
     if stage_id == "direction-divergence":

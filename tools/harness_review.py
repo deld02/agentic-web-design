@@ -34,6 +34,10 @@ REVIEW_INSTRUCTIONS = (
     "execution defects; CONCEPT when its relationship fails and repositioning will not repair it; REFERENCE when "
     "benchmark fit/evidence is insufficient; NONE only for PASS. Explain cause and required observable gain in findings; "
     "do not prescribe a replacement design. "
+    "The AM is exploratory direction evidence, not binding web foundations; the reviewed CMP page is the build authority. "
+    "When content_semantics is requested, compare editorial resolutions with locked meaning and factual restrictions. "
+    "When motion_value is requested, judge the STATIC policy on representative compositions and effect countertests; "
+    "approve stillness when movement adds no useful gain, never from an owner's label alone. "
     "The reference_calibration axis must distinguish the relevant excellence and generic risk using attached "
     "reference filenames, or REVISE when the benchmarks do not establish a credible bar. The artistic_authority "
     "axis must compare a candidate filename to a reference filename and explain specific visible strengths or gaps. "
@@ -71,18 +75,54 @@ def design_preflight_errors(project: Path) -> list[str]:
     from project_validation import scene_visual_errors
     from validation_spatial_experience import spatial_selection_errors
     from validation_landing_blueprint import blueprint_errors
-    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project)
+    from validation_release_integrity import semantic_resolution_errors
+    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project) + semantic_resolution_errors(project)
 
 
 def review_axes(root: Path, project: Path, stage_id: str) -> list[str]:
+    content_path = project / 'content-architecture.md'
+    semantic = content_path.is_file() and any(len(r) > 5 and r[5] == 'SEMANTIC' for r in table_rows(content_path.read_text(encoding='utf-8'), '## Content lock', 'Content ID'))
+    visual_path = project / 'visual-system.md'
+    static = visual_path.is_file() and bool(re.search(r'(?m)^MOTION_POLICY:\s*STATIC\s*$', visual_path.read_text(encoding='utf-8')))
     if stage_id == "build-review":
-        return list(dict.fromkeys(load_json(root / "harness/scenarios.json")["visual_review_axes"] + ["reference_calibration", "artistic_authority"]))
+        return list(dict.fromkeys(load_json(root / "harness/scenarios.json")["visual_review_axes"] + ["reference_calibration", "artistic_authority"] + (['content_semantics'] if semantic else []) + (['motion_value'] if static else [])))
     axes = ["composition", "typography", "color", "media_integration", "project_fit", "reference_calibration", "artistic_authority"]
     if stage_id == "design-review":
+        if semantic:
+            axes.append('content_semantics')
+        if static:
+            axes.append('motion_value')
         from validation_spatial_experience import selected_spatial_mode
         if selected_spatial_mode(project) in {"LAYERED_2D", "RENDERED_3D", "INTERACTIVE_3D"}:
             axes.append("spatial_modality")
     return axes
+
+
+def representative_images(project: Path) -> list[str]:
+    """Reuse existing scene evidence to test translation; no extra register."""
+    from validation_landing_blueprint import complete_landing_flow
+    if not complete_landing_flow(project):
+        return []
+    content = (project / 'content-architecture.md').read_text(encoding='utf-8')
+    scenes = [r[0] for r in table_rows(content, '## Sitemap / page or section outline', 'Scene ID') if r and re.fullmatch(r'SCN-\d{3,}', r[0])]
+    if not scenes:
+        raise ValueError('Representative compositions require an architecture outline')
+    spine = table_rows(content, '## Experience spine', 'Scene ID')
+    middle = next((r[0] for r in spine if len(r) >= 8 and r[7] in {'DEMONSTRATION','PROOF'} and r[0] in scenes[1:-1]), scenes[1] if len(scenes) > 2 else scenes[0])
+    selected = list(dict.fromkeys([scenes[0], middle, scenes[-1]]))
+    rows = table_rows((project / 'visual-system.md').read_text(encoding='utf-8'), '### Scene visual opportunities', 'Scene')
+    images = []
+    for scene in selected:
+        row = next((r for r in rows if len(r) >= 8 and r[0] == scene), None)
+        if row is None:
+            raise ValueError(f'Representative web composition missing: {scene}')
+        for cell in row[4:6]:
+            match = re.fullmatch(r'CMP-\d{3,}:(.+)', cell.strip().strip('`'))
+            if not match:
+                raise ValueError(f'Representative desktop/mobile evidence missing: {scene}')
+            if match[1] not in images:
+                images.append(match[1])
+    return images
 
 
 def _snapshot(project: Path, stage_id: str, images: list[str]) -> dict:
@@ -110,6 +150,9 @@ def review_record_errors(project: Path, stage_id: str) -> list[str]:
             return ["independent review is stale; inputs changed"]
         if not {'reference_calibration', 'artistic_authority'}.issubset(record.get('result', {}).get('axes', {})):
             return ['independent review is stale; artistic benchmark review required']
+        required_axes = review_axes(Path(__file__).resolve().parents[1], project, stage_id)
+        if not set(required_axes).issubset(record.get('result', {}).get('axes', {})):
+            return ['independent review is stale; content/static policy axes missing']
         correction_errors = correction_contract_errors(record.get('result', {}))
         if correction_errors:
             return correction_errors
@@ -156,13 +199,15 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str],
     images = list(images)
     references = benchmark_images(project)
     images.extend(name for name in references if name not in images)
+    if stage['id'] == 'design-review':
+        images.extend(name for name in representative_images(project) if name not in images)
     if len(images) > 16:
         raise ValueError('review exceeds 16 images including benchmarks; reduce redundant candidate views')
     if stage["id"] == "direction-review":
         rows = table_rows((project / "creative-direction.md").read_text(encoding="utf-8"), "## Direction divergence", "Direction ID")
         boards = {row[7] for row in rows if len(row) >= 8}
-        if len(boards) != 3 or not boards.issubset(images):
-            raise ValueError("review must include all three declared direction boards")
+        if not 2 <= len(boards) <= 4 or not boards.issubset(images):
+            raise ValueError("review must include all declared direction boards (two to four)")
     elif not any("desktop" in name.lower() for name in images) or not any("mobile" in name.lower() for name in images):
         raise ValueError("include physical desktop and mobile compositions/renders")
     before = _snapshot(project, stage["id"], images)

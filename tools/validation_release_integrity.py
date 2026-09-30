@@ -73,12 +73,17 @@ def content_lock_definition_errors(project_dir: Path) -> list[str]:
     seen: set[str] = set()
     roles: set[str] = set()
     if not rows:
-        return ["G1 requires a content lock with final hero thesis and primary CTA"]
+        return ["G1 requires a content lock with hero meaning and primary action"]
     for row in rows:
         if len(row) < 5 or any(cell.strip().casefold() in PLACEHOLDERS for cell in row[:5]):
             errors.append("G1 content lock contains an incomplete row")
             continue
         content_id, role, exact_text, requirement, _use = row[:5]
+        lock = row[5] if len(row) > 5 else 'VERBATIM'
+        if lock not in {'SEMANTIC', 'VERBATIM'}:
+            errors.append(f'G1 {content_id} invalid lock mode')
+        if lock == 'SEMANTIC' and (role in {'CLAIM', 'PROOF', 'LEGAL'} or requirement == 'OMIT'):
+            errors.append(f'G1 {content_id} facts, proof, legal and exclusions require VERBATIM')
         if not re.fullmatch(r"CNT-[0-9]{3,}", content_id):
             errors.append(f"G1 invalid content-lock ID: {content_id or '<empty>'}")
         if content_id in seen:
@@ -99,7 +104,7 @@ def content_lock_definition_errors(project_dir: Path) -> list[str]:
 
 
 def content_lock_build_errors(project_dir: Path, implementation_root: Path) -> list[str]:
-    errors = content_lock_definition_errors(project_dir)
+    errors = content_lock_definition_errors(project_dir) + semantic_resolution_errors(project_dir)
     if not implementation_root.is_dir():
         return errors + ["content lock cannot inspect missing implementation root"]
     text = (project_dir / "content-architecture.md").read_text(encoding="utf-8")
@@ -109,11 +114,40 @@ def content_lock_build_errors(project_dir: Path, implementation_root: Path) -> l
         if len(row) < 5:
             continue
         content_id, _role, exact_text, requirement, _use = row[:5]
+        if len(row) > 5 and row[5] == 'SEMANTIC':
+            visual_path = project_dir / 'visual-system.md'
+            resolutions = table_rows(visual_path.read_text(encoding='utf-8') if visual_path.is_file() else '', '### Editorial resolution', 'Content ID')
+            resolved = [r for r in resolutions if len(r) >= 4 and r[0] == content_id]
+            if len(resolved) != 1:
+                errors.append(f'G4 semantic lock {content_id} requires one reviewed editorial resolution')
+                continue
+            exact_text = resolved[0][1]
         present = re.sub(r"\s+", " ", exact_text).casefold() in corpus
         if requirement == "REQUIRED" and not present:
             errors.append(f"G4 content lock {content_id} is absent from implementation source")
         if requirement == "OMIT" and present:
             errors.append(f"G4 content lock {content_id} was marked OMIT but appears in implementation source")
+    return errors
+
+
+def semantic_resolution_errors(project_dir: Path) -> list[str]:
+    """Check resolution coverage; 07 judges meaning, Python cannot."""
+    content = (project_dir / 'content-architecture.md').read_text(encoding='utf-8')
+    semantic = {r[0] for r in table_rows(content, '## Content lock', 'Content ID') if len(r) > 5 and r[5] == 'SEMANTIC'}
+    if not semantic:
+        return []
+    if not (project_dir / 'visual-system.md').is_file():
+        return ['G3 semantic wording requires visual-system.md']
+    visual = (project_dir / 'visual-system.md').read_text(encoding='utf-8')
+    rows = table_rows(visual, '### Editorial resolution', 'Content ID')
+    errors, seen = [], set()
+    for row in rows:
+        if len(row) != 4 or not all(row) or row[0] not in semantic or row[0] in seen:
+            errors.append('G3 editorial resolution has invalid, duplicate or incomplete semantic mapping')
+            continue
+        seen.add(row[0])
+    if seen != semantic:
+        errors.append('G3 every semantic lock needs resolved wording, meaning justification and scene')
     return errors
 
 

@@ -153,7 +153,8 @@ def validate_delivery(project_dir, implementation_root):
         if not any(any(needle in body.replace('\\', '/') for needle in needles) for _source, body in source_text):
             errors.append(f'{image_id}: asset exists but is not referenced by implementation source: {reference}')
 
-    static_only = explicit_static_only_authorized(project_dir)
+    from validation_motion_payload import reviewed_static_direction
+    static_only = explicit_static_only_authorized(project_dir) or reviewed_static_direction(project_dir)
     effects = [row for row in effect_inventory(text) if row[9] in {'FINAL', 'STATIC_WINNER_REVIEWED'}]
     if not effects:
         errors.append('production plan has no delivered FX mechanism')

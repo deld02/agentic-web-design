@@ -432,12 +432,12 @@ def project_quality_bar_errors(project_dir: Path) -> list[str]:
 
 
 def direction_divergence_errors(project_dir: Path, require_selection: bool = True) -> list[str]:
-    """Require three physically evidenced and structurally distant territories."""
+    """Require bounded, physically evidenced and structurally distant territories."""
     text = markdown(project_dir, "creative-direction.md")
     rows = table_rows(text, "## Direction divergence", "Direction ID")
     errors: list[str] = []
-    if len(rows) != 3:
-        errors.append("G2 requires exactly three divergent direction territories")
+    if not 2 <= len(rows) <= 4:
+        errors.append("G2 requires two to four divergent direction territories")
     valid_rows: list[list[str]] = []
     seen_ids: set[str] = set()
     seen_files: set[str] = set()
@@ -781,7 +781,7 @@ def image_handoff_errors(project_dir: Path) -> list[str]:
 
 
 def creative_master_errors(project_dir: Path) -> list[str]:
-    """Validate that the confirmed G2 artistic master has binding design authority."""
+    """Validate physical direction evidence, not binding web foundations."""
     text = markdown(project_dir, "creative-direction.md")
     rows = table_rows(text, "## Artistic master", "Evidence ID")
     errors: list[str] = []

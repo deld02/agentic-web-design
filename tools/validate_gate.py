@@ -140,6 +140,13 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(creative_master_errors(project_dir))
 
     elif gate_id == "G3":
+        from validation_release_integrity import semantic_resolution_errors
+        from harness_review import representative_images
+        errors.extend(semantic_resolution_errors(project_dir))
+        try:
+            representative_images(project_dir)
+        except ValueError as exc:
+            errors.append(str(exc))
         from validation_landing_blueprint import blueprint_errors, design_approval_errors
         errors.extend(blueprint_errors(project_dir))
         errors.extend(design_approval_errors(project_dir))

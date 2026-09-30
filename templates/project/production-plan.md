@@ -70,7 +70,7 @@ Use `PRIMARY:EXTERNAL_IMAGE_LOOP` or `SUPPORTING:EXTERNAL_IMAGE_LOOP` for new ge
 
 Use stable `FX-*` IDs for material mechanisms; they remain in this artifact unless globally consequential.
 
-For `FINAL`, implementation proof is `source/file#marker`: both must exist in `implementation_root`. `STATIC_WINNER_REVIEWED` may resolve one scene, but cannot waive motion for the whole landing. A globally static landing requires an exact authorized `USER_EXPLICIT_STATIC_ONLY` quote.
+For FINAL, implementation proof is source/file#marker and must exist. STATIC_WINNER_REVIEWED records physical comparison evidence. Global stillness requires reviewed STATIC policy in visual-system.md or immutable explicit user authority, never a bare owner assertion.
 
 | Effect ID / scene | Opportunity level | Static candidate | Simple candidate | Expressive candidate | Source anchors / transfer | Evaluation / winner | Prototype evidence | Fallback / owner | Status (`FINAL | STATIC_WINNER_REVIEWED`) | Implementation proof | Delivered medium (`FLAT_2D | LAYERED_2D | RENDERED_3D | INTERACTIVE_3D`) |
 |---|---|---|---|---|---|---|---|---|---|---|---|

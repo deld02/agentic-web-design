@@ -44,7 +44,7 @@ class DirectionExitTests(unittest.TestCase):
             project = Path(temporary)
             (project / "creative-direction.md").write_text("# Direction\n", encoding="utf-8")
             owner_errors = validation.direction_divergence_errors(project, require_selection=False)
-            self.assertTrue(any("three divergent" in error for error in owner_errors))
+            self.assertTrue(any("two to four divergent" in error for error in owner_errors))
             self.assertFalse(any("selection" in error or "selected direction" in error for error in owner_errors))
             gate_errors = validation.direction_divergence_errors(project)
             self.assertTrue(any("selected direction" in error for error in gate_errors))

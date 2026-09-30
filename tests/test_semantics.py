@@ -915,15 +915,15 @@ class SemanticValidationTests(unittest.TestCase):
             self.assertNotEqual(result.returncode,0); self.assertIn('saturated-code reference',result.stdout)
         finally: td.cleanup()
 
-    def test_g2_requires_three_direction_boards(self):
+    def test_g2_requires_at_least_two_direction_boards(self):
         td,repo=self.clone()
         try:
             self.complete_owner_evidence(repo)
             path=repo/'projects/test-project/creative-direction.md'
-            lines=[line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith('| DIR-003 |')]
+            lines=[line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith(('| DIR-003 |','| DIR-002 |'))]
             path.write_text('\n'.join(lines)+'\n',encoding='utf-8')
             result=run(repo,'tools/validate_gate.py','G2','--project-dir','projects/test-project')
-            self.assertNotEqual(result.returncode,0); self.assertIn('exactly three divergent direction territories',result.stdout)
+            self.assertNotEqual(result.returncode,0); self.assertIn('two to four divergent direction territories',result.stdout)
         finally: td.cleanup()
 
     def test_g2_requires_approved_isolated_direction_review(self):

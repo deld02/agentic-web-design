@@ -16,7 +16,7 @@ A `CMP-*` may contain approximate interface/text for evaluation. It must never b
 
 After G1 research and before prompting, 03 writes the compact project-specific quality bar in `creative-direction.md`: what premium means here, which category baseline must be exceeded, what requires authorship, what would make the result generic, what the master must prove and what the final landing must preserve. These answers come from the compiled project context and five-lens current references; generic adjectives do not close the bar.
 
-03 then creates exactly three physical `DIR-*` boards for the same project. Each board includes a legible typographic specimen using the same short project headline and supporting text, alongside its visual world; a full webpage is not required. Typeset the specimen with real fonts rather than relying on generated lettering. They must differ in at least four art-direction dimensions; color-only variants do not count. 07 reviews them in isolated context against fit, saturated codes, conceptual distance and interchangeability, and selects one or returns `REVISE`. The selected `DIR-*` is recorded before master generation. This specimen requirement belongs to the direction boards, not to the artistic `AM-*`, which may be textless.
+03 creates two to four physical DIR-* territories, choosing count from real uncertainty. Use the same content specimen, real typeset fonts and four distinct art-direction dimensions. 07 selects or rejects independently. Do not manufacture another route to fill a quota.
 
 03 then invokes `CHATGPT_GENERATE` from only that route and saves exactly one physical `AM-*`, with `SOURCE_DIRECTION` matching the reviewed selection. It defines the desired world—atmosphere, materiality, light, palette, depth, geometry and compositional tension—before any landing layout exists. It may imagine a defining scene or hero atmosphere, but must not be a webpage screenshot, UI mockup, wireframe, stock-photo layout or asset presented as documentary truth. A prompt, HTML/SVG/CSS output or generated text alone is invalid.
 
@@ -54,7 +54,7 @@ A native graphic is not automatically the simple winner. When it occupies the vi
 
 Compare only viable delivery modes: `CSS_NATIVE | EXISTING_MEDIA | EXTERNAL_IMAGE_LOOP | CUSTOM_ILLUSTRATION | VIDEO_RENDER | 3D | HYBRID`. G3 records intent and decomposition; G4 turns real render gaps into production briefs and invokes the selected production route.
 
-For `focused`, G3 resolves the hero in desktop/mobile and adds a body comp only when that scene has a materially different visual job. For `standard` and `extended`, G3 also resolves one materially different body scene in desktop/mobile. Utility scenes still record the value decision but may inherit established rules and need no separate composition evidence when the baseline wins.
+Complete-landing runs test opening, explanation/proof and action/closure in desktop/mobile before foundations; reuse scene evidence, no new stage. Short pages test available situations. Legacy focused runs retain hero/body scope from their packet.
 
 ## 4. Composition decomposition
 
@@ -89,11 +89,11 @@ Each resulting visual remains an ordinary `IMG-*` with its own truth class, brie
 
 ## 5. Creative master, continuity and iteration
 
-After independent G2 review, the confirmed physical `AM-*` is the `CREATIVE_MASTER`. This does not mean flattening it into the site. It means the styleframe has authority over the visual thesis and the transferable relationship between `TYPE | COLOR | COMPOSITION | MEDIA | SPACE | DEPTH | MOTION`; G3 decides how those relationships become real web scenes.
+After G2 review, the physical AM is exploratory direction evidence, never the binding web composition. It may guide atmosphere/materiality; the selected thesis and identity remain constraints. G3 validates their translation in webpage situations before consolidation.
 
-03 records invariants, flex, contextual decisions, scene relations, signature mechanism, anti-rules and decomposition risks in `creative-direction.md`. 04 gives every `SCN-*` a dominant, counterpoint, tension, signal, rest, transition and genome adaptation before extracting shared foundations. It may refine the master for real content, accessibility, responsiveness and production, but records each deliberate deviation and demonstrates how hero and body belong to the same language. External `IH-*` briefs reuse its art direction—light, material, palette, texture, perspective and image language—while adapting composition to each scene. Independent outputs with no reference continuity are not a visual system.
+03 records invariants, flex, context and grammar as translation hypotheses. 04 tests opening, explanation/proof and action/closure using real content and desktop/mobile evidence before extracting foundations. Preserve thesis and identity; reject image-derived rules that fail on the web and record this in Creative master development. Approved CMPs govern build fidelity. Asset briefs inherit the resulting reviewed media language.
 
-G3 judges `DIRECTION_FIDELITY` on the rendered experience. G4 compares the implementation against the master and the approved G3 development. A material drift returns to its owner; technical convenience is not a reason to silently replace the direction.
+G3 judges DIRECTION_FIDELITY against thesis, identity and tested relationships, not pixel obedience to AM. G4 follows approved CMPs and recorded adaptations; changes require refreshed owner evidence and review.
 
 Iterate in this order:
 

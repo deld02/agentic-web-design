@@ -41,10 +41,10 @@ Mark material as `FINAL | PROVISIONAL | MISSING`.
 
 Use unique content IDs in the format `CNT-001`, `CNT-002`, etc.
 
-Freeze the exact strings whose later drift would change the approved proposition, action or truth. `REQUIRED` must appear verbatim in implementation source; `OMIT` must not reappear. Ordinary body copy may remain outside this compact lock.
+Use SEMANTIC for editorial meaning that may be reworded with composition; use VERBATIM for names, facts, proof, legal restrictions, exclusions or explicitly fixed wording. Five-column legacy rows remain VERBATIM. SEMANTIC resolutions live once in visual-system.md and require independent review; their reviewed wording then becomes the build target. No new claim or promise is permitted by rewording.
 
-| Content ID | Role (`HERO_THESIS | PRIMARY_CTA | NAVIGATION | CLAIM | PROOF | BODY | LEGAL`) | Exact approved text | Build requirement (`REQUIRED | OPTIONAL | OMIT`) | Intended scene / use |
-|---|---|---|---|---|
+| Content ID | Role (`HERO_THESIS | PRIMARY_CTA | NAVIGATION | CLAIM | PROOF | BODY | LEGAL`) | Locked meaning or exact text | Build requirement (`REQUIRED | OPTIONAL | OMIT`) | Intended scene / use | Lock (`SEMANTIC | VERBATIM`) |
+|---|---|---|---|---|---|
 
 ## Claim ledger
 

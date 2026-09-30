@@ -34,6 +34,8 @@ Translate the selected genome into relationships, not repeated components. Every
 
 ## Foundation alternatives and decision evidence
 
+Probe opening, explanation/proof and action/closure with real content in desktop/mobile before consolidating foundations; reuse their Scene visual opportunities evidence. Then develop the complete page in outline order. Short pages test their available situations, without inventing sections. In existing decision cells identify the active question, upstream dependency and affected decisions if it changes; local optical adjustments need no register.
+
 Apply each candidate to the same representative headline, paragraph, CTA, media and light/expressive scenes before tokenizing. Keep the comparison here; log only the resulting global foundation when useful across phases.
 
 | Candidate system | Project provenance / differentiation | Typography behavior | Color / media / scene behavior | Constraints | Verdict |
@@ -41,7 +43,7 @@ Apply each candidate to the same representative headline, paragraph, CTA, media 
 
 ## Creative master development
 
-Develop the selected G2 composition rather than restarting art direction. Preserve its transferable logic across the hero and body; record every intentional change.
+Test the G2 hypotheses, not obedience to an image. Keep the selected thesis and IDN constraints, but retain only relationships that work in representative web compositions. Record rejected hypotheses and resulting principles in the existing fields. Reviewed CMPs become the implementation authority.
 
 CREATIVE_MASTER_SOURCE: AM-___
 IDENTITY_INHERITANCE: `IDN-* | NO_EXISTING_IDENTITY`
@@ -50,6 +52,13 @@ DELIBERATE_DEVIATIONS:
 HERO_BODY_TRANSLATION:
 
 ## Typography, color and graphic language
+
+### Editorial resolution
+
+Only for SEMANTIC content locks. Resolve wording with composition without adding claims or changing meaning/action; 07 reviews equivalence, then implementation reproduces the reviewed text. VERBATIM stays unchanged. Changing wording invalidates the affected compositions and approval through the existing input digest.
+
+| Content ID | Resolved wording | Preserved meaning / reason for change | Scene / use |
+|---|---|---|---|
 
 Record provenance, license/charset constraints and fallback where relevant.
 
@@ -97,7 +106,7 @@ Every scene from the G1 outline receives an explicit assignment. A `UTILITY` sce
 
 Use `docs/methods/scene-visual-production.md` for distinct scenes, not every repeated component. `CMP-*` is reference evidence. Decompose each scene into semantic HTML/CSS, an `IMG-*` reference or `NO_IMAGE`, and an `FX-*` reference or `NO_EFFECT`. These are decisions, not image/effect quotas. Identify the hero through the section outline or the `OPENING` scene in the experience spine.
 
-For `focused`, resolve the selected hero in desktop/mobile and reuse its selected G2 desktop comp; add body scenes only when their visual job is materially different. `standard` and `extended` resolve hero plus one distinct body scene. This table also records visual integration; do not duplicate it elsewhere.
+Complete-landing runs resolve every architecture scene; opening, explanation/proof and action/closure serve as early translation probes and reuse their evidence here. Legacy profiles retain the hero/body scope in their packet. G2 art boards are not webpage comps. This table records integration once.
 
 | Scene | Visual / perceptual job | Flat or CSS-native baseline verdict | Selected production mode | Desktop evidence (`CMP-ID:path`) | Mobile evidence (`CMP-ID:path`) | Decomposition (`HTML/CSS + IMG-* + FX-*`) | Decision / reason |
 |---|---|---|---|---|---|---|---|
@@ -122,6 +131,10 @@ REPETITION_CONTROL:
 HERO_TO_BODY_CONTINUITY:
 
 ## Interaction and motion intent
+
+MOTION_POLICY: `STATIC | PURPOSEFUL_MOTION`
+
+Choose STATIC only when representative render countertests show no useful gain from movement; 07 must pass motion_value. No motion quota, and no owner-authored waiver. PURPOSEFUL_MOTION requires implemented behavior and fallback. An explicit user restriction remains binding.
 
 ### Effect opportunity map
 

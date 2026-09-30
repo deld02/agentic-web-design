@@ -15,6 +15,8 @@ Este baseline cubre exclusivamente la creación de una landing. Se aplica con pr
 
 ## Criterio de selección visual
 
+The selected thesis and identity guide design, not obedience to an artistic raster. AM/genome remains exploratory until tested on opening, explanation/proof and action/closure with real content in desktop/mobile. Approved CMPs establish build fidelity. SEMANTIC text may evolve with composition under independent meaning review; facts and explicitly fixed wording stay VERBATIM. Stillness may be the reviewed direction when motion adds no useful gain; neither an image nor an effect quota proves quality.
+
 La conformidad técnica y documental es necesaria, pero no constituye aprobación estética. En direction-review y design-review, 07 debe poder elegir **ninguna** de las propuestas: ser la mejor de tres soluciones débiles no convierte a una en buena.
 
 Juzga sobre imágenes visibles, junto a las referencias originales inspeccionadas, no sobre la persuasión del texto del owner. En el finding existente señala la escena y la relación observable que sostiene el veredicto: composición y tensión, oficio tipográfico, autoridad de la media, ritmo/continuidad y adecuación al público. No exige copiar una referencia ni superarla en todos los ejes, pero sí demostrar el nivel elegido en los rasgos relevantes para este proyecto. Si falta evidencia de comparación, pide evidencia; si la evidencia muestra una solución débil, devuelve REVISE al owner.

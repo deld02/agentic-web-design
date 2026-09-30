@@ -11,6 +11,7 @@ def add_capability_rows(text, rows):
 def add_content_lock_fixture(text):
     marker = "|---|---|---|---|---|"
     pos = text.find(marker, text.find("## Content lock"))
+    marker = text[pos:text.find('\n',pos)]
     rows = (
         "\n| CNT-001 | HERO_THESIS | Invisible expertise, made concrete | REQUIRED | SCN-001 hero |"
         "\n| CNT-002 | PRIMARY_CTA | Request the diagnostic | REQUIRED | SCN-003 action |"

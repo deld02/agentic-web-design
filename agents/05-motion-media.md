@@ -52,4 +52,4 @@ Layout/dirección a 04/03, contenido a 02, runtime a 06 y riesgo a 00.
 
 ## REGLAS ESPECÍFICAS
 
-Una escena puede ser estática; la landing completa mantiene al menos un mecanismo no estático implementado salvo petición explícita e inmutable del usuario.
+STATIC o PURPOSEFUL_MOTION se heredan de la decisión revisada de G3. 05 no añade movimiento para cumplir una cuota; aplica `effect-selection.md` y verifica los comportamientos realmente seleccionados.

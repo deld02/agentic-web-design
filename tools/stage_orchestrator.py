@@ -118,9 +118,15 @@ def build_stage_packet(
 ) -> dict[str, Any]:
     contract_path = _agent_contract(root, stage["agent"])
     contract = contract_path.read_text(encoding="utf-8")
+    from validation_creative_decisions import evidence_led, PLAN_SECTIONS, plan_errors
+    planning = evidence_led(project) and stage['id'] in PLAN_SECTIONS
+    submode = 'PLAN' if planning and plan_errors(project,stage['id']) else 'COMPOSE' if planning else None
     capabilities = _capability_packet(root, stage["id"])
     guidance: list[dict[str, str]] = []
-    for path in _linked_guidance(root, stage["id"]):
+    guidance_paths = _linked_guidance(root, stage["id"])
+    if submode == 'PLAN' and stage['id']=='visual-experience':
+        guidance_paths=[root/'docs/methods/scene-visual-production.md']
+    for path in guidance_paths:
         if path in capabilities["loaded_reference_paths"]:
             continue
         guidance.append({
@@ -149,10 +155,13 @@ def build_stage_packet(
         "stage": stage["id"],
         "specialist": stage["agent"],
         "mode": stage["mode"],
+        "submode": submode,
+        "planning_instruction": ("Fill only the idea/quality bar or global rhythm, then call seal_design_plan. Do not record boards, scene detail or foundations yet. COMPOSE opens after the receipt; changes invalidate derived evidence." if submode=='PLAN' else "Preserve the sealed plan; compose and test its evidence." if submode=='COMPOSE' else None),
         "gate": stage.get("gate"),
         "depends_on": stage.get("depends_on", []),
         "writable_files": sorted(writable_files),
         "state_owner": "HARNESS_ORCHESTRATOR",
+        "proof_policy": "CREATIVE_PROOF chosen by idea; no mandatory generated image or motion" if evidence_led(project) else "LEGACY_GENERATED_MASTER",
         "user_checkpoint_policy": (
             "Complete landing flow: master is an internal art reference, no user stop at G2. Compose all scenes and full desktop/mobile page in visual-system.md. After independent design-review, show the complete proposal and call confirm_design once. Build its scenes in order inside one page; finish with global review."
             if complete_landing_flow(project)

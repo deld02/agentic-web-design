@@ -73,6 +73,10 @@ class SessionBackendTests(unittest.TestCase):
     def test_session_review_shares_validation_and_staleness(self):
         result = mcp.harness.start_chat_run(None,self.root,None,"A visitor exhibition landing")
         project = Path(result["project_dir"])
+        for path in (project / "project.config.json", project.parent / "run.json"):
+            metadata = json.loads(path.read_text())
+            metadata.pop("design_contract", None)
+            path.write_text(json.dumps(metadata))
         images = ["evidence/desktop.png","evidence/mobile.png"]
         for name in images:
             self.picture(project,name)

@@ -12,6 +12,7 @@ TRANSITION_FILES = (
     "run.json", "events.jsonl", "control/chat-snapshot.json",
     "project/status.json", "project/qa-release.md", "report.json", "report.md",
     "quality-scan.json", "execution-receipt.json",
+    "control/design-plans.json",
 )
 
 
@@ -34,7 +35,7 @@ def recover_transition(run_dir: Path):
     if not journal.exists():
         return
     data = json.loads(journal.read_text(encoding="utf-8"))
-    if set(data) != set(TRANSITION_FILES):
+    if set(data) not in (set(TRANSITION_FILES), set(TRANSITION_FILES) - {"control/design-plans.json"}):
         raise ValueError("invalid transition journal; manual recovery required")
     # Validate every target and decode every backup before touching any file.
     originals = {}

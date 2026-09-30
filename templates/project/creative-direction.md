@@ -22,7 +22,7 @@ OBSERVABLE_CONSEQUENCE:
 
 ## Direction divergence
 
-Create two to four physically visible territories according to uncertainty. They answer the same project/content and differ in at least four dimensions. Do not invent an extra route to meet a quota; these are boards, not color swaps.
+Create two to four physically visible territories according to uncertainty. They answer the same project/content through genuinely different communication hypotheses, judged visually by 07 rather than counting changed cells. Do not invent an extra route to meet a quota; these are boards, not color swaps. Seal the idea with `seal_design_plan` before recording boards in evidence-led-v2.
 
 Before producing each study, resolve the joint content/media relationship in the existing concept, composition and media cells: intended perception, contribution beyond text, framing/reading space and attention change. Produce media for that relationship; do not choose an attractive asset and attach a headline afterward. Test the composition as a whole, not whether its image literally depicts the category.
 
@@ -49,7 +49,10 @@ REJECTED_DIFFERENCE:
 
 ## Artistic master
 
-After G1, generate one high-art-direction image that defines the visual world before any webpage composition is designed. It may represent the hero or another defining scene, but it is a styleframe—not a landing screenshot, UI mockup, wireframe, stock-photo layout or shippable asset. Approximate generated text has no content authority.
+Evidence-led-v2: produce one creative proof chosen for the selected idea. A typographic, photographic, compositional, material, motion, interaction or 3D study is valid; show a physical capture, not a prompt. Motion/interaction/3D modes also link an executable study. The historical AM ID/heading remains a compatibility label, not an image requirement. Legacy contracts still require a generated artistic styleframe. Proof captures never ship as flattened page assets.
+
+PROOF_MODE: GENERATED_IMAGE | TYPOGRAPHIC_STUDY | PHOTO_TREATMENT | COMPOSITION_STUDY | MATERIAL_STUDY | MOTION_STUDY | INTERACTION_PROTOTYPE | 3D_STUDY
+PROOF_SOURCE: physical source or executable study path; generated modes use the actual registered tool result
 
 ARTISTIC_MASTER: AM-___
 SOURCE_DIRECTION: DIR-___
@@ -57,7 +60,7 @@ ARTISTIC_INTENT:
 PROJECT_GROUNDS:
 WEB_TRANSLATION_BOUNDARY:
 
-The single row must use `CHATGPT_GENERATE` and point to a physical raster file inside project evidence.
+The single row points to physical raster evidence. Its Method is `CHATGPT_GENERATE` for GENERATED_IMAGE, otherwise the selected PROOF_MODE. Raster is observation evidence, not a required shippable image.
 
 | Evidence ID | Visual world / question resolved | Method | File relative to project |
 |---|---|---|---|

@@ -26,6 +26,9 @@ class RuntimeTests(unittest.TestCase):
         self.started = mcp.harness.start_chat_run(None, self.root, None, "A static craft exhibition landing for visitors.")
         self.run = Path(self.started["run_dir"])
         self.project = Path(self.started["project_dir"])
+        for path in (self.run/'run.json',self.project/'project.config.json'):
+            data=json.loads(path.read_text(encoding='utf-8'));data.pop('design_contract',None)
+            path.write_text(json.dumps(data),encoding='utf-8')
 
     def tearDown(self):
         self.root_patch.stop()

@@ -100,11 +100,13 @@ def validate_delivery(project_dir, implementation_root):
     text = plan.read_text(encoding='utf-8')
     from validation_blender import blender_delivery_errors
     errors.extend(blender_delivery_errors(project_dir, implementation_root))
+    from validation_creative_decisions import evidence_led
+    flexible = evidence_led(project_dir)
     if explicit_text_only_authorized(project_dir):
         rows = []
     else:
         rows = [row for row in inventory(text) if row[4] == 'FINAL']
-        if not rows:
+        if not rows and not flexible:
             errors.append('production plan has no FINAL IMG asset')
 
     primary_rows = []
@@ -116,9 +118,9 @@ def validate_delivery(project_dir, implementation_root):
             continue
         if match.group(1) == 'PRIMARY':
             primary_rows.append(row)
-    if rows and not primary_rows:
+    if rows and not primary_rows and not flexible:
         errors.append('production plan has no FINAL PRIMARY scene-bearing visual; supporting assets do not satisfy the requirement')
-    if primary_rows and all(Path(row[5]).suffix.lower() == '.svg' for row in primary_rows):
+    if not flexible and primary_rows and all(Path(row[5]).suffix.lower() == '.svg' for row in primary_rows):
         errors.append('SVG/vector cannot be the only PRIMARY visual; provide a scene-bearing raster, video or 3D asset')
 
     sources = list(implementation_sources(implementation_root))

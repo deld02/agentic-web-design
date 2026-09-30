@@ -130,7 +130,12 @@ def _write_allowed(project: Path, stage: str, relative: str) -> Path:
     if normalized in STAGE_FILES.get(stage, set()):
         return candidate
     study_root = {"direction-divergence":"evidence/directions/", "visual-experience":"evidence/compositions/"}.get(stage)
+    from validation_creative_decisions import evidence_led
+    if stage == "creative-master" and evidence_led(project):
+        study_root = "evidence/proof/"
     if study_root and normalized.startswith(study_root) and candidate.suffix.lower() in TEXT_SUFFIXES:
+        from harness_design_plan import require_plan
+        require_plan(project,stage)
         return candidate
     if stage in IMPLEMENTATION_STAGES:
         if normalized.startswith("frontend/") and candidate.suffix.lower() in TEXT_SUFFIXES:
@@ -177,7 +182,7 @@ def _with_stage_packet(status: dict[str, Any]) -> dict[str, Any]:
     from harness_session import session_mode
     if session_mode():
         status["execution_backend"] = "CODEX_SESSION_NO_API_KEY"
-        status["native_media_instruction"] = "At image stages use the session image-generation tool and return a physical raster with its actual tool result reference via register_session_image. Tool origin is client-attested. If no native image tool is available, stop for production; never substitute SVG or call an API. run_review launches a fresh subscription-authenticated Codex CLI review; missing login blocks review, not a fake PASS."
+        status["native_media_instruction"] = "When the active proof/asset requires generation, use the session image-generation tool and return the raster with its actual result reference via register_session_image. Imports are not generation. Non-generated evidence-led proofs use physical captures plus their source. Missing production capability blocks the declared job, not unrelated study modes. run_review launches a fresh subscription-authenticated Codex CLI review; missing login blocks review, never invent PASS."
     stage_id = status.get("stage")
     if not stage_id or "project_dir" not in status or status.get("status") == "FAILED":
         return status
@@ -387,6 +392,10 @@ def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir, active, project = _project_and_stage(str(arguments.get("run_id", "")))
     stages = load_json(ROOT / "config" / "pipeline.json")["stages"]
     stage = next(item for item in stages if item["id"] == active["stage"])
+    from validation_creative_decisions import plan_errors
+    errors = plan_errors(project,stage['id'])
+    if errors:
+        return _with_stage_packet({**active,'status':'NEEDS_PLAN','findings':errors})
     if stage["id"] == "visual-experience":
         from harness_review import design_preflight_errors
         errors = design_preflight_errors(project)
@@ -425,6 +434,18 @@ def advance_stage(arguments: dict[str, Any]) -> dict[str, Any]:
 
 
 @_serialized
+def seal_design_plan(arguments):
+    run,active,project = _project_and_stage(arguments['run_id'])
+    from harness_review import revision_stage
+    from harness_design_plan import seal_plan
+    stage=revision_stage(project,active['stage']) or active['stage']
+    with transition_rollback(run):
+        receipt=seal_plan(run,stage)
+        harness.append_event(run,{'event':'tool_call','stage':stage,'agent':'03' if stage=='direction-divergence' else '04','tool':'DESIGN_PLAN_SEAL','sha256':receipt['digest']})
+    return {'status':'SEALED','stage':stage,'plan':receipt}
+
+
+@_serialized
 def verify_run(arguments: dict[str, Any]) -> dict[str, Any]:
     run_dir = _run_dir(str(arguments.get("run_id", "")))
     receipt = run_dir / "execution-receipt.json"
@@ -441,6 +462,7 @@ def _schema(properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
 
 
 TOOLS: dict[str, tuple[str, dict[str, Any], Callable[[dict[str, Any]], dict[str, Any]], dict[str, bool]]] = {
+    "seal_design_plan": ("Seal the idea before DIR evidence or macro rhythm before section detail; no gate or user checkpoint. Changes invalidate the derived work.", _schema({"run_id":{"type":"string"}},["run_id"]), lambda args: seal_design_plan(args), {"readOnlyHint":False,"destructiveHint":False}),
     "confirm_design": ("Record the single user approval of the complete reviewed desktop/mobile landing proposal before construction.", _schema({"run_id":{"type":"string"}, "status":{"type":"string","enum":["APPROVED","DELEGATED","ADJUST"]}, "user_signal":{"type":"string"}}, ["run_id","status","user_signal"]), confirm_design, {"readOnlyHint":False,"destructiveHint":False,"idempotentHint":False,"openWorldHint":False}),
     "start_landing": ("Start the only valid managed landing run. Call this before designing or coding.", _schema({"brief": {"type": "string"}, "scenario": {"type": "string"}}, []), start_landing, {"readOnlyHint": False, "destructiveHint": False, "idempotentHint": False, "openWorldHint": False}),
     "get_stage": ("Read the single active stage plus its complete specialist contract, linked guidance, capabilities and current artifacts.", _schema({"run_id": {"type": "string"}}, ["run_id"]), get_stage, {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}),

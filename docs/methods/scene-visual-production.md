@@ -2,11 +2,11 @@
 
 This method turns visual direction into scene-level image decisions and external-production briefs, not a fallback for missing photography. Load it while creating direction compositions and whenever a scene needs atmosphere, conceptual representation, layers or a visual mechanism that CSS/native media alone may not resolve.
 
-It adds no project document or duplicate register. G2 separates direction divergence, isolated selection and one generated artistic master inside `creative-direction.md`; G3 translates its genome through Scene Grammar, Scene Strategy and `Scene visual opportunities`; G4 decides image presence and runs the bounded `IH-*` production loop inside `production-plan` before integration.
+It adds no project document or duplicate register. G2 separates direction divergence, isolated selection and a creative proof inside `creative-direction.md`; G3 tests its translation through Scene Grammar, Scene Strategy and `Scene visual opportunities`; G4 decides remaining image production and runs the bounded `IH-*` loop before integration. Versioned legacy runs retain their generated artistic master.
 
 ## 1. Three outputs with different authority
 
-- `AM-*` — the single generated exploratory artistic master. It tests a visual hypothesis before webpage design, is not binding foundations or UI and never ships.
+- `AM-*` — compatibility ID for the single creative proof (generated artistic master in legacy runs). It tests the selected hypothesis, is not binding foundations and its capture never ships as a flattened asset.
 - `CMP-*` — a G3 high-fidelity webpage composition used to judge scene translation and responsive intent. It is design evidence, never a shippable landing asset.
 - `IMG-*` — a final background, photograph, illustration, texture, mask, layer, render or other visual file that can ship after truth, rights and delivery checks.
 
@@ -26,9 +26,11 @@ Before making the DIR boards, test the strongest direct/evidence-led expression 
 
 After G1 research and before prompting, 03 writes the compact project-specific quality bar in `creative-direction.md`: what premium means here, which category baseline must be exceeded, what requires authorship, what would make the result generic, what the master must prove and what the final landing must preserve. These answers come from the compiled project context and five-lens current references; generic adjectives do not close the bar.
 
-Before territories, 03 states CREATIVE_IDEA, PROJECT_SOURCE_IDS, WHY_THIS_PROJECT and OBSERVABLE_CONSEQUENCE in the existing Creative idea section. Ground the relationship in SRC-* research items and Experience Spine. A style list is not an idea; design references improve expression, not project truth. The idea may be precise direct communication rather than a metaphor. 03 creates two to four physical DIR-* territories with the same content specimen and four distinct dimensions. 07 selects or rejects independently.
+Before territories, 03 states CREATIVE_IDEA, PROJECT_SOURCE_IDS, WHY_THIS_PROJECT and OBSERVABLE_CONSEQUENCE in the existing Creative idea section. Ground the relationship in SRC-* research items and Experience Spine. A style list is not an idea; design references improve expression, not project truth. The idea may be precise direct communication rather than a metaphor. 03 creates two to four physical DIR-* territories with the same content specimen. 07 judges conceptual distance visually and selects or rejects independently; changed text cells are not evidence of divergence.
 
-03 then invokes `CHATGPT_GENERATE` from only that route and saves exactly one physical `AM-*`, with `SOURCE_DIRECTION` matching the reviewed selection. It defines the desired world—atmosphere, materiality, light, palette, depth, geometry and compositional tension—before any landing layout exists. It may imagine a defining scene or hero atmosphere, but must not be a webpage screenshot, UI mockup, wireframe, stock-photo layout or asset presented as documentary truth. A prompt, HTML/SVG/CSS output or generated text alone is invalid.
+In evidence-led-v2, seal the Creative idea and quality bar with `seal_design_plan` before creating DIR evidence. The receipt freezes the recorded sections, not private cognition. A changed plan must be resealed and its derived evidence refreshed; no downstream approval survives changed inputs.
+
+After isolated selection, choose PROOF_MODE according to the unresolved creative question: GENERATED_IMAGE, TYPOGRAPHIC_STUDY, PHOTO_TREATMENT, COMPOSITION_STUDY, MATERIAL_STUDY, MOTION_STUDY, INTERACTION_PROTOTYPE or 3D_STUDY. Produce one physical capture and PROOF_SOURCE; behavioral/spatial modes also require an executable/native study. Use CHATGPT_GENERATE and its real registration only for GENERATED_IMAGE. Other modes use their mode name as Method. No invented documentary subjects, prompts or unrendered code count as proof. Historical AM headings/IDs remain for compatibility. Legacy contracts still require the generated non-UI artistic styleframe; do not silently migrate an active run.
 
 Extract `INVARIANTS | FLEX | CONTEXTUAL`, a relational grammar and one signature mechanism. In the current complete-landing flow the master is internal: user approval happens once on the complete G3 proposal. Only legacy runs ask `APPROVED | ADJUST | DELEGATED` here, according to their stage packet. G2 does not call the result premium merely because the fields exist and does not design the landing.
 
@@ -40,6 +42,8 @@ Before generating a direction study or final scene asset, resolve its visual rel
 
 ### Global composition before local detail
 
+In evidence-led-v2, 04 starts in PLAN with only macro guidance. Seal the Global page rhythm before recording scene detail or foundations; COMPOSE then opens the remaining guidance. These are two internal states of the same stage/owner, not eight new steps. Receipts expose recorded order and changed inputs, not evidence that an external chat could not have privately sketched first.
+
 04 translates the idea, sketches the whole scroll as masses and intervals in Global page rhythm, then probes representative situations before detail and behavior. Plan density, scale, contrast, pauses, length and transitions across every outlined scene. Extract reusable foundations only from tested relationships. These are cognitive steps of one owner, not new stages or deliverables. Work freely in sketches/prototypes; record only selected decisions and evidence at handoff, not every exploratory thought.
 
 ### Bounded section design loop
@@ -47,6 +51,8 @@ Before generating a direction study or final scene asset, resolve its visual rel
 04 executes one section at a time in architecture order within visual-experience, not as new pipeline stages. Resolve its narrative job and selected reference principles, then jointly choose composition/spacing, typography, color, image/background intent, interaction, entry/exit transition and mobile recomposition in the existing blueprint tables. Render desktop/mobile, inspect the observable gain against the references, and record an owner diagnosis in `### Section design loop`. PASS opens the next section; REVISE permits one directed correction with retained before/after evidence. A second rejection stops for escalation, not automatic retries. This is owner inspection; 07 still reviews independently after the complete page exists.
 
 After the sections, inspect the complete scroll for continuity, repetition and rhythm. Reopen only affected sections with a new bounded cycle, preserving earlier history, then refresh page evidence and obtain a fresh independent review and user checkpoint if their inputs changed. Final image production stays in the external G4 loop; G3 defines what each visual must represent and how it will fit. The harness checks ordered coverage, bounded attempts and physical evidence, not whether a self-reported PASS is beautiful.
+
+Before G3 review, record Composition-critical media for each scene: CRITICAL, NON_CRITICAL or NO_MEDIA. CRITICAL means its actual crop, subject, light, negative space or geometry could invalidate the composition. Provide a physical, production-feasible media proof in the comp now, including authentic identity where required and an explicit replacement boundary. It need not be the final optimized export; it cannot be an unrelated promised placeholder. Independent media_integration review judges the feasibility and equivalence. G4 produces the rest and optimizes approved critical material; a materially changed asset refreshes compositions, independent review and user approval, not a silent replacement.
 
 Start from every architecture scene. Compare a credible baseline with an authorship opportunity grounded in the idea and source material: what makes this relationship belong to the project? Could it be simpler while preserving meaning? Does additional production amplify meaning or only cost? AM is supporting exploratory evidence, not the source of every answer.
 
@@ -120,4 +126,4 @@ Iterate in this order:
 
 ## 6. Acceptance
 
-Block when the artistic master is only prose, a prompt or a web screenshot; when it lacks complete invariants; when G3 silently restarts art direction; when desktop/mobile evidence is missing; when returned scenes drift stylistically; when essential text/UI is baked into a raster; when an effect requires layers but the handoff/return supplies one flat image; or when an `AM-*`/`CMP-*` is shipped as a final asset.
+Block when the creative proof is only prose or a prompt (legacy also forbids a web screenshot as its master); when it lacks complete invariants; when G3 silently restarts art direction; when desktop/mobile evidence is missing; when returned scenes drift stylistically; when essential text/UI is baked into a raster; when an effect requires layers but the handoff/return supplies one flat image; or when an `AM-*`/`CMP-*` capture is shipped as a final asset.

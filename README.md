@@ -13,7 +13,7 @@ Ask one open question: what should be created, for whom and what should it achie
 1. Define the objective and constraints.
 2. Research the category, audience, existing identity and current references.
 3. Compare content structures.
-4. Define what premium means for this project, then generate one artistic master before composing the webpage.
+4. Define what premium means for this project, compare distinct ideas, then produce a physical creative proof in the medium that tests the selected idea.
 5. Design the complete landing, not just the hero. Save whole-page desktop/mobile compositions and every section in visual-system.md as one construction blueprint; prototype only risky interactions.
 6. Review the complete proposal independently, then obtain one user approval with confirm_design before construction. The master is an internal reference, not another stop. When spatial treatment is credible, compare media here before technology.
 7. Choose the simplest suitable technology and build the complete structural landing.
@@ -26,7 +26,7 @@ The executable order and dependencies live only in [config/pipeline.json](config
 - Research informs choices but never selects them automatically.
 - Color, typography, composition and media are judged together while translating the master into rendered scene alternatives.
 - Documentary claims require authentic media. Conceptual, representative and decorative media may be requested from the external image loop when honestly framed.
-- Every landing needs a substantial scene-bearing visual unless the user explicitly requests text only.
+- A visual must carry the project's idea; imagery, typography or interaction can do that job. New evidence-led runs have no image or effect quota. Declared assets must still be produced and integrated.
 - Effects and depth are explored in context. A 3D decision follows the conditional spatial contract: G3 selects the medium, technology proves the runtime, G4 produces semantic states and QA traverses them. It requires an identified external model/scene/tool or runtime with rights, integration proof and fallback; CSS/SVG imitation is classified as 2D and cannot masquerade as 3D.
 - A screenshot or composition study is evidence, not a shippable asset.
 - Delivery is valid only when final media files exist inside the implementation and the code uses them.
@@ -34,6 +34,8 @@ The executable order and dependencies live only in [config/pipeline.json](config
 ## Roles
 
 The eight files in `agents/` define internal specialists, not eight separate conversations. Agent 00 is the orchestrator. The MCP returns an active `stage_packet` with the specialist contract, inputs, methods and capabilities. It owns state transitions and restores candidate state when validation rejects it. Agent 07 uses a fresh visual-review request (API or subscription-backed Codex) with physical evidence; a verdict written by the designing chat cannot approve a review.
+
+New projects use `evidence-led-v2`; active legacy runs retain their original contract. Direction and visual stages contain only two internal modes: PLAN (seal idea/quality bar or whole-page rhythm with `seal_design_plan`) and COMPOSE (produce derived evidence). These are not extra gates or user checkpoints. A changed plan blocks advancement until resealed and reviewed again. Every scene identifies whether media is composition-critical; critical media needs a physical feasibility proof before G3, while remaining production stays in G4. LOW color uncertainty needs one proof; MATERIAL needs at least two meaningful alternatives. Files and receipts prove recorded behavior, not beauty or private reasoning. Human taste calibration remains an empirical evaluation task, not a score inferred from passing tests.
 
 ## Technology
 

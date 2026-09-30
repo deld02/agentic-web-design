@@ -66,7 +66,7 @@ def identity_direction_trace_errors(project_dir: Path) -> list[str]:
     directions = {row[0] for row in table_rows(text, "## Direction divergence", "Direction ID") if row}
     rows = table_rows(text, "### Identity constraint fit", "Direction ID")
     seen: set[str] = set()
-    if len(rows) != 3:
+    if len(rows) != len(directions):
         errors.append("G2 identity constraint fit requires exactly one row per direction")
     for row in rows:
         if len(row) < 5 or not all(row[:5]):

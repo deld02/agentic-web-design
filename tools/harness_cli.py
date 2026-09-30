@@ -25,7 +25,7 @@ def _parser(event_types: set[str]) -> argparse.ArgumentParser:
     record.add_argument("--target")
     record.add_argument("--progress-key")
     record.add_argument("--at")
-    for command in ("evaluate", "packet", "chat-status", "chat-next"):
+    for command in ("evaluate", "packet", "chat-status", "chat-next", "chat-seal-plan"):
         child = sub.add_parser(command)
         child.add_argument("--run-dir", required=True, type=Path)
     capture = sub.add_parser("capture")
@@ -114,6 +114,13 @@ def run_cli(api: ModuleType) -> int:
         result = api.advance_chat_run(args.run_dir)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 0 if result["status"] != "FAILED" else 1
+    if args.command == 'chat-seal-plan':
+        from harness_design_plan import seal_plan
+        api._require_chat_run(args.run_dir)
+        stage=api._current_open_stage(args.run_dir)
+        receipt=seal_plan(args.run_dir,stage['id'])
+        api.append_event(args.run_dir,{'event':'tool_call','stage':stage['id'],'agent':stage['agent'],'tool':'DESIGN_PLAN_SEAL','sha256':receipt['digest']})
+        print(json.dumps(receipt));return 0
     if args.command == "chat-design-approval":
         from validation_landing_blueprint import complete_landing_flow, record_design_approval
         api._require_chat_run(args.run_dir)

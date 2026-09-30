@@ -4,6 +4,8 @@ Este método ocurre en G3 antes de `scene-color-system.md`. No tokeniza una pale
 
 No añade fase ni artefacto. Las evidencias `CLR-*` y la decisión viven en `visual-system.md`.
 
+En `evidence-led-v2`, registra `COLOR_UNCERTAINTY` y `COLOR_REASON`: LOW requiere una prueba física; MATERIAL compara al menos dos alternativas sobre la misma composición. Describe dominante, neutros, texto y acento por su función y presencia, sin porcentajes obligatorios. La revisión independiente evalúa COLOR_PROVENANCE y COLOR_COMPOSITION sobre renders; 04 no inventa el PASS del crítico. Las instrucciones de tres territorios y lámina de challenge que siguen son el contrato legacy, no obligaciones adicionales para v2.
+
 ## 1. Misma composición, tres territorios
 
 04 aplica sobre el mismo hero, copy, media, layout y viewport tres territorios físicos:

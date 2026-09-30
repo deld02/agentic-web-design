@@ -30,6 +30,10 @@ class SemanticValidationTests(unittest.TestCase):
         copy_source_repo(ROOT,dst)
         result=run(dst,'tools/new_project.py','test-project')
         if result.returncode!=0: raise RuntimeError(result.stdout+result.stderr)
+        # Historical semantic fixtures exercise the pre-v2 contract.
+        config=dst/'projects/test-project/project.config.json'
+        data=json.loads(config.read_text(encoding='utf-8'));data.pop('design_contract',None)
+        config.write_text(json.dumps(data),encoding='utf-8')
         return td,dst
 
     def mutate_json(self,repo,rel,fn):
@@ -842,7 +846,7 @@ class SemanticValidationTests(unittest.TestCase):
             path.write_text(text,encoding='utf-8')
             result=run(repo,'tools/validate_gate.py','G3','--project-dir','projects/test-project')
             self.assertNotEqual(result.returncode,0)
-            self.assertIn('lacks HTML/CSS + IMG-* + FX-* decomposition',result.stdout)
+            self.assertIn('needs HTML/CSS, IMG-ID or NO_IMAGE',result.stdout)
         finally: td.cleanup()
 
     def test_g3_requires_physical_color_territory_evidence(self):
@@ -936,7 +940,7 @@ class SemanticValidationTests(unittest.TestCase):
             self.assertIn('approved isolated direction-review checkpoint',result.stdout)
         finally: td.cleanup()
 
-    def test_g2_rejects_convergent_directions(self):
+    def test_g2_does_not_measure_concept_by_changed_text_cells(self):
         td,repo=self.clone()
         try:
             self.complete_owner_evidence(repo)
@@ -944,7 +948,7 @@ class SemanticValidationTests(unittest.TestCase):
             text=text.replace('| DIR-003 | technical experimental clarity | grotesk plus mono | radial data composition | translucent scientific plates | orbital responsive motion | no person; signal-field metaphor | evidence/dir-c.png |','| DIR-003 | editorial material authority | expressive serif contrast | asymmetric spatial proof | macro material layers | orbital responsive motion | no person; signal-field metaphor | evidence/dir-c.png |',1)
             path.write_text(text,encoding='utf-8')
             result=run(repo,'tools/validate_gate.py','G2','--project-dir','projects/test-project')
-            self.assertNotEqual(result.returncode,0); self.assertIn('four are required',result.stdout)
+            self.assertNotIn('four are required',result.stdout)
         finally: td.cleanup()
 
     def test_g3_requires_scene_grammar_for_every_scene(self):

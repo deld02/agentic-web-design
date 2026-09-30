@@ -26,8 +26,8 @@ Record only findings that can change the landing. Existing material and referenc
 
 Investigate the client's world before design galleries: product, process, language, tools, place, history, rituals and available proof. Prefix material source items with SRC-### in the existing Item/source cell; identify the actual source and distinguish verified facts from hypotheses. Do not invent archives or media. Design references calibrate execution, not the truth or idea of the project. Missing distinctive material is a limitation, not permission to fabricate it.
 
-| Item / source | Finding | Use, change or ignore | Reason / constraint / uncertainty | Downstream owner |
-|---|---|---|---|---|
+| Source ID | Source type (`WEB | FILE | USER | OBSERVATION`) | Actual source | Finding | Truth status (`VERIFIED | USER_SUPPLIED | HYPOTHESIS`) | Evidence path / URL | Observed date | Creative relevance / constraint |
+|---|---|---|---|---|---|---|---|
 
 ## Identity authority contract
 

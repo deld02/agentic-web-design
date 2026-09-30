@@ -4,7 +4,6 @@
 The harness supervises a real external executor one pipeline stage at a time.
 It is not a ninth agent and never grants design or state authority of its own.
 """
-
 from __future__ import annotations
 
 import hashlib
@@ -321,7 +320,6 @@ def confirm_chat_image(run_dir: Path, image_path: Path, asset_id: str | None = N
     append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": relative})
     return {"status": "RECORDED", "stage": stage["id"], "file": relative, "generation_observed": observed_generation}
 
-
 def advance_chat_run(run_dir: Path) -> dict[str, Any]:
     """Validate the open chat stage and open exactly one successor."""
     run_dir = run_dir.resolve()
@@ -339,7 +337,8 @@ def advance_chat_run(run_dir: Path) -> dict[str, Any]:
         append_event(run_dir, {"event": "artifact_write", "stage": stage["id"], "agent": stage["agent"], "target": target})
 
     readiness = stage_readiness_errors(run_dir, stage, ROOT)
-    if stage["id"] == "creative-master":
+    from validation_creative_decisions import generation_required
+    if stage["id"] == "creative-master" and generation_required(run_dir/'project'):
         generated = any(
             item.get("event") == "tool_call" and item.get("stage") == "creative-master"
             and is_image_generation_event(item, run_dir / "project")

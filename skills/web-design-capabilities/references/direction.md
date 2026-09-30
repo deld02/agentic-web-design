@@ -15,7 +15,7 @@ For the master define:
 - rules and anti-rules;
 - why the direction could not be exchanged with a nearby competitor.
 - a media thesis and at least one representative, project-specific visual sample that makes the direction judgeable.
-- one `FX-*` mechanism with visible static, simple and expressive evidence; evaluate `DEPTH_3D` when subject matter has volume, material, space, transformation or layered perspective.
+- a credible effect opportunity, if any, compared against stillness; evaluate spatial media only when the project's communication job benefits from it. No FX quota.
 
 When G3 translates the master, difference between baseline and challenger must be structural or conceptual, not a palette/font skin. For the hero, test integration rather than ingredient count: copy, type, color, media and the mechanism must alter one another's reading. A visual placed beside copy, a common palette cluster or a generic transition does not become distinctive by being documented. Compare the signature palette with a plausible neutral/category alternative and remove one major element; if the hero's logic does not change, revise the relationship. This does not mandate multiple typefaces, 3D or motion.
 
@@ -23,7 +23,7 @@ Use research before composing. If visual evidence disproves a research decision,
 
 If the user says “make your proposal” or “choose for me”, 03 completes the master and records delegation without changing the brief or skipping review. Delegation does not let this capability approve G2.
 
-The artistic master is always a substantial project-specific generated image. Large type, icons, gradients, generic CSS patterns, placeholders and webpage screenshots do not satisfy it. Documentary subjects still require authentic supplied media; the master may use honest conceptual, material or atmospheric representation.
+Follow the packet's versioned proof policy. In evidence-led-v2, a creative proof may be a rendered typographic/composition study, authentic photo treatment, generated material image or executable motion/interaction/3D study with physical capture. The idea chooses the proof; no medium proves quality merely by being present. Legacy runs retain their generated AM requirement. Documentary claims always need authentic evidence.
 
 Mechanism and motion intensity are explored during G3 scene translation, using `docs/methods/resource-selection.md` when needed. A component demo is a candidate to translate, never an identity to paste.
 

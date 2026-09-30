@@ -38,6 +38,9 @@ class RuntimeRepairTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             started = mcp.harness.start_chat_run(None, Path(directory), None, "An exhibition landing")
             project = Path(started["project_dir"])
+            for path in (project.parent/'run.json',project/'project.config.json'):
+                data=json.loads(path.read_text(encoding='utf-8'));data.pop('design_contract',None)
+                path.write_text(json.dumps(data),encoding='utf-8')
             images = ["desktop.png", "mobile.png"]
             for name in images:
                 Image.new("RGB", (32,32)).save(project / name)

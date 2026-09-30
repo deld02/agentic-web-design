@@ -68,6 +68,8 @@ class HarnessMcpServerTests(unittest.TestCase):
         names = {item["name"] for item in response["result"]["tools"]}
         self.assertIn('confirm_design', names)
         names.remove('confirm_design')
+        self.assertIn('seal_design_plan', names)
+        names.remove('seal_design_plan')
         self.assertEqual(
             names,
             {"start_landing", "get_stage", "list_files", "read_file", "get_guidance", "write_file", "generate_image", "register_image", "register_session_image", "confirm_master", "advance_stage", "verify_run", "runtime_status", "read_image", "upload_image", "render_landing", "run_review", "prepare_delivery", "download_delivery", "check_technology", "build_frontend", "import_blender_file", "inspect_blender_asset"},
@@ -159,6 +161,7 @@ class HarnessMcpServerTests(unittest.TestCase):
         before = (project / "status.json").read_bytes()
         with patch.object(mcp, "_project_and_stage", return_value=(Path(started["run_dir"]), active, project)), \
              patch("harness_review.design_preflight_errors", return_value=["missing media decision"]), \
+             patch("validation_creative_decisions.plan_errors", return_value=[]), \
              patch.object(mcp.harness, "advance_chat_run") as advance:
             result = mcp.advance_stage({"run_id":started["run_id"]})
         self.assertEqual("REVISE", result["status"])

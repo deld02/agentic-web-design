@@ -37,6 +37,6 @@ Do not load every reference. Record each material use under `## Design capabilit
 - GSAP knowledge activates only after runtime selection; Impeccable activates only from a concrete 07 finding; MengTo activates only from temporal/HTML reference evidence.
 - A capability log records tool use; it is not evidence that alternatives were compared. Keep comparison evidence in the active owner artifact.
 - Discovered material has no automatic authority; the active owner decides how it affects the project.
-- Every landing carries a substantial project-specific visual unless the user explicitly requests text only. Missing media triggers production.
-- Each direction visibly compares a static scene with simple and expressive versions of one project-specific mechanism. The selected result is tested and delivered with evidence.
+- Every landing needs demonstrated visual authority, not an image quota. The active versioned contract decides the creative proof; produce media when the reviewed composition needs it, never as a compulsory ornament.
+- Explore static/simple/expressive treatments only for a credible effect opportunity. A reviewed STATIC page is valid; this capability cannot overrule the OS or impose motion.
 - Revalidate external source and license according to `config/design-capabilities.json`; use the local fallback if unavailable or incompatible.

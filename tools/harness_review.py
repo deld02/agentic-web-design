@@ -52,6 +52,10 @@ REVIEW_INSTRUCTIONS = (
     "reference filenames, or REVISE when the benchmarks do not establish a credible bar. The artistic_authority "
     "axis must compare a candidate filename to a reference filename and explain specific visible strengths or gaps. "
     "Never infer motion from stills. Each other axis must cite a supplied candidate filename and concrete observation. "
+    "When present, idea_grounding connects source evidence to the visible relationship without treating hypotheses "
+    "as facts; conceptual_distance judges different communication hypotheses, not styling cell counts. "
+    "idea_translation checks opening, explanation and action; macro_rhythm judges the actual whole scroll against "
+    "planned peaks, rests and continuity. No image, effect or color-territory quota proves quality. "
     "Do not redesign. Select a DIR-ID only on direction-review PASS; otherwise return empty selected_direction. "
     "PASS requires every axis PASS and no findings."
 )
@@ -86,17 +90,21 @@ def design_preflight_errors(project: Path) -> list[str]:
     from validation_spatial_experience import spatial_selection_errors
     from validation_landing_blueprint import blueprint_errors
     from validation_release_integrity import semantic_resolution_errors
-    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project) + semantic_resolution_errors(project) + (page_rhythm_errors(project) if idea_first_contract(project) else [])
+    from validation_creative_decisions import plan_errors, critical_media_errors
+    return plan_errors(project,'visual-experience') + critical_media_errors(project) + scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project) + semantic_resolution_errors(project) + (page_rhythm_errors(project) if idea_first_contract(project) else [])
 
 
 def review_axes(root: Path, project: Path, stage_id: str) -> list[str]:
+    from validation_creative_decisions import evidence_led
+    extra = (['idea_grounding','conceptual_distance'] if stage_id=='direction-review' else ['idea_translation','macro_rhythm']) if evidence_led(project) else []
     content_path = project / 'content-architecture.md'
     semantic = content_path.is_file() and any(len(r) > 5 and r[5] == 'SEMANTIC' for r in table_rows(content_path.read_text(encoding='utf-8'), '## Content lock', 'Content ID'))
     visual_path = project / 'visual-system.md'
     static = visual_path.is_file() and bool(re.search(r'(?m)^MOTION_POLICY:\s*STATIC\s*$', visual_path.read_text(encoding='utf-8')))
     if stage_id == "build-review":
-        return list(dict.fromkeys(load_json(root / "harness/scenarios.json")["visual_review_axes"] + ["reference_calibration", "artistic_authority"] + (['content_semantics'] if semantic else []) + (['motion_value'] if static else [])))
+        return list(dict.fromkeys(load_json(root / "harness/scenarios.json")["visual_review_axes"] + ["reference_calibration", "artistic_authority"] + extra + (['content_semantics'] if semantic else []) + (['motion_value'] if static else [])))
     axes = ["composition", "typography", "color", "media_integration", "project_fit", "reference_calibration", "artistic_authority"]
+    axes.extend(extra)
     if stage_id == "design-review":
         if semantic:
             axes.append('content_semantics')
@@ -209,13 +217,22 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str],
     images = list(images)
     references = benchmark_images(project)
     images.extend(name for name in references if name not in images)
+    from validation_creative_decisions import evidence_led, source_rows
+    if evidence_led(project) and stage['id']=='direction-review':
+        creative=(project/'creative-direction.md').read_text(encoding='utf-8')
+        from validation_common import section
+        source_ids=set(re.findall(r'SRC-\d{3,}',section(creative,'## Creative idea')))
+        for row in source_rows(project):
+            if len(row)>=8 and row[0] in source_ids and Path(row[5]).suffix.lower() in {'.png','.jpg','.jpeg','.webp','.avif'} and not row[5].startswith(('https://','http://')):
+                if row[5] not in images: images.append(row[5])
     if stage['id'] == 'design-review':
         images.extend(name for name in representative_images(project) if name not in images)
     if len(images) > 16:
         raise ValueError('review exceeds 16 images including benchmarks; reduce redundant candidate views')
     if stage["id"] == "direction-review":
         from project_validation import creative_idea_errors
-        preflight = creative_idea_errors(project)
+        from validation_creative_decisions import plan_errors
+        preflight = creative_idea_errors(project) + plan_errors(project,'direction-divergence')
         if preflight:
             raise ValueError("DIRECTION_PREFLIGHT: " + "; ".join(preflight))
         rows = table_rows((project / "creative-direction.md").read_text(encoding="utf-8"), "## Direction divergence", "Direction ID")

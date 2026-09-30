@@ -403,8 +403,10 @@ def idea_first_contract(project_dir: Path) -> bool:
     """Versioned contract: new projects opt in; historical artifacts stay valid."""
     path = project_dir / "project.config.json"
     run = project_dir.parent / "run.json"
-    recorded = run.is_file() and load_json(run).get("design_contract") == "idea-first-v1"
-    return recorded or (path.is_file() and load_json(path).get("design_contract") == "idea-first-v1")
+    contracts = {"idea-first-v1", "evidence-led-v2"}
+    if run.is_file() and 'design_contract' in load_json(run):
+        return load_json(run).get('design_contract') in contracts
+    return path.is_file() and load_json(path).get("design_contract") in contracts
 
 
 def creative_idea_errors(project_dir: Path) -> list[str]:
@@ -422,6 +424,10 @@ def creative_idea_errors(project_dir: Path) -> list[str]:
             errors.append(f"G2 Creative idea missing {key}")
     research = markdown(project_dir, "research-strategy.md")
     rows = table_rows(research, "## Discovered evidence authority", "Item / source")
+    from validation_creative_decisions import evidence_led, source_rows, source_errors
+    if evidence_led(project_dir):
+        errors.extend(source_errors(project_dir))
+        rows = source_rows(project_dir)
     sources = {match.group(0) for row in rows if len(row) >= 5 and all(row[:5])
                for match in re.finditer(r"SRC-\d{3,}", row[0])}
     refs = re.findall(r"SRC-\d{3,}", _named_value(text, heading, "PROJECT_SOURCE_IDS"))
@@ -500,17 +506,7 @@ def direction_divergence_errors(project_dir: Path, require_selection: bool = Tru
         if physical_error:
             errors.append(physical_error)
         valid_rows.append(row)
-    for left_index in range(len(valid_rows)):
-        for right_index in range(left_index + 1, len(valid_rows)):
-            left, right = valid_rows[left_index], valid_rows[right_index]
-            differences = sum(
-                left[index].strip().casefold() != right[index].strip().casefold()
-                for index in range(1, 7)
-            )
-            if differences < 4:
-                errors.append(
-                    f"G2 directions {left[0]} and {right[0]} differ in only {differences} dimensions; four are required"
-                )
+    # Conceptual distance belongs to the isolated visual review, not cell inequality.
     if not require_selection:
         return errors
     selected = _named_value(text, "## Direction selection handoff", "SELECTED_DIRECTION")
@@ -551,6 +547,20 @@ def artistic_master_errors(project_dir: Path) -> list[str]:
     heading = "## Artistic master"
     artistic_id = _named_value(text, heading, "ARTISTIC_MASTER")
     errors: list[str] = []
+    from validation_creative_decisions import evidence_led, proof_mode, PROOF_MODES
+    flexible = evidence_led(project_dir)
+    mode = proof_mode(project_dir) if flexible else 'GENERATED_IMAGE'
+    if flexible and mode not in PROOF_MODES:
+        errors.append('G2 requires a valid creative PROOF_MODE')
+    if flexible:
+        from validation_creative_decisions import bounded_evidence
+        source_ref = _named_value(text,heading,'PROOF_SOURCE')
+        if not source_ref:
+            errors.append('G2 creative proof requires PROOF_SOURCE')
+        elif mode != 'GENERATED_IMAGE' and bounded_evidence(project_dir,source_ref) is None:
+            errors.append('G2 creative proof needs a physical source or executable study')
+        elif mode in {'MOTION_STUDY','INTERACTION_PROTOTYPE','3D_STUDY'} and Path(source_ref).suffix.lower() not in {'.html','.js','.mjs','.glb','.gltf','.blend'}:
+            errors.append('G2 behavioral/spatial proof requires an executable or native study, not a still alone')
     if not re.fullmatch(r"AM-[0-9]{3,}", artistic_id):
         errors.append("G2 requires ARTISTIC_MASTER: AM-###")
     selected = _named_value(text, "## Direction selection handoff", "SELECTED_DIRECTION")
@@ -570,7 +580,7 @@ def artistic_master_errors(project_dir: Path) -> list[str]:
         row = matching[0]
         if not all(row[:4]):
             errors.append(f"G2 artistic master {artistic_id} evidence is incomplete")
-        if row[2] != "CHATGPT_GENERATE":
+        if (mode == 'GENERATED_IMAGE' and row[2] != "CHATGPT_GENERATE") or (flexible and mode != 'GENERATED_IMAGE' and row[2] != mode):
             errors.append(
                 f"G2 artistic master {artistic_id} must use CHATGPT_GENERATE; "
                 "a webpage/UI screenshot is not an artistic master"
@@ -968,76 +978,5 @@ def scene_visual_errors(project_dir: Path, profile: str = "focused") -> list[str
 
 
 def color_direction_errors(project_dir: Path) -> list[str]:
-    text = markdown(project_dir, "visual-system.md")
-    rows = table_rows(text, "### Color direction territories", "Territory")
-    required_territories = {"BASELINE", "BRAND_LED", "CHALLENGER"}
-    composition_markers = {
-        "LUMINANCE", "CHROMA", "TEMPERATURE", "DOMINANT_ACCENT",
-        "NEUTRALS", "MEDIA", "LARGE_SURFACES", "PERCEPTION",
-    }
-    role_markers = {"dominant", "background", "foreground", "support", "accent"}
-    errors: list[str] = []
-    found: set[str] = set()
-    selected = 0
-    evidence_ids: set[str] = set()
-    evidence_paths: set[str] = set()
-    for row in rows:
-        if len(row) < 7:
-            errors.append("G3 color territory contains a malformed row")
-            continue
-        territory, evidence, hierarchy, provenance, composition, accessibility, verdict = row[:7]
-        if territory not in required_territories:
-            errors.append(f"G3 invalid color territory: {territory or '<empty>'}")
-        else:
-            found.add(territory)
-        match = re.fullmatch(r"(CLR-[0-9]{3,}):(.+)", evidence.strip().strip("`"))
-        if not match:
-            errors.append(f"G3 {territory or 'color territory'} needs physical CLR-ID:path evidence")
-        else:
-            color_id, reference = match.groups()
-            if color_id in evidence_ids:
-                errors.append(f"G3 duplicate color evidence ID: {color_id}")
-            if reference in evidence_paths:
-                errors.append(f"G3 color territories must use distinct render files: {reference}")
-            evidence_ids.add(color_id); evidence_paths.add(reference)
-            physical_error = _physical_composition_error(project_dir, reference, f"G3 {color_id}")
-            if physical_error:
-                errors.append(physical_error)
-        hierarchy_lower = hierarchy.lower()
-        if not role_markers.issubset({marker for marker in role_markers if marker in hierarchy_lower}) \
-                or len(re.findall(r"\d+(?:[.,]\d+)?\s*%", hierarchy)) < 5:
-            errors.append(f"G3 {territory or 'color territory'} lacks five color roles with approximate percentages")
-        missing_composition = sorted(marker for marker in composition_markers if marker not in composition.upper())
-        if missing_composition:
-            errors.append(f"G3 {territory or 'color territory'} COLOR_COMPOSITION missing {', '.join(missing_composition)}")
-        if not all((provenance, accessibility)):
-            errors.append(f"G3 {territory or 'color territory'} lacks provenance/accessibility evidence")
-        if verdict == "SELECTED":
-            selected += 1
-        elif verdict != "REJECTED":
-            errors.append(f"G3 {territory or 'color territory'} has invalid verdict")
-    for territory in sorted(required_territories - found):
-        errors.append(f"G3 missing color territory {territory}")
-    if selected != 1:
-        errors.append("G3 color direction requires exactly one SELECTED territory")
-
-    challenge_rows = table_rows(text, "### Independent color challenge", "Physical evidence")
-    if len(challenge_rows) != 1:
-        errors.append("G3 independent color challenge requires exactly one evidence row")
-        return errors
-    row = challenge_rows[0]
-    if len(row) < 8 or not all(row[:7]):
-        errors.append("G3 independent color challenge row is incomplete")
-        return errors
-    evidence, accent_removed, neutral_swap, category_swap, _identity_test, _drift, advantage, verdict = row[:8]
-    match = re.fullmatch(r"(CLR-[0-9]{3,}):(.+)", evidence.strip().strip("`"))
-    if not match:
-        errors.append("G3 independent color challenge needs physical CLR-ID:path evidence")
-    else:
-        color_id, reference = match.groups()
-        physical_error = _physical_composition_error(project_dir, reference, f"G3 {color_id}")
-        if physical_error:
-            errors.append(physical_error)
-    if verdict != "PASS":
-        errors.append("G3 independent color challenge is not PASS")
-    return errors
+    from validation_color_direction import color_direction_errors as check
+    return check(project_dir)

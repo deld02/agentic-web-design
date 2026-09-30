@@ -148,7 +148,7 @@ def validate_config(path):
     try: data=json.loads(path.read_text(encoding='utf-8'))
     except Exception as exc: errors.append(f'{rel} invalid JSON: {exc}'); return {}
     if set(data)-(CONFIG_KEYS|{'design_contract'}): errors.append(f'{rel}: schema validation failed: unknown fields {sorted(set(data)-(CONFIG_KEYS|{"design_contract"}))}')
-    if 'design_contract' in data and data['design_contract'] != 'idea-first-v1': errors.append(f'{rel}: invalid design_contract')
+    if 'design_contract' in data and data['design_contract'] not in {'idea-first-v1','evidence-led-v2'}: errors.append(f'{rel}: invalid design_contract')
     if CONFIG_KEYS-set(data): errors.append(f'{rel}: schema validation failed: missing fields {sorted(CONFIG_KEYS-set(data))}')
     if data.get('system_version')!=version: errors.append(f'{rel}: system_version mismatch')
     if data.get('project_type') not in {'undetermined','landing'}: errors.append(f'{rel}: invalid project_type')
@@ -234,7 +234,9 @@ def validate_owner_artifact(project_dir,rel,gid):
             if len(data_rows(text,'### Scene visual opportunities','Scene'))<1:
                 errors.append(f'{rel}:G3 visual-system must integrate a substantial visual payload across desktop and mobile')
             mechanisms=mechanism_rows(text,'### Effect opportunity map',6)
-            if not mechanisms or not any(row[3] and row[4] and row[5] for row in mechanisms):
+            from validation_creative_decisions import evidence_led
+            static = bool(re.search(r'(?m)^MOTION_POLICY:\s*STATIC\s*$',text))
+            if not (evidence_led(project_dir) and static) and (not mechanisms or not any(row[3] and row[4] and row[5] for row in mechanisms)):
                 errors.append(f'{rel}:G3 visual-system must prototype a selected creative mechanism across responsive/reduced-motion states')
             if project_dir.name!='project':
                 for hero_error in hero_stress_errors(project_dir): errors.append(f'{rel}:{hero_error}')
@@ -260,7 +262,8 @@ def validate_owner_artifact(project_dir,rel,gid):
         path=project_dir/'production-plan.md'
         if path.is_file():
             text=path.read_text(encoding='utf-8')
-            if not explicit_text_only_authorized(project_dir) and not final_visual_assets(text):
+            from validation_creative_decisions import evidence_led
+            if not evidence_led(project_dir) and not explicit_text_only_authorized(project_dir) and not final_visual_assets(text):
                 errors.append(f'{rel}:G4 production-plan requires at least one scene-bearing PRIMARY FINAL IMG asset')
             for image_error in image_handoff_errors(project_dir): errors.append(f'{rel}:{image_error}')
             for spatial_error in spatial_technology_errors(project_dir): errors.append(f'{rel}:{spatial_error}')
@@ -268,7 +271,8 @@ def validate_owner_artifact(project_dir,rel,gid):
             for render_error in final_render_errors(project_dir): errors.append(f'{rel}:{render_error}')
             mechanisms=mechanism_rows(text,'### Material effect decisions',10)
             final=[row for row in mechanisms if row[5] and row[7] and row[9] in {'FINAL','STATIC_WINNER_REVIEWED'}]
-            if not final:
+            from validation_motion_payload import reviewed_static_direction
+            if not final and not (evidence_led(project_dir) and reviewed_static_direction(project_dir)):
                 errors.append(f'{rel}:G4 production-plan requires a reviewed material mechanism decision')
             if project_dir.name!='project':
                 for motion_error in motion_payload_errors(project_dir): errors.append(f'{rel}:{motion_error}')

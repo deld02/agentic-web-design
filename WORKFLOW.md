@@ -7,9 +7,9 @@
 | 1 | Definition | 00 | objective, audience, action, scope and project config |
 | 2 | Research | 01 | current evidence, reference principles and constraints |
 | 3 | Content architecture | 02 | selected flow, Experience Spine, exact content lock, claims and scene map |
-| 4 | Direction divergence | 03 | project-specific premium bar and three physically distinct `DIR-*` territories |
+| 4 | Direction divergence | 03 | project-specific premium bar and two to four distinct `DIR-*` territories |
 | 5 | Independent direction review | 07 | isolated comparison and one selected territory or `REVISE` |
-| 6 | Creative master | 03 | one generated `AM-*`, one user confirmation and binding design genome |
+| 6 | Creative master | 03 | one physical `AM-*` creative proof and translation hypotheses; legacy retains generation/checkpoint policy |
 | 7 | Visual experience | 04 | scene grammar, high-value challenge, derived foundations, responsive UI, page rhythm and conditional spatial-medium selection |
 | 8 | Independent design review | 07 | rendered findings and conditional physical spatial challenge |
 | 9 | Technology + structural build | 06 | selected stack, conditional spatial runtime spike, executable structure and desktop/mobile renders |

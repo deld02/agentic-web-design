@@ -78,6 +78,11 @@ For mixed-type headlines, record the role of each fragment, preferred breaks and
 
 ### Color direction territories
 
+COLOR_UNCERTAINTY: LOW | MATERIAL
+COLOR_REASON: identity authority, concept or observed unresolved relationship
+
+evidence-led-v2: LOW needs one real selected surface proof; MATERIAL needs at least two meaningful same-composition alternatives. Describe hierarchy qualitatively when percentages add false precision. The protected 07 color axis supplies independent assessment; do not manufacture a PASS in the historical challenge table. Legacy contracts retain their three territories.
+
 Render the same real hero composition; only color may change. Role hierarchy includes `dominant`, `background`, `foreground`, `support`, `accent` and an estimated percentage for each. Composition findings address `LUMINANCE | CHROMA | TEMPERATURE | DOMINANT_ACCENT | NEUTRALS | MEDIA | LARGE_SURFACES | PERCEPTION`.
 
 | Territory (`BASELINE | BRAND_LED | CHALLENGER`) | Physical evidence (`CLR-ID:path`) | Role hierarchy and approximate presence | Provenance / project evidence | COLOR_COMPOSITION findings | Accessibility result | Verdict (`SELECTED | REJECTED`) |
@@ -110,6 +115,13 @@ Every scene from the G1 outline receives an explicit assignment. A `UTILITY` sce
 ## Components and states actually needed
 
 ## Responsive and mobile composition
+
+### Composition-critical media
+
+evidence-led-v2: classify every architecture scene. CRITICAL requires a real production-feasible media proof before approval, not a promise. State which changes would require renewed composition review. G4 produces remaining assets and final exports.
+
+| Scene ID | Decision (`CRITICAL | NON_CRITICAL | NO_MEDIA`) | Reason | Physical media proof path / N/A | Replacement boundary |
+|---|---|---|---|---|
 
 ### Scene visual opportunities
 

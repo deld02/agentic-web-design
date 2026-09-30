@@ -159,7 +159,10 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         if not table_rows(text, "### Scene visual opportunities", "Scene"):
             errors.append("G3 requires visual payload integration on desktop and mobile")
         fx_rows = table_rows(text, "### Effect opportunity map", "Scene / opportunity")
-        if not any(len(row) >= 6 and row[3] and row[4] and row[5] for row in fx_rows):
+        from validation_creative_decisions import evidence_led, critical_media_errors
+        errors.extend(critical_media_errors(project_dir))
+        static = bool(re.search(r'(?m)^MOTION_POLICY:\s*STATIC\s*$',text))
+        if not (evidence_led(project_dir) and static) and not any(len(row) >= 6 and row[3] and row[4] and row[5] for row in fx_rows):
             errors.append("G3 requires a tested creative mechanism with responsive and reduced-motion behavior")
         errors.extend(hero_stress_errors(project_dir))
         errors.extend(creative_master_fidelity_errors(project_dir))
@@ -179,7 +182,8 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
             row for row in table_rows(production, "## Asset inventory and readiness", "ID")
             if len(row) >= 6 and re.fullmatch(r"IMG-[0-9]{3,}", row[0]) and row[3].startswith("PRIMARY:") and row[4] == "FINAL" and row[5]
         ]
-        if not explicit_text_only_authorized(project_dir) and not final_assets:
+        from validation_creative_decisions import evidence_led
+        if not evidence_led(project_dir) and not explicit_text_only_authorized(project_dir) and not final_assets:
             errors.append("G4 requires at least one scene-bearing PRIMARY FINAL IMG asset")
         errors.extend(image_handoff_errors(project_dir))
         errors.extend(spatial_technology_errors(project_dir))
@@ -187,7 +191,8 @@ def validate_gate(project_dir: Path, gate_id: str) -> list[str]:
         errors.extend(final_render_errors(project_dir))
         errors.extend(visual_narrative_review_errors(project_dir))
         fx_rows = table_rows(production, "### Material effect decisions", "Effect ID / scene")
-        if not any(len(row) >= 10 and row[6] and row[8] and row[9] in {"FINAL", "STATIC_WINNER_REVIEWED"} for row in fx_rows):
+        from validation_motion_payload import reviewed_static_direction
+        if not (evidence_led(project_dir) and reviewed_static_direction(project_dir)) and not any(len(row) >= 10 and row[6] and row[8] and row[9] in {"FINAL", "STATIC_WINNER_REVIEWED"} for row in fx_rows):
             errors.append("G4 requires a reviewed material mechanism decision")
         errors.extend(motion_payload_errors(project_dir))
         tech_rows = [row for row in table_rows(technology, "## Options compared", "Option") if len(row) >= 4 and all(row[:4])]

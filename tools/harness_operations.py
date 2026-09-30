@@ -94,6 +94,8 @@ def upload_image(api, arguments):
     stage = revision_stage(project, active["stage"]) or active["stage"]
     if stage not in {"research-strategy", "direction-divergence", "creative-master", "visual-experience", "production-plan"}:
         raise ValueError("image import is unavailable at this stage")
+    from harness_design_plan import require_plan
+    require_plan(project,stage)
     data = base64.b64decode(arguments["data_base64"], validate=True)
     suffix = arguments["extension"].lower()
     metadata = inspect_raster(data, suffix)
@@ -126,6 +128,11 @@ def render_landing(api, arguments):
     run, active, project = api._project_and_stage(arguments["run_id"])
     stage = revision_stage(project, active["stage"]) or active["stage"]
     study = {"direction-divergence":"evidence/directions", "visual-experience":"evidence/compositions"}.get(stage)
+    from validation_creative_decisions import evidence_led
+    if stage == "creative-master" and evidence_led(project):
+        study = "evidence/proof"
+    from harness_design_plan import require_plan
+    require_plan(project,stage)
     if not study and stage not in {"technology-selection", "production-plan", "implementation", "build-review"}:
         raise ValueError("rendering is unavailable at this stage")
     implementation = api._bounded_project_file(project, study) if study else api._implementation_root(project)

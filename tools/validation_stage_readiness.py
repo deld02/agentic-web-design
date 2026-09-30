@@ -19,8 +19,11 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
     status = load_json(project_dir / "status.json")
     stage_id = stage["id"]
     errors = list(audit_state(project_dir))
+    from validation_creative_decisions import plan_errors, evidence_led, source_errors, critical_media_errors
+    errors.extend(plan_errors(project_dir,stage_id))
     errors.extend(stage_activation_errors(project_dir, root, stage_id))
     if stage_id == "visual-experience":
+        errors.extend(critical_media_errors(project_dir))
         from project_validation import page_rhythm_errors
         errors.extend(page_rhythm_errors(project_dir))
         errors.extend(scene_design_loop_errors(project_dir))
@@ -32,6 +35,7 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
         except ValueError as exc:
             errors.append(str(exc))
     if stage_id == "research-strategy":
+        if evidence_led(project_dir): errors.extend(source_errors(project_dir))
         errors.extend(research_readiness_errors(project_dir))
     if stage_id == "direction-divergence":
         errors.extend(direction_divergence_errors(project_dir, require_selection=False))

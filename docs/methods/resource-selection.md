@@ -75,10 +75,18 @@ Para un `FX-*`, no se hace una búsqueda abierta de “efectos modernos”. Se e
 |---|---|---|
 | `LIVE_EXECUTION` | ¿Cómo funciona dentro de una web completa? | competidores/web oficial, SiteInspire, One Page Love, Awwwards, Godly |
 | `MECHANISM_LAB` | ¿Cómo se comporta y cuánto cuesta? | Codrops Creative Hub/Demos, Motion, GSAP, Three.js Examples |
-| `ELEMENT_BANK` | ¿Qué variantes existen para este tipo de elemento? | Aceternity UI, Magic UI, Motion Primitives, React Bits |
+| `ELEMENT_BANK` | ¿Qué variantes existen para este tipo de elemento? | Aceternity UI, Magic UI, Motion Primitives, React Bits, HorizonX |
 | `3D_MATERIAL` | ¿Qué lenguaje espacial/material es viable? | Spline/Community, Three.js Examples, Poly Haven, ambientCG, Sketchfab |
 
 La consulta se formula como `[elemento/escena] + [trabajo perceptivo] + [trigger] + [dirección material]`, por ejemplo `product image + reveal construction + scroll + layered paper`. Se abre la web o demo original. Cada ancla registra carril, URL, mecanismo transferible, lo que no debe copiarse, stack/licencia y limitación mobile/performance.
+
+### HorizonX: biblioteca y editores, no dirección por defecto
+
+Consultar `horizonx` solo cuando resuelva una incertidumbre concreta de la escena. Elegir la parte pertinente: [Library](https://horizonx.so/explore) para heroes, secciones, composición y archivos Figma/código; [Tools](https://horizonx.so/tools) para componentes e interacción; [Textures](https://horizonx.so/textures) para tratamientos de imágenes/vídeo propios; [Shaders](https://horizonx.so/shaders) para fondos generativos y luz/movimiento. Cuenta como una familia dentro del límite existente, no cuatro búsquedas obligatorias.
+
+Probar el candidato con contenido, paleta y media del proyecto, y compararlo con la alternativa sencilla en la evidencia existente de la escena. Las texturas transforman media aportada: no sustituyen una imagen ausente ni su handoff de producción. Una plantilla no constituye evidencia de una web publicada ni reemplaza el benchmark de webs originales; un preset o etiqueta Premium no acredita calidad. Verificar el formato real del ítem y el runtime/medio antes de llamarlo 3D. La aceptación de efectos sigue exclusivamente `effect-selection.md`.
+
+Antes de integrar, inspeccionar el export real, dependencias, licencia/acceso, responsive/touch, movimiento reducido, rendimiento y fallback. Registrar URL, ajustes relevantes y resultado en las celdas de referencia/prototipo/asset existentes, sin otro inventario. No descargar ni publicar fuentes licenciadas dentro del repositorio público del sistema. La documentación anuncia MCP, pero su conexión no está verificada: usarlo solo tras comprobar configuración oficial, autenticación y herramientas reales; si no está disponible, consultar la web y declarar export/acceso pendientes, sin bloquear la elección de otra fuente viable.
 
 Cada referencia registra URL original, autor/estudio cuando exista, fecha, rol en el set, observación, principio transferible, anti-copia, limitaciones y una captura física guardada como evidencia del estado realmente inspeccionado. Un proyecto puede usar hasta tres familias de fuente por decisión; popularidad o premio no equivalen a fit.
 

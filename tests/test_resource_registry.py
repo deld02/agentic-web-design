@@ -16,6 +16,19 @@ class ResourceRegistryValidationTests(unittest.TestCase):
     def test_clean_registry_passes(self):
         result=run(ROOT); self.assertEqual(result.returncode,0,result.stdout+result.stderr)
 
+    def test_horizonx_is_optional_verified_at_use_family(self):
+        data=json.loads((ROOT/'config/resource-sources.json').read_text(encoding='utf-8'))
+        items=[item for item in data['sources'] if item['id']=='horizonx']
+        self.assertEqual(len(items),1)
+        item=items[0]
+        self.assertEqual(item['reuse_class'],'VERIFY_AT_USE')
+        self.assertFalse(item['reusable_by_default'])
+        self.assertTrue({'REFERENCE_ONLY','CODE_SOURCE','ASSET_SOURCE','TOOL'} <= set(item['kinds']))
+        method=(ROOT/'docs/methods/resource-selection.md').read_text(encoding='utf-8')
+        for route in ('explore','tools','textures','shaders'):
+            self.assertIn('https://horizonx.so/'+route,method)
+        self.assertIn('MCP',item['license_policy'])
+
     def test_per_item_source_cannot_be_default_reusable(self):
         td,repo=self.clone()
         try:

@@ -1,5 +1,5 @@
 {
-  "registry_version": "1.1.0",
+  "registry_version": "1.2.0",
   "checked": "2026-08-22",
   "policy": {
     "default_decision": "NO_EXTERNAL_RESOURCE_REQUIRED",
@@ -274,6 +274,24 @@
       "reusable_by_default": false,
       "license_policy": "Not assumed MIT. Verify current GreenSock terms for the intended use.",
       "review_by_days": 90
+    },
+    {
+      "id": "horizonx",
+      "name": "HorizonX Library and Editors",
+      "url": "https://horizonx.so/",
+      "roles": ["01", "03", "04", "05", "06"],
+      "kinds": ["REFERENCE_ONLY", "CODE_SOURCE", "ASSET_SOURCE", "TOOL"],
+      "categories": ["landing-pages", "hero", "sections", "components", "interaction", "backgrounds", "textures", "shaders", "image-effects", "3d"],
+      "priority": "A",
+      "best_for": ["discovering and adapting concrete scene compositions", "configuring interactive components and shader backgrounds with project content", "treating supplied images or video with editable textures"],
+      "avoid_for": ["treating Premium labels as independent quality evidence", "replacing project-specific image production with decorative presets", "assuming Figma-only designs include working code", "assuming perspective effects are real 3D", "redistributing licensed source files in the public system repository"],
+      "stack": ["html", "javascript", "react", "svelte", "figma"],
+      "cost": "free-editor-preview; paid-membership-export; verify current quotas",
+      "license_scope": "per-item",
+      "reuse_class": "VERIFY_AT_USE",
+      "reusable_by_default": false,
+      "license_policy": "Checked 2026-09-30 against https://horizonx.so/docs and https://horizonx.so/terms. Verify exact item format, entitlement, dependencies and current commercial terms before export/reuse. Do not redistribute raw licensed files in this public repository. Advertised MCP access is not a verified integration: inspect official setup, authentication and tool availability before use; never invent an endpoint or successful connection.",
+      "review_by_days": 60
     },
     {
       "id": "aceternity-ui",

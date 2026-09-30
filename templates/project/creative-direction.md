@@ -11,6 +11,15 @@ MUST_AVOID:
 MASTER_MUST_PROVE:
 LANDING_MUST_PRESERVE:
 
+## Creative idea
+
+State a project-grounded relationship, not a list of fonts, colors or effects. It must remain intelligible when its stylistic expression changes; no spectacular metaphor is mandatory. Source IDs refer to SRC-### items in research's existing Discovered evidence authority table. Territories explore different expressions or explicitly contrasted hypotheses of this idea.
+
+CREATIVE_IDEA:
+PROJECT_SOURCE_IDS:
+WHY_THIS_PROJECT:
+OBSERVABLE_CONSEQUENCE:
+
 ## Direction divergence
 
 Create two to four physically visible territories according to uncertainty. They answer the same project/content and differ in at least four dimensions. Do not invent an extra route to meet a quota; these are boards, not color swaps.

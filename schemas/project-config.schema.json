@@ -5,6 +5,7 @@
   "required": ["system_version","project_type","delivery_profile","visual_identity_mode","content_model","technology","accessibility_target","implementation_root"],
   "properties": {
     "system_version": {"const":"6.8.0"},
+    "design_contract": {"const":"idea-first-v1"},
     "project_type": {"enum":["undetermined","landing"]},
     "delivery_profile": {"enum":["focused","standard","extended"]},
     "visual_identity_mode": {"enum":["undetermined","inherit","evolve","establish"]},

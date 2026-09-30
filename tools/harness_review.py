@@ -27,6 +27,11 @@ REVIEW_INSTRUCTIONS = (
     "or a completed checklist does not establish artistic quality. You may reject every direction; the least "
     "weak candidate is not a winner. Do not require imitation, extra effects, 3D or complexity. "
     "Judge the complete relationship between content, identity, media and composition, not an image in isolation. "
+    "Compare the stated Creative idea with project source material, not merely style adjectives. In direction review, "
+    "ask what survives a change of styling; in design review, diagnose removal of a focal treatment and replacement "
+    "of project identity/content. Explain which project-grounded relationship is lost or preserved. These are "
+    "diagnostic countertests, not literal requests to delete every layer: image-led directions are legitimate. "
+    "Judge macro scroll density, scale, rests and continuity before local craft. Cost does not prove authorship. "
     "Nonliteral imagery is valid; a metaphor need not depict the industry or be exclusive to it. Reject interchangeability "
     "only when the overall experience lacks a convincing identity or communication role, with concrete evidence. "
     "Compare references by audience, action, trust and available proof/media, not prestige. Transfer craft, not a "
@@ -72,11 +77,11 @@ def benchmark_images(project: Path) -> list[str]:
 
 def design_preflight_errors(project: Path) -> list[str]:
     """Cheap owner-contract checks; never consume an artistic review attempt."""
-    from project_validation import scene_visual_errors
+    from project_validation import scene_visual_errors, page_rhythm_errors, idea_first_contract
     from validation_spatial_experience import spatial_selection_errors
     from validation_landing_blueprint import blueprint_errors
     from validation_release_integrity import semantic_resolution_errors
-    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project) + semantic_resolution_errors(project)
+    return scene_visual_errors(project) + spatial_selection_errors(project, require_review=False) + blueprint_errors(project) + semantic_resolution_errors(project) + (page_rhythm_errors(project) if idea_first_contract(project) else [])
 
 
 def review_axes(root: Path, project: Path, stage_id: str) -> list[str]:
@@ -204,6 +209,10 @@ def run_visual_review(root: Path, project: Path, stage: dict, images: list[str],
     if len(images) > 16:
         raise ValueError('review exceeds 16 images including benchmarks; reduce redundant candidate views')
     if stage["id"] == "direction-review":
+        from project_validation import creative_idea_errors
+        preflight = creative_idea_errors(project)
+        if preflight:
+            raise ValueError("DIRECTION_PREFLIGHT: " + "; ".join(preflight))
         rows = table_rows((project / "creative-direction.md").read_text(encoding="utf-8"), "## Direction divergence", "Direction ID")
         boards = {row[7] for row in rows if len(row) >= 8}
         if not 2 <= len(boards) <= 4 or not boards.issubset(images):

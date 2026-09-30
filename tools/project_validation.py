@@ -385,6 +385,48 @@ def page_rhythm_errors(project_dir: Path) -> list[str]:
     for name in ("RHYTHM_SEQUENCE", "PEAKS_AND_RESTS", "REPETITION_CONTROL", "HERO_TO_BODY_CONTINUITY"):
         if not _named_value(text, heading, name):
             errors.append(f"G3 global page rhythm missing {name}")
+    if idea_first_contract(project_dir):
+        macro_pos = text.find(heading)
+        detail_pos = text.find("### Section design loop")
+        foundation_pos = text.find("## Foundation alternatives and decision evidence")
+        if min(macro_pos, detail_pos, foundation_pos) < 0 or not macro_pos < detail_pos < foundation_pos:
+            errors.append("G3 macro scroll composition must precede section detail and foundations")
+        outline = table_rows(markdown(project_dir, "content-architecture.md"), "## Sitemap / page or section outline", "Scene ID")
+        expected = [row[0] for row in outline if row and re.fullmatch(r"SCN-\d{3,}", row[0])]
+        actual = re.findall(r"SCN-\d{3,}", _named_value(text, heading, "RHYTHM_SEQUENCE"))
+        if not expected or actual != expected:
+            errors.append("G3 macro rhythm must include each outlined scene exactly once in order")
+    return errors
+
+
+def idea_first_contract(project_dir: Path) -> bool:
+    """Versioned contract: new projects opt in; historical artifacts stay valid."""
+    path = project_dir / "project.config.json"
+    run = project_dir.parent / "run.json"
+    recorded = run.is_file() and load_json(run).get("design_contract") == "idea-first-v1"
+    return recorded or (path.is_file() and load_json(path).get("design_contract") == "idea-first-v1")
+
+
+def creative_idea_errors(project_dir: Path) -> list[str]:
+    """Check provenance and structure, never claim to measure creativity."""
+    if not idea_first_contract(project_dir):
+        return []
+    text = markdown(project_dir, "creative-direction.md")
+    heading = "## Creative idea"
+    errors = []
+    if text.find(heading) < 0 or text.find(heading) > text.find("## Direction divergence"):
+        errors.append("G2 Creative idea must precede direction territories")
+    for key in ("CREATIVE_IDEA", "PROJECT_SOURCE_IDS", "WHY_THIS_PROJECT", "OBSERVABLE_CONSEQUENCE"):
+        value = _named_value(text, heading, key)
+        if not value or value.upper() in {"TODO", "TBD", "PENDING", "NONE"}:
+            errors.append(f"G2 Creative idea missing {key}")
+    research = markdown(project_dir, "research-strategy.md")
+    rows = table_rows(research, "## Discovered evidence authority", "Item / source")
+    sources = {match.group(0) for row in rows if len(row) >= 5 and all(row[:5])
+               for match in re.finditer(r"SRC-\d{3,}", row[0])}
+    refs = re.findall(r"SRC-\d{3,}", _named_value(text, heading, "PROJECT_SOURCE_IDS"))
+    if not refs or any(ref not in sources for ref in refs):
+        errors.append("G2 Creative idea requires SRC references to substantive research evidence rows")
     return errors
 
 
@@ -411,7 +453,7 @@ def project_quality_bar_errors(project_dir: Path) -> list[str]:
         "PREMIUM_MEANS_HERE", "CATEGORY_BASELINE_TO_EXCEED", "MUST_BE_AUTHORED",
         "MUST_AVOID", "MASTER_MUST_PROVE", "LANDING_MUST_PRESERVE",
     )
-    errors: list[str] = []
+    errors: list[str] = creative_idea_errors(project_dir)
     bar_pos = text.find(heading)
     master_pos = text.find("## Artistic master")
     if bar_pos < 0 or master_pos < 0 or bar_pos > master_pos:

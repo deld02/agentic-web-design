@@ -9,6 +9,15 @@ PAGE_MOBILE:
 
 In new managed runs, show this complete proposal after independent design-review, then call confirm_design with the actual user signal. The artistic master is an internal reference, not another approval. No production implementation before this checkpoint. Legacy runs retain their recorded checkpoint policy.
 
+## Global page rhythm
+
+Before detailed scenes and foundations, sketch the entire scroll as masses and reading intervals; reuse these fields rather than a second plan. RHYTHM_SEQUENCE lists each outlined SCN-* once in order with its density, scale and perceptual role. Judge length, repetition, contrast and continuity, then update this same plan against the final whole-page renders. This document order is not proof of execution timing.
+
+RHYTHM_SEQUENCE:
+PEAKS_AND_RESTS:
+REPETITION_CONTROL:
+HERO_TO_BODY_CONTINUITY:
+
 ### Section design loop
 
 In outline order, compose one section, inspect desktop/mobile against its selected reference principles and diagnose the result before moving on. Decide composition/spacing, type, color, image/background intent, behavior, transitions and mobile together in the existing tables below. This log links evidence, not another specification or independent approval. A first PASS is valid; do not manufacture revisions. REVISE permits one directed correction; preserve both attempts and their distinct renders. A second rejection stops for escalation. Final image production remains in G4's external loop.
@@ -20,9 +29,9 @@ After all sections pass owner inspection, inspect the full scroll and correct on
 
 ## Scene strategy
 
-Challenge every scene from `content-architecture.md` before finalizing foundations. Ask what art direction, visual production or interaction could make this section worth a high-end bespoke budget, then separate real value from expensive noise and select the simplest form that preserves the gain. `UTILITY` scenes receive the same question briefly and may correctly choose the direct baseline.
+Challenge every scene from `content-architecture.md` before finalizing foundations. Ask what relationship makes it belong to this project, whether simplicity preserves it and whether added production increases meaning. Separate authorship from expensive noise. UTILITY scenes may correctly choose the direct baseline.
 
-| Scene ID | Job / content / assets | Perceptual problem | Direct baseline | High-end opportunity: what could justify €10K here? | Value test (`HIGH_VALUE=; SIMPLIFY=; EXPENSIVE_NOISE=`) | Selected simplest faithful form | Relationship with creative master |
+| Scene ID | Job / content / assets | Perceptual problem | Direct baseline | Authorship opportunity: what makes this belong to the project? | Value test (`HIGH_VALUE=; SIMPLIFY=; EXPENSIVE_NOISE=`) | Selected simplest faithful form | Relationship with creative master |
 |---|---|---|---|---|---|---|---|
 
 ## Scene grammar
@@ -122,13 +131,6 @@ Viewport matrix values are probes, not preset breakpoints. Keep observed failure
 
 | Width / content case | Breathing | Paragraph measure | Mixed headline | Clipping / collision | PASS / ADAPT / FAIL |
 |---|---|---|---|---|---|
-
-## Global page rhythm
-
-RHYTHM_SEQUENCE:
-PEAKS_AND_RESTS:
-REPETITION_CONTROL:
-HERO_TO_BODY_CONTINUITY:
 
 ## Interaction and motion intent
 

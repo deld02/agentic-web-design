@@ -147,7 +147,8 @@ def validate_config(path):
     rel=path.relative_to(ROOT)
     try: data=json.loads(path.read_text(encoding='utf-8'))
     except Exception as exc: errors.append(f'{rel} invalid JSON: {exc}'); return {}
-    if set(data)-CONFIG_KEYS: errors.append(f'{rel}: schema validation failed: unknown fields {sorted(set(data)-CONFIG_KEYS)}')
+    if set(data)-(CONFIG_KEYS|{'design_contract'}): errors.append(f'{rel}: schema validation failed: unknown fields {sorted(set(data)-(CONFIG_KEYS|{"design_contract"}))}')
+    if 'design_contract' in data and data['design_contract'] != 'idea-first-v1': errors.append(f'{rel}: invalid design_contract')
     if CONFIG_KEYS-set(data): errors.append(f'{rel}: schema validation failed: missing fields {sorted(CONFIG_KEYS-set(data))}')
     if data.get('system_version')!=version: errors.append(f'{rel}: system_version mismatch')
     if data.get('project_type') not in {'undetermined','landing'}: errors.append(f'{rel}: invalid project_type')

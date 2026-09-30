@@ -160,6 +160,7 @@ def create_run(
     write_json(run_dir / "run.json", {
         "run_id": run_id,
         "scenario": scenario_id,
+        "design_contract": load_json(project_dir / "project.config.json").get("design_contract"),
         "created_at": utc_now(),
         "user_checkpoint": load_json(ROOT / "config/pipeline.json").get("user_checkpoint", "artistic-master"),
         "project_dir": str(project_dir),

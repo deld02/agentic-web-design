@@ -10,7 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from validation_release_integrity import content_lock_definition_errors, semantic_resolution_errors, content_lock_build_errors
 from harness_review import representative_images, review_axes
 from validation_motion_payload import motion_payload_errors, reviewed_static_direction
-from project_validation import direction_divergence_errors
+from project_validation import direction_divergence_errors, creative_idea_errors, page_rhythm_errors
+from evaluate_visual_pairs import score
 
 
 class DesignDecisionArchitectureTests(unittest.TestCase):
@@ -43,6 +44,49 @@ class DesignDecisionArchitectureTests(unittest.TestCase):
     def test_missing_semantic_resolution_blocks(self):
         (self.p/'visual-system.md').write_text('')
         self.assertTrue(semantic_resolution_errors(self.p))
+
+    def test_creative_idea_requires_grounded_source_and_precedes_style(self):
+        (self.p/'project.config.json').write_text('{"design_contract":"idea-first-v1"}')
+        (self.p/'research-strategy.md').write_text('## Discovered evidence authority\n| Item / source | Finding | Use | Reason | Owner |\n|---|---|---|---|---|\n| SRC-001 workshop process | Real tool sequence | Translate sequence | Verified interview | 03 |\n')
+        idea='## Creative idea\nCREATIVE_IDEA: Reveal the actual making process\nPROJECT_SOURCE_IDS: SRC-001\nWHY_THIS_PROJECT: Its tool sequence\nOBSERVABLE_CONSEQUENCE: Ordered assembly with proof\n## Direction divergence\n'
+        (self.p/'creative-direction.md').write_text(idea)
+        self.assertEqual([],creative_idea_errors(self.p))
+        (self.p/'creative-direction.md').write_text(idea.replace('SRC-001','SRC-999'))
+        self.assertTrue(creative_idea_errors(self.p))
+        (self.p/'creative-direction.md').write_text(idea)
+        (self.p/'research-strategy.md').write_text('## Discovered evidence authority\n| Item / source | Finding | Use | Reason | Owner |\n|---|---|---|---|---|\n| SRC-001 | | Translate | | 03 |\n')
+        self.assertTrue(creative_idea_errors(self.p))
+        (self.p/'creative-direction.md').write_text('## Direction divergence\n'+idea.replace('## Direction divergence\n',''))
+        self.assertTrue(creative_idea_errors(self.p))
+
+    def test_macro_rhythm_covers_order_before_detail(self):
+        (self.p/'project.config.json').write_text('{"design_contract":"idea-first-v1"}')
+        (self.p/'content-architecture.md').write_text('## Sitemap / page or section outline\n| Scene ID | Section |\n|---|---|\n| SCN-001 | Open |\n| SCN-002 | Proof |\n')
+        macro='## Global page rhythm\nRHYTHM_SEQUENCE: SCN-001 dense opening -> SCN-002 quieter proof\nPEAKS_AND_RESTS: One peak then reading\nREPETITION_CONTROL: Different scale\nHERO_TO_BODY_CONTINUITY: Same material\n### Section design loop\n## Foundation alternatives and decision evidence\n'
+        (self.p/'visual-system.md').write_text(macro)
+        self.assertEqual([],page_rhythm_errors(self.p))
+        for sequence in ('SCN-002 -> SCN-001','SCN-001 -> SCN-001','SCN-001'):
+            (self.p/'visual-system.md').write_text(macro.replace('SCN-001 dense opening -> SCN-002 quieter proof',sequence))
+            self.assertTrue(page_rhythm_errors(self.p))
+
+    def test_historical_projects_do_not_require_new_idea_contract(self):
+        self.assertEqual([],creative_idea_errors(self.p))
+
+    def test_server_contract_cannot_be_removed_from_project_config(self):
+        (self.p.parent/'run.json').write_text('{"design_contract":"idea-first-v1"}')
+        (self.p/'project.config.json').write_text('{}')
+        self.assertTrue(creative_idea_errors(self.p))
+
+    def test_pair_calibration_uses_separate_human_answers(self):
+        reference={'pairs':[{'id':'P01','winner':'A','category':'minimal_vs_empty'}]}
+        predictions={'pairs':[{'id':'P01','winner':'B','reason':'Observed stronger hierarchy'}]}
+        result=score(reference,predictions)
+        self.assertEqual(0,result['agreements'])
+        self.assertEqual(['P01'],result['disagreements'])
+        with self.assertRaises(ValueError):
+            score(reference,{'pairs':[]})
+        with self.assertRaises(ValueError):
+            score(reference,{'pairs':[{'id':'P01','winner':'A','reason':''}]})
 
     def test_legacy_content_lock_is_verbatim(self):
         text = self.content.replace(' | SEMANTIC |',' |').replace(' | VERBATIM |',' |')

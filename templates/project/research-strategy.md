@@ -24,6 +24,8 @@ MOBILE_IMPORTANCE:
 
 Record only findings that can change the landing. Existing material and references are evaluated, not inherited automatically.
 
+Investigate the client's world before design galleries: product, process, language, tools, place, history, rituals and available proof. Prefix material source items with SRC-### in the existing Item/source cell; identify the actual source and distinguish verified facts from hypotheses. Do not invent archives or media. Design references calibrate execution, not the truth or idea of the project. Missing distinctive material is a limitation, not permission to fabricate it.
+
 | Item / source | Finding | Use, change or ignore | Reason / constraint / uncertainty | Downstream owner |
 |---|---|---|---|---|
 
@@ -85,9 +87,9 @@ JUSTIFICATION_OR_DEPARTURE: first recorded project
 
 For every material reference: URL, access date, observation, transferable principle and what must not be copied.
 
-## Short territories for user reaction
+## Research handoff
 
-Normally 2–3 contrasted territories expressed without requiring design vocabulary. Include the simplest viable high-quality territory.
+Deliver unresolved communication questions and source opportunities to 02/03. Do not select visual territories or request an extra user checkpoint here; 03 owns divergence.
 
 ## Design capability log
 

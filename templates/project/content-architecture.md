@@ -21,7 +21,7 @@ FINAL_NON_INTERCHANGEABILITY:
 
 ## Sitemap / page or section outline
 
-Identify every section as a scene with its narrative or functional job. All scenes receive the compact high-end opportunity check in G3; `UTILITY` controls evidence depth and may inherit an established language, but does not skip the decision.
+Identify every section as a scene with its narrative or functional job. All scenes receive the compact authorship opportunity check in G3; `UTILITY` controls evidence depth and may inherit an established language, but does not skip the decision.
 
 | Scene ID | Section | User question / job | Available content and assets | Importance (`PRIMARY | UTILITY`) |
 |---|---|---|---|---|

@@ -23,3 +23,9 @@ The protected review checkpoints in `status.json` use `review_context`:
 - `PENDING` before the isolated execution;
 - `ISOLATED` only after a fresh-context review using the packet above;
 - `EXCEPTION_RECORDED` when isolation was impossible. This state cannot approve the checkpoint.
+
+## Empirical taste calibration (offline)
+
+Project reference calibration is not demonstrated taste. To evaluate 07, humans curate blind A/B pairs with matching project context and separate reference judgments. Include excellent versus generic, restrained versus empty, authored versus trendy, and effective versus overproduced cases; allow TIE and disagreements between human raters. Show 07 only anonymous A/B evidence and the brief, never answer labels, price or prestige. Retain its choice and concrete visible reason.
+
+`python tools/evaluate_visual_pairs.py --reference human-answers.json --predictions reviewer-answers.json` compares two `pairs` lists: human entries contain `id`, `winner` (`A | B | TIE`), `category`; reviewer entries contain `id`, `winner`, `reason`. It reports agreement and disagreements per category, not a universal premium score or automatic gate. Curators must verify rights, genuine visual evidence and blinded administration. No synthetic labels, invented 30-pair set or claimed calibration without an actual human-rated run. This is an offline evaluation of the reviewer, not another step of each landing.

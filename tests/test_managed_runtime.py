@@ -114,6 +114,7 @@ class RuntimeTests(unittest.TestCase):
             def read(self): return json.dumps(response).encode()
         stage = next(s for s in mcp.load_json(ROOT / "config/pipeline.json")["stages"] if s["id"] == "direction-review")
         with patch.dict(os.environ, {"OPENAI_API_KEY":"test-only", "AGENTIC_REVIEW_MODEL":"test-only"}), \
+             patch("project_validation.creative_idea_errors", return_value=[]), \
              patch("harness_review.benchmark_images", return_value=[images[1]]), \
              patch("urllib.request.urlopen", return_value=Response()) as call:
             run_visual_review(ROOT, self.project, stage, images)

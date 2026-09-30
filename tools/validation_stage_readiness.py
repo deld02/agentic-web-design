@@ -21,6 +21,8 @@ def stage_readiness_errors(run_dir: Path, stage: dict, root: Path) -> list[str]:
     errors = list(audit_state(project_dir))
     errors.extend(stage_activation_errors(project_dir, root, stage_id))
     if stage_id == "visual-experience":
+        from project_validation import page_rhythm_errors
+        errors.extend(page_rhythm_errors(project_dir))
         errors.extend(scene_design_loop_errors(project_dir))
         from validation_release_integrity import semantic_resolution_errors
         from harness_review import representative_images

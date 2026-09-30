@@ -86,6 +86,7 @@ class SessionBackendTests(unittest.TestCase):
         with patch("validation_landing_blueprint.complete_landing_flow", return_value=False), \
              patch("harness_review.benchmark_images", return_value=[images[1]]), \
              patch("project_validation.scene_visual_errors", return_value=[]), \
+             patch("project_validation.page_rhythm_errors", return_value=[]), \
              patch("validation_spatial_experience.spatial_selection_errors", return_value=[]), \
              patch("harness_review.subscription_review",return_value=response) as native, \
              patch("urllib.request.urlopen") as api:

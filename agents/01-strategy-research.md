@@ -25,7 +25,7 @@ Brief, material disponible y preguntas abiertas de G0.
 ## PROCESO
 
 1. Sigue `docs/methods/progressive-intake.md` y compila primero el contexto: modelo, acción, sofisticación, confianza, humanidad, autoridad/calidez, tecnicidad, tolerancia experimental, localidad, prueba, narrativa, emoción y móvil.
-2. Recalibra referencias actuales en cada proyecto, existan o no ejemplos aportados. Compara y captura cinco lentes: `DIRECT`, `ADJACENT`, `FRONTIER`, `SIMPLE` y `SATURATED`; esta última identifica clichés actuales que no deben heredarse.
+2. Investiga primero el mundo del cliente —producto, proceso, lenguaje, lugar, historia, herramientas y prueba disponible—; identifica fuentes SRC-* en Discovered evidence authority, distinguiendo hechos de hipótesis. Después recalibra referencias actuales: `DIRECT`, `ADJACENT`, `FRONTIER`, `SIMPLE` y `SATURATED`. Las webs calibran ejecución; no sustituyen el material que origina la idea.
 3. Para cada hallazgo material registra qué aporta, cómo se usará o por qué se descarta, y cualquier incertidumbre.
 4. Resuelve la autoridad de logo, color, tipografía, fotografía, patrones y CSS existentes como `BINDING`, `EVOLVE_WITHIN_LIMITS` u `OPEN_TO_REPLACE`. Cada decisión recibe un `IDN-*`, cambio permitido y consecuencia prohibida; si no existe identidad registra `NO_EXISTING_IDENTITY`. No convierte automáticamente lo existente en obligación ni deja su autoridad implícita.
 5. Si existen fingerprints de proyectos terminados, identifica el más próximo y exige continuidad justificada o una diferencia deliberada.

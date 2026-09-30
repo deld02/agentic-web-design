@@ -6,6 +6,8 @@ Este método evita dos fallos opuestos: elegir la primera solución razonable y 
 
 La comparación vive donde se diseña. `decision-log.md` solo resume decisiones globales, transversales o costosas de revertir.
 
+El workspace de diseño puede contener bocetos y pruebas libres. Las tablas oficiales recogen después la decisión seleccionada, evidencia y descarte material; no son un formulario que deba rellenarse mientras se descubre la idea. Preservar evidencia de correcciones exigida por el harness no obliga a narrar todos los intentos privados.
+
 Una decisión es material si cambia la narrativa, dirección, foundation, verdad o método de media, mecanismo definitorio, composición responsive o arquitectura. Ajustes ópticos, espaciado local, estados comunes y variantes de una regla ya elegida son oficio del owner y no crean registros adicionales.
 
 If research already evaluated material, downstream preserves the recorded decision or constraint and resolves only the uncertainty assigned to its owner. It does not silently choose again.
